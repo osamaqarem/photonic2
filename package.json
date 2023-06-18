@@ -1,0 +1,44 @@
+{
+  "name": "@photonic/monorepo",
+  "private": true,
+  "repository": "https://github.com/osamaqarem/photonic2",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "devDependencies": {
+    "eslint": "^8.43.0",
+    "eslint-config-prettier": "^8.8.0",
+    "eslint-config-turbo": "^1.10.3",
+    "lerna-update-wizard": "^1.1.2",
+    "patch-package": "^7.0.0",
+    "postinstall-postinstall": "^2.1.0",
+    "prettier": "^2.8.8",
+    "turbo": "^1.10.3",
+    "typescript": "^5.1.3"
+  },
+  "engines": {
+    "node": "<17 >=16.17.0"
+  },
+  "scripts": {
+    "checks": "turbo ts lint",
+    "ts": "turbo ts",
+    "lint": "turbo lint",
+    "prettier": "prettier '**/*.{js,jsx,ts,tsx}' --write --ignore-path .gitignore",
+    "app:prebuild": "yarn workspace @photonic/expo prebuild",
+    "app:prebuild-clean": "yarn workspace @photonic/expo prebuild-clean",
+    "app:ios": "yarn workspace @photonic/expo ios",
+    "app:dev": "yarn workspace @photonic/expo dev",
+    "app:storybook": "STORYBOOK=1 yarn app:dev",
+    "app:xcode": "xed ./apps/expo/ios",
+    "lambda:deploy": "yarn workspace @photonic/lambda deploy",
+    "lambda:update-env": "yarn workspace @photonic/lambda update-env",
+    "db:generate": "turbo db:generate --skip-generate",
+    "db:push": "yarn workspace @photonic/fastify db:push",
+    "db:studio": "yarn workspace @photonic/fastify db:studio",
+    "p": "yarn lernaupdate --lazy",
+    "clean-nodemodules": "find . -name 'node_modules' -type d -prune -exec rm -rf '{}' +",
+    "postinstall": "patch-package && turbo db:generate --force",
+    "tsc": "echo 'tsc from workspace root will give incorrect results. Run it from each app instead.' && exit 1"
+  }
+}

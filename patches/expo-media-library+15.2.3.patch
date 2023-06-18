@@ -1,0 +1,130 @@
+diff --git a/node_modules/expo-media-library/ios/EXMediaLibrary.podspec b/node_modules/expo-media-library/ios/EXMediaLibrary.podspec
+index 05d4822..a73d1d0 100644
+--- a/node_modules/expo-media-library/ios/EXMediaLibrary.podspec
++++ b/node_modules/expo-media-library/ios/EXMediaLibrary.podspec
+@@ -18,10 +18,5 @@ Pod::Spec.new do |s|
+   s.dependency 'ExpoModulesCore'
+   s.dependency 'React-Core'
+
+-  if !$ExpoUseSources&.include?(package['name']) && ENV['EXPO_USE_SOURCE'].to_i == 0 && File.exist?("#{s.name}.xcframework") && Gem::Version.new(Pod::VERSION) >= Gem::Version.new('1.10.0')
+-    s.source_files = "#{s.name}/**/*.h"
+-    s.vendored_frameworks = "#{s.name}.xcframework"
+-  else
+-    s.source_files = "#{s.name}/**/*.{h,m}"
+-  end
++  s.source_files = "#{s.name}/**/*.{h,m}"
+ end
+diff --git a/node_modules/expo-media-library/ios/EXMediaLibrary/EXMediaLibrary.m b/node_modules/expo-media-library/ios/EXMediaLibrary/EXMediaLibrary.m
+index fdc6da1..feb63fc 100644
+--- a/node_modules/expo-media-library/ios/EXMediaLibrary/EXMediaLibrary.m
++++ b/node_modules/expo-media-library/ios/EXMediaLibrary/EXMediaLibrary.m
+@@ -240,6 +240,33 @@ EX_EXPORT_METHOD_AS(saveToLibraryAsync,
+   return reject(@"E_UNSUPPORTED_ASSET", @"This file type is not supported yet.", nil);
+ }
+
++EX_EXPORT_METHOD_AS(modifyAssetAsync,
++                    modifyAssetAsync:(NSString *)assetId
++                    options:(NSDictionary *)options
++                    resolve:(EXPromiseResolveBlock)resolve
++                    reject:(EXPromiseRejectBlock)reject)
++{
++    NSNumber *creationDateUnixMillis = options[@"creationTime"];
++
++    PHAsset *asset = [EXMediaLibrary _getAssetById:assetId];
++
++    [[PHPhotoLibrary sharedPhotoLibrary] performChanges:^{
++        PHAssetChangeRequest *changeRequest = [PHAssetChangeRequest changeRequestForAsset:asset];
++
++        if(creationDateUnixMillis){
++            NSDate *creationDate = [NSDate dateWithTimeIntervalSince1970:([creationDateUnixMillis doubleValue] / 1000)];
++            [changeRequest setCreationDate:creationDate];
++        }
++        // TODO: setting other properties
++    } completionHandler:^(BOOL success, NSError *error) {
++      if (success) {
++        resolve(@(success));
++      } else {
++        reject(@"E_MODIFY_ASSET_FAILED", @"Asset couldn't be modified", error);
++      }
++    }];
++}
++
+ EX_EXPORT_METHOD_AS(addAssetsToAlbumAsync,
+                     addAssets:(NSArray<NSString *> *)assetIds
+                     toAlbum:(nonnull NSString *)albumId
+diff --git a/node_modules/expo-media-library/package.json b/node_modules/expo-media-library/package.json
+index 29f7865..8fd2ca7 100644
+--- a/node_modules/expo-media-library/package.json
++++ b/node_modules/expo-media-library/package.json
+@@ -3,7 +3,7 @@
+   "version": "15.2.3",
+   "description": "Provides access to user's media library.",
+   "main": "build/MediaLibrary.js",
+-  "types": "build/MediaLibrary.d.ts",
++  "types": "src/MediaLibrary.ts",
+   "sideEffects": false,
+   "scripts": {
+     "build": "expo-module build",
+diff --git a/node_modules/expo-media-library/src/MediaLibrary.ts b/node_modules/expo-media-library/src/MediaLibrary.ts
+index 3c4c4f9..6ce47c3 100644
+--- a/node_modules/expo-media-library/src/MediaLibrary.ts
++++ b/node_modules/expo-media-library/src/MediaLibrary.ts
+@@ -157,6 +157,14 @@ export type MediaLibraryAssetInfoQueryOptions = {
+   shouldDownloadFromNetwork?: boolean;
+ };
+
++// @needsAudit
++export type MediaLibraryAssetModificationOptions = Pick<
++  AssetInfo,
++  'creationTime' | 'location' | 'isFavorite'
++> & {
++  isHidden?: boolean;
++};
++
+ // @needsAudit
+ export type MediaLibraryAssetsChangeEvent = {
+   /**
+@@ -335,13 +343,13 @@ function getId(ref: any): string | undefined {
+ }
+
+ function checkAssetIds(assetIds: any): void {
+-  if (assetIds.some((id) => !id || typeof id !== 'string')) {
++  if (assetIds.some((id: any) => !id || typeof id !== 'string')) {
+     throw new Error('Asset ID must be a string!');
+   }
+ }
+
+ function checkAlbumIds(albumIds: any): void {
+-  if (albumIds.some((id) => !id || typeof id !== 'string')) {
++  if (albumIds.some((id: any) => !id || typeof id !== 'string')) {
+     throw new Error('Album ID must be a string!');
+   }
+ }
+@@ -512,6 +520,27 @@ export async function saveToLibraryAsync(localUri: string): Promise<void> {
+   return await MediaLibrary.saveToLibraryAsync(localUri);
+ }
+
++// @needsAudit
++/**
++ * Modify asset information such as creation timestamp, location, etc.
++ * @param asset An [Asset](#asset) or its ID.
++ * @param options
++ * @platform ios
++ */
++export async function modifyAssetAsync(
++      asset: AssetRef,
++      options: MediaLibraryAssetModificationOptions
++    ): Promise<void> {
++  if (!MediaLibrary.modifyAssetAsync) {
++    throw new UnavailabilityError('MediaLibrary', 'modifyAssetAsync');
++  }
++
++  const id = getId(asset);
++
++  checkAssetIds([id]);
++  return await MediaLibrary.modifyAssetAsync(id, options);
++}
++
+ // @needsAudit
+ /**
+  * Adds array of assets to the album.

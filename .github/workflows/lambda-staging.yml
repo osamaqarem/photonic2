@@ -1,0 +1,40 @@
+name: Lambda Staging
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  Pipeline:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Add aws profile credentials to ~/.aws/credentials
+        run: |
+          aws configure set region eu-central-1 --profile photonic-staging
+          aws configure set aws_access_key_id ${{ secrets.STAGING_AWS_ACCESS_KEY_ID }} --profile photonic-staging
+          aws configure set aws_secret_access_key ${{ secrets.STAGING_AWS_SECRET_ACCESS_KEY }} --profile photonic-staging
+
+      - uses: actions/checkout@v2
+
+      - uses: actions/setup-node@v2
+        with:
+          node-version: "16"
+
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+
+      - uses: actions/cache@v2
+        id: yarn-cache
+        with:
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: ${{ runner.os }}-yarn-
+
+      - name: Install dependencies
+        run: yarn install --immutable --prefer-offline
+
+      - name: Deploy to staging
+        run: yarn lambda:deploy

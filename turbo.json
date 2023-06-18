@@ -1,0 +1,16 @@
+{
+  "$schema": "https://turborepo.org/schema.json",
+  "pipeline": {
+    "db:generate": {
+      "inputs": ["prisma/schema.prisma"],
+      "outputs": ["node_modules/@prisma/client"]
+    },
+    "ts": {
+      "dependsOn": ["^db:generate"],
+      "cache": false
+    },
+    "lint": {
+      "outputs": []
+    }
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "name": "@photonic/system-ui",
+  "version": "1.0.0",
+  "description": "Manage iOS user interface style",
+  "homepage": "https://github.com/osamaqarem/Photonic",
+  "license": "MIT",
+  "author": "Osama Qarem",
+  "scripts": {
+    "ts": "tsc",
+    "lint": "eslint . --ext .ts",
+    "postinstall": "cd ../.. && yarn postinstall"
+  }
+}

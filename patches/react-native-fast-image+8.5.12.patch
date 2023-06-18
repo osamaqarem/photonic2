@@ -1,0 +1,60 @@
+diff --git a/node_modules/react-native-fast-image/.DS_Store b/node_modules/react-native-fast-image/.DS_Store
+new file mode 100644
+index 0000000..e69de29
+diff --git a/node_modules/react-native-fast-image/dist/index.d.ts b/node_modules/react-native-fast-image/dist/index.d.ts
+index 8a91257..5861f3d 100644
+--- a/node_modules/react-native-fast-image/dist/index.d.ts
++++ b/node_modules/react-native-fast-image/dist/index.d.ts
+@@ -57,6 +57,7 @@ export interface FastImageProps extends AccessibilityProps, ViewProps {
+     source: Source | number;
+     resizeMode?: ResizeMode;
+     fallback?: boolean;
++    downscaleSize?: number;
+     onLoadStart?(): void;
+     onProgress?(event: OnProgressEvent): void;
+     onLoad?(event: OnLoadEvent): void;
+diff --git a/node_modules/react-native-fast-image/ios/.DS_Store b/node_modules/react-native-fast-image/ios/.DS_Store
+new file mode 100644
+index 0000000..e69de29
+diff --git a/node_modules/react-native-fast-image/ios/FastImage/FFFastImageView.h b/node_modules/react-native-fast-image/ios/FastImage/FFFastImageView.h
+index fb557cf..1bd377d 100644
+--- a/node_modules/react-native-fast-image/ios/FastImage/FFFastImageView.h
++++ b/node_modules/react-native-fast-image/ios/FastImage/FFFastImageView.h
+@@ -16,6 +16,7 @@
+ @property (nonatomic, copy) RCTDirectEventBlock onFastImageLoad;
+ @property (nonatomic, copy) RCTDirectEventBlock onFastImageLoadEnd;
+ @property (nonatomic, assign) RCTResizeMode resizeMode;
++@property (nonatomic, assign) double downscaleSize;
+ @property (nonatomic, strong) FFFastImageSource *source;
+ @property (nonatomic, strong) UIColor *imageColor;
+ 
+diff --git a/node_modules/react-native-fast-image/ios/FastImage/FFFastImageView.m b/node_modules/react-native-fast-image/ios/FastImage/FFFastImageView.m
+index 9c0f1d3..f200e8e 100644
+--- a/node_modules/react-native-fast-image/ios/FastImage/FFFastImageView.m
++++ b/node_modules/react-native-fast-image/ios/FastImage/FFFastImageView.m
+@@ -154,7 +154,12 @@
+             }
+             return [mutableRequest copy];
+         }];
+-        SDWebImageContext *context = @{SDWebImageContextDownloadRequestModifier : requestModifier};
++        
++        // Downscaling thumbnail to maintain performance in a large list of photos
++        CGFloat scale = UIScreen.mainScreen.scale;
++        CGSize thumbnailSize = CGSizeMake(self.downscaleSize * scale, self.downscaleSize * scale);
++        
++        SDWebImageContext *context = @{SDWebImageContextDownloadRequestModifier : requestModifier, SDWebImageContextImageThumbnailPixelSize : @(thumbnailSize)};
+         
+         // Set priority.
+         SDWebImageOptions options = SDWebImageRetryFailed | SDWebImageHandleCookies;
+diff --git a/node_modules/react-native-fast-image/ios/FastImage/FFFastImageViewManager.m b/node_modules/react-native-fast-image/ios/FastImage/FFFastImageViewManager.m
+index a8059af..1fed902 100644
+--- a/node_modules/react-native-fast-image/ios/FastImage/FFFastImageViewManager.m
++++ b/node_modules/react-native-fast-image/ios/FastImage/FFFastImageViewManager.m
+@@ -14,6 +14,7 @@ RCT_EXPORT_MODULE(FastImageView)
+ 
+ RCT_EXPORT_VIEW_PROPERTY(source, FFFastImageSource)
+ RCT_EXPORT_VIEW_PROPERTY(resizeMode, RCTResizeMode)
++RCT_EXPORT_VIEW_PROPERTY(downscaleSize, double)
+ RCT_EXPORT_VIEW_PROPERTY(onFastImageLoadStart, RCTDirectEventBlock)
+ RCT_EXPORT_VIEW_PROPERTY(onFastImageProgress, RCTDirectEventBlock)
+ RCT_EXPORT_VIEW_PROPERTY(onFastImageError, RCTDirectEventBlock)
