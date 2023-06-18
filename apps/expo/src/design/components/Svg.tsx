@@ -11,11 +11,12 @@ type PatchedSvgProps = RNSvgProps & {
 
 type AnimatedSvgProps = Animated.AnimateProps<PatchedSvgProps>
 
-const AnimatedSvg = Animated.createAnimatedComponent(RNSvg) as React.ComponentClass<
-  AnimatedSvgProps,
-  any
->
+const AnimatedSvg = Animated.createAnimatedComponent(
+  RNSvg,
+) as React.ComponentClass<AnimatedSvgProps, any>
 
 export type SvgProps = StyledProps<AnimatedSvgProps>
 
-export const Svg = styled((props: AnimatedSvgProps) => <AnimatedSvg {...props} />)
+export const Svg = styled((props: AnimatedSvgProps) => (
+  <AnimatedSvg {...props} />
+))

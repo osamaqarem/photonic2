@@ -1,5 +1,13 @@
 import { GenericAsset } from "src/features/photo/list/models/asset"
 
+export type OnboardingStackParams = {
+  welcome: undefined
+  login: undefined
+  "onboarding-storage": undefined
+  "onboarding-permissions": undefined
+  "onboarding-settings": undefined
+}
+
 export type MainStackParams = {
   home: undefined
   photo: {
@@ -10,8 +18,9 @@ export type MainStackParams = {
 
 export type SettingsStackParams = {
   settings: undefined
-  login: undefined
   appearance: undefined
 }
 
-export type AppParams = MainStackParams & SettingsStackParams
+export type AppParams = OnboardingStackParams &
+  MainStackParams &
+  SettingsStackParams

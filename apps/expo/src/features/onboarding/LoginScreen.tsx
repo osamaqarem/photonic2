@@ -1,11 +1,11 @@
 import * as React from "react"
+import { View } from "react-native"
 
 import type { NativeStackScreenProps } from "@react-navigation/native-stack"
 import { useAlerts } from "src/design/components/alerts/useAlerts"
 import { Layout } from "src/design/components/Layout"
-import { Text } from "src/design/components/Text"
+import { Text } from "src/design/components/TextOld"
 import { TextInput } from "src/design/components/TextInput"
-import { View } from "src/design/components/View"
 import { useAuth } from "src/stores/auth/useAuth"
 import type { AppParams } from "src/navigation/params"
 // import { trpcReact } from "src/providers/trpc/trpc"

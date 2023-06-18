@@ -1,7 +1,8 @@
 export const NOOP = () => {}
 
 export const DEV =
-  __DEV__ || (process.env.NODE_ENV === "development" && typeof window !== "undefined")
+  __DEV__ ||
+  (process.env.NODE_ENV === "development" && typeof window !== "undefined")
 
 export class Logger {
   prefix: string

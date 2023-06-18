@@ -4,8 +4,8 @@ import { HeaderButtonProps } from "@react-navigation/native-stack/lib/typescript
 import * as React from "react"
 import { TouchableOpacity } from "react-native"
 
-import { Text } from "src/design/components/Text"
-import { LoginScreen } from "src/features/login/LoginScreen"
+import { Text } from "src/design/components/TextOld"
+import { LoginScreen } from "src/features/onboarding/LoginScreen"
 import { AppearanceScreen } from "src/features/settings/appearance/AppearanceScreen"
 import { SettingsScreen } from "src/features/settings/SettingsScreen"
 import { useDarkMode } from "src/stores/dark-mode/useDarkMode"
@@ -34,11 +34,6 @@ export const SettingsStack = () => {
           presentation: "modal",
           headerRight: HeaderRightDone,
         }}
-      />
-      <SettingsStackNav.Screen
-        name="login"
-        component={LoginScreen}
-        options={{ title: "Login" }}
       />
       <SettingsStackNav.Screen
         name="appearance"

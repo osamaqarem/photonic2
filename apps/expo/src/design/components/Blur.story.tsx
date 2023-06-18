@@ -1,9 +1,7 @@
-import { Image as RNImage, StyleSheet } from "react-native"
+import { Text, Image as RNImage, StyleSheet, View } from "react-native"
 
 import { ComponentStory } from "src/design/components/Storybook"
 import { BlurView } from "./Blur"
-import { Text } from "./text/Text"
-import { View } from "./View"
 
 export const BlurButtonStory: ComponentStory = {
   name: "BlurView",

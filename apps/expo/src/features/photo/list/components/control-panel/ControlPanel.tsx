@@ -1,6 +1,6 @@
 import React from "react"
 
-import { View } from "src/design/components/View"
+import { View } from "react-native"
 import { BottomPanel } from "./Bottom"
 import { BottomPanelMenu } from "./Menu"
 import { SettingsBtn } from "./SettingsBtn"

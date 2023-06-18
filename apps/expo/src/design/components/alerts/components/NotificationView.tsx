@@ -1,9 +1,8 @@
 import * as React from "react"
-import { StyleSheet } from "react-native"
+import { StyleSheet, View } from "react-native"
 
 import { NotificationOptions } from "src/design/components/alerts/models/options"
-import { Text } from "../../text/Text"
-import { View } from "../../View"
+import { Text } from "src/design/components/TextOld"
 
 interface Props extends NotificationOptions {
   onDismiss: () => void

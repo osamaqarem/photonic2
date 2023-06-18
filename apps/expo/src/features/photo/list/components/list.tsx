@@ -2,7 +2,12 @@ import { FlashList } from "@shopify/flash-list"
 import * as Haptics from "expo-haptics"
 import * as ExpoStatusBar from "expo-status-bar"
 import * as React from "react"
-import { LayoutRectangle, useWindowDimensions, ViewStyle } from "react-native"
+import {
+  View,
+  LayoutRectangle,
+  useWindowDimensions,
+  ViewStyle,
+} from "react-native"
 import { Gesture, GestureDetector } from "react-native-gesture-handler"
 import Animated, {
   Easing,
@@ -18,8 +23,7 @@ import Animated, {
 } from "react-native-reanimated"
 import { useSafeAreaInsets } from "react-native-safe-area-context"
 
-import { Text } from "src/design/components/Text"
-import { View } from "src/design/components/View"
+import { Text } from "src/design/components/TextOld"
 import type { GenericAsset } from "src/features/photo/list/models/asset"
 import { useDarkMode } from "src/stores/dark-mode/useDarkMode"
 import { useSharedValueContext } from "../context/SharedValueContext"

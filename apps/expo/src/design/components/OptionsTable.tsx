@@ -1,10 +1,8 @@
 import * as React from "react"
-import { PixelRatio, StyleSheet } from "react-native"
+import { PixelRatio, View, StyleSheet, Pressable } from "react-native"
 
 import { Icon, IconNames } from "src/design/components/icons/Icons"
-import { Pressable } from "src/design/components/Pressable"
-import { Text } from "src/design/components/Text"
-import { View, ViewProps } from "./View"
+import { Text } from "src/design/components/TextOld"
 
 interface Props {
   title: string | React.FC

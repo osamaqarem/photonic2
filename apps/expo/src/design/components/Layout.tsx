@@ -1,8 +1,7 @@
 import { styled } from "nativewind"
 import * as React from "react"
+import { View, ViewProps } from "react-native"
 import { SafeAreaView, SafeAreaViewProps } from "react-native-safe-area-context"
-
-import { View, ViewProps } from "./View"
 
 const className = "flex-1 bg-gray-100 dark:bg-black-800"
 

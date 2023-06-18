@@ -1,8 +1,7 @@
 import * as React from "react"
-import { StyleSheet } from "react-native"
+import { StyleSheet, View } from "react-native"
 
-import { Text } from "../../text/Text"
-import { View } from "../../View"
+import { Text } from "src/design/components/TextOld"
 import { AlertBtnResult, AlertOptions } from "../models/options"
 
 type Props = AlertOptions & {

@@ -1,7 +1,7 @@
 import React from "react"
 
 import { ComponentStory } from "src/design/components/Storybook"
-import { Text } from "src/design/components/Text"
+import { Text } from "src/design/components/TextOld"
 
 export const TextStory: ComponentStory = {
   name: "Text",

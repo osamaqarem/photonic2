@@ -1,4 +1,5 @@
 import * as React from "react"
+import { View } from "react-native"
 import {
   Easing,
   useAnimatedProps,
@@ -9,7 +10,6 @@ import { useSafeAreaInsets } from "react-native-safe-area-context"
 
 import { BlurView } from "src/design/components/Blur"
 import { Icon } from "src/design/components/icons/Icons"
-import { View, ViewProps } from "src/design/components/View"
 import { useSharedValueContext } from "src/features/photo/list/context/SharedValueContext"
 import { Option } from "./Option"
 

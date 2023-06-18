@@ -6,6 +6,7 @@ import {
   SafeAreaView,
   StyleSheet,
   Text,
+  View,
 } from "react-native"
 import {
   SafeAreaProvider,
@@ -19,7 +20,6 @@ import { BlurButtonStory } from "./Blur.story"
 import { IconsStory } from "./icons/Icons.story"
 import { TextInputStory } from "./TextInput.story"
 import { TextStory } from "./Text.story"
-import { View } from "./View"
 
 const components: Array<ComponentStory> = [
   TextInputStory,

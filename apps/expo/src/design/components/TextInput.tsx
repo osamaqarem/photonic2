@@ -10,7 +10,11 @@ export const TextInput: React.FC<TextInputProps> = styled(props => {
     <TextInputRN
       placeholderTextColor={colors.gray[600]}
       {...props}
-      className={editable ? "text-gray-900 dark:text-gray-300" : "text-gray-700 dark:text-gray-500"}
+      className={
+        editable
+          ? "text-gray-900 dark:text-gray-300"
+          : "text-gray-700 dark:text-gray-500"
+      }
       style={[
         props.style,
         {

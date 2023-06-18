@@ -2,7 +2,9 @@ describe("useAuth", () => {
   describe("checkToken", () => {
     it.todo("Retrives existing refresh token from storage")
 
-    it.todo("Updates state as 'un-authenticated' if refresh token does not exist")
+    it.todo(
+      "Updates state as 'un-authenticated' if refresh token does not exist",
+    )
 
     describe("When refresh token exists", () => {
       it.todo("Requests new access token from API")
@@ -23,11 +25,15 @@ describe("useAuth", () => {
         describe("When it fails due to network connection", () => {
           it.todo("Updates state as 'authenticated'")
 
-          it.todo("Subscribes to netinfo and calls 'checkToken' when connection is back")
+          it.todo(
+            "Subscribes to netinfo and calls 'checkToken' when connection is back",
+          )
         })
 
         describe("When it fails due to unhandled error", () => {
-          it.todo("Updates state as 'un-authenticated' and shows error message to user")
+          it.todo(
+            "Updates state as 'un-authenticated' and shows error message to user",
+          )
         })
       })
     })

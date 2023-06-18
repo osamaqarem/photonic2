@@ -12,5 +12,7 @@ export function interpolateValue(
   NEW_MAX: number,
 ) {
   "worklet"
-  return ((NEW_MIN - NEW_MAX) / (OLD_MIN - OLD_MAX)) * (value - OLD_MIN) + NEW_MIN
+  return (
+    ((NEW_MIN - NEW_MAX) / (OLD_MIN - OLD_MAX)) * (value - OLD_MIN) + NEW_MIN
+  )
 }

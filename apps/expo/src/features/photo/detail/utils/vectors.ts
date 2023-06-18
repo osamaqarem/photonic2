@@ -5,7 +5,10 @@ interface Vector<T = number> {
   y: T
 }
 
-export const useVector = (x1: number, y1?: number): Vector<Animated.SharedValue<number>> => {
+export const useVector = (
+  x1: number,
+  y1?: number,
+): Vector<Animated.SharedValue<number>> => {
   const x = useSharedValue(x1)
   const y = useSharedValue(y1 ?? x1)
   return { x, y }

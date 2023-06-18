@@ -6,7 +6,8 @@ const withIosDeploymentTarget =
   (target: string): ConfigPlugin =>
   (expoConfig): ExpoConfig => {
     const step1 = withXcodeProject(expoConfig, modConfig => {
-      const buildConfig = modConfig.modResults.hash.project.objects.XCBuildConfiguration
+      const buildConfig =
+        modConfig.modResults.hash.project.objects.XCBuildConfiguration
 
       Object.keys(buildConfig).forEach(key => {
         const buildSettings = buildConfig[key].buildSettings

@@ -10,7 +10,7 @@ import { useDarkMode } from "src/stores/dark-mode/useDarkMode"
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore avoid nextjs build error for js module
 import { colors } from "src/design/tailwind"
-import { MainStack } from "src/navigation/MainStack"
+import { OnboardingStack } from "src/navigation/OnboardingStack"
 
 export function Navigation() {
   const { isDarkMode } = useDarkMode()
@@ -54,7 +54,7 @@ export function Navigation() {
 
   return (
     <NavigationContainer theme={theme} linking={linking}>
-      <MainStack />
+      <OnboardingStack />
     </NavigationContainer>
   )
 }

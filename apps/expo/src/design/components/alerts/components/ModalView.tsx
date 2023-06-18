@@ -1,12 +1,11 @@
 import * as React from "react"
-import { Button, StyleSheet } from "react-native"
+import { Button, StyleSheet, View } from "react-native"
 
 import {
   AlertBtnResult,
   ModalOptions,
 } from "src/design/components/alerts/models/options"
-import { Text } from "../../text/Text"
-import { View } from "../../View"
+import { Text } from "src/design/components/TextOld"
 
 type Props = ModalOptions & {
   onDismiss: (result: AlertBtnResult) => void

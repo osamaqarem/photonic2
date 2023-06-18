@@ -11,7 +11,7 @@ import { Navigation } from "src/navigation/Navigation"
 
 export default function App() {
   if (config.STORYBOOK) {
-    const { Storybook } = require("src/design/components/storybook")
+    const { Storybook } = require("src/design/components/Storybook")
     return <Storybook />
   }
 

@@ -1,7 +1,14 @@
 import fs from "fs"
 import path from "path"
-import { withAppDelegate, WarningAggregator, withDangerousMod } from "@expo/config-plugins"
-import type { ConfigPlugin, ExportedConfigWithProps } from "@expo/config-plugins"
+import {
+  withAppDelegate,
+  WarningAggregator,
+  withDangerousMod,
+} from "@expo/config-plugins"
+import type {
+  ConfigPlugin,
+  ExportedConfigWithProps,
+} from "@expo/config-plugins"
 import type { ExpoConfig } from "@expo/config-types"
 
 const SDWebImagePhotosPlugin = {
@@ -25,7 +32,10 @@ const SDWebImagePhotosPlugin = {
 }
 
 async function updatePodfile(expoConfig: ExportedConfigWithProps) {
-  const filePath = path.join(expoConfig.modRequest.platformProjectRoot, "Podfile")
+  const filePath = path.join(
+    expoConfig.modRequest.platformProjectRoot,
+    "Podfile",
+  )
   let podfile = fs.readFileSync(filePath, "utf8")
 
   if (!podfile.includes(SDWebImagePhotosPlugin.pod.after)) {
@@ -54,12 +64,17 @@ function updateAppDelegate(appDelegate: string) {
   return appDelegate
 }
 
-const withIosSDWebImage: ConfigPlugin = (expoConfig: ExpoConfig): ExpoConfig => {
+const withIosSDWebImage: ConfigPlugin = (
+  expoConfig: ExpoConfig,
+): ExpoConfig => {
   const step1 = withAppDelegate(expoConfig, config => {
     if (config.modResults.language === "objcpp") {
       config.modResults.contents = updateAppDelegate(config.modResults.contents)
     } else {
-      WarningAggregator.addWarningIOS("withIosSDWebImage", "AppDelegate file language has changed.")
+      WarningAggregator.addWarningIOS(
+        "withIosSDWebImage",
+        "AppDelegate file language has changed.",
+      )
     }
     return config
   })
