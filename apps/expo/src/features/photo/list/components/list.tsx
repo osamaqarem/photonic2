@@ -18,13 +18,13 @@ import Animated, {
 } from "react-native-reanimated"
 import { useSafeAreaInsets } from "react-native-safe-area-context"
 
-import { Text } from "src/design/components/text"
-import { View } from "src/design/components/view"
-import type { GenericAsset } from "src/features/photo/list/types/asset"
-import { useDarkMode } from "src/providers/dark-mode/use-dark-mode"
-import { useSharedValueContext } from "../context/shared-value-context"
-import { BottomPanel } from "./control-panel/bottom"
-import { Thumbnail } from "./thumbnail"
+import { Text } from "src/design/components/Text"
+import { View } from "src/design/components/View"
+import type { GenericAsset } from "src/features/photo/list/models/asset"
+import { useDarkMode } from "src/stores/dark-mode/useDarkMode"
+import { useSharedValueContext } from "../context/SharedValueContext"
+import { BottomPanel } from "./control-panel/Bottom"
+import { Thumbnail } from "./Thumbnail"
 
 interface Props {
   openPhoto: (asset: GenericAsset) => void

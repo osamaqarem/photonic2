@@ -1,12 +1,11 @@
 import * as ExpoNetwork from "expo-network"
-import { Platform } from "react-native"
 
 type Subscription = (online: boolean) => void
 
 export class Network {
   private static instance: Network
 
-  private subs: Array<Subscription> = []
+  private subs: Set<Subscription> = new Set()
   private prevIsInternetReachable = true
 
   constructor() {
@@ -14,11 +13,6 @@ export class Network {
       return Network.instance
     }
     Network.instance = this
-
-    // ssr
-    if (Platform.OS === "web" && !(typeof window === "object" && navigator)) {
-      return this
-    }
 
     const checkOnline = async () => {
       const { isInternetReachable } = await this.getNetworkStateAsync()
@@ -36,11 +30,11 @@ export class Network {
   }
 
   removeListener(listener: Subscription) {
-    this.subs = this.subs.filter(fn => fn !== listener)
+    this.subs.delete(listener)
   }
 
   addEventListener(listener: Subscription) {
-    this.subs.push(listener)
+    this.subs.add(listener)
     return () => this.removeListener(listener)
   }
 

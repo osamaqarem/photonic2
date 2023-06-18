@@ -1,13 +1,17 @@
 import * as React from "react"
 
-import { getIconNames, Icon } from "."
-import { ComponentStory } from "../storybook"
+import { ComponentStory } from "src/design/components/Storybook"
+import { getIconNames, Icon } from "./Icons"
 
 let stories: Record<string, () => React.ReactElement> = {}
 
 getIconNames().forEach(iconName => {
   stories[iconName] = () => (
-    <Icon key={iconName} name={iconName} className="h-20 w-20 text-black dark:text-white" />
+    <Icon
+      key={iconName}
+      name={iconName}
+      className="h-20 w-20 text-black dark:text-white"
+    />
   )
 })
 

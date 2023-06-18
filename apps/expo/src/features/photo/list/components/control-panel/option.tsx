@@ -1,8 +1,8 @@
 import * as React from "react"
 
-import { Text } from "src/design/components/text"
-import { View } from "src/design/components/view"
-import { Pressable } from "src/design/components/pressable"
+import { Text } from "src/design/components/Text"
+import { View } from "src/design/components/View"
+import { Pressable } from "src/design/components/Pressable"
 
 interface Props {
   title: string

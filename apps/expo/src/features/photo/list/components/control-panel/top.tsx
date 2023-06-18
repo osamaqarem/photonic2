@@ -8,11 +8,11 @@ import Animated, {
 } from "react-native-reanimated"
 import { useSafeAreaInsets } from "react-native-safe-area-context"
 
-import { BlurButton } from "src/design/components/blur"
-import { Icon } from "src/design/components/icons"
-import { View, ViewProps } from "src/design/components/view"
-import { useSharedValueContext } from "src/features/photo/list/context/shared-value-context"
-import { ReText } from "../retext"
+import { BlurButton } from "src/design/components/Blur"
+import { Icon } from "src/design/components/icons/Icons"
+import { View, ViewProps } from "src/design/components/View"
+import { useSharedValueContext } from "src/features/photo/list/context/SharedValueContext"
+import { ReText } from "./Retext"
 
 const deselectBtnHeight = 48
 

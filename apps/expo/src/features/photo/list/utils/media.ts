@@ -8,7 +8,7 @@ import type {
   LocalAsset,
   LocalRemoteAsset,
   RemoteAsset,
-} from "src/features/photo/list/types/asset"
+} from "src/features/photo/list/models/asset"
 import { Logger } from "src/lib/general"
 // import { trpcClient } from "src/providers/trpc/trpc"
 

@@ -1,18 +1,16 @@
 import * as React from "react"
 import { LogBox } from "react-native"
 import { SafeAreaProvider } from "react-native-safe-area-context"
+import * as Sentry from "sentry-expo"
 
-import { AlertsProvider } from "src/design/components/alerts/alerts-context"
-import { useAuth } from "src/hooks/auth/use-auth"
+import { AlertsProvider } from "src/design/components/alerts/AlertsContext"
+// import { useAuth } from "src/hooks/use-auth/useAuth"
 import { config } from "src/lib/config"
-import { Sentry } from "src/lib/sentry"
-import { DarkModeProvider } from "src/providers/dark-mode/dark-mode"
-import { NavigationProvider } from "src/providers/navigation/navigation"
-import { MainStack } from "src/navigation/native/main-stack"
+import { DarkModeProvider } from "src/stores/dark-mode/DarkModeProvider"
+import { Navigation } from "src/navigation/Navigation"
 
 export default function App() {
   if (config.STORYBOOK) {
-    // TODO: gets imported anyway on web
     const { Storybook } = require("src/design/components/storybook")
     return <Storybook />
   }
@@ -22,11 +20,9 @@ export default function App() {
   return (
     <SafeAreaProvider>
       <DarkModeProvider>
-        <NavigationProvider>
-          <AlertsProvider>
-            <MainStack />
-          </AlertsProvider>
-        </NavigationProvider>
+        <AlertsProvider>
+          <Navigation />
+        </AlertsProvider>
       </DarkModeProvider>
     </SafeAreaProvider>
   )
@@ -46,5 +42,5 @@ function prepare() {
     enableInExpoDevelopment: false,
   })
 
-  useAuth.getState().actions.hydrate()
+  // useAuth.getState().actions.hydrate()
 }
