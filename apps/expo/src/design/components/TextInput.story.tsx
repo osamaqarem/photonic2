@@ -6,7 +6,8 @@ import { ComponentStory } from "src/design/components/Storybook"
 export const TextInputStory: ComponentStory = {
   name: "TextInput",
   stories: {
-    Placeholder: () => <TextInput placeholder="enter your email address" />,
+    Placeholder: () => <TextInput placeholder="E-mail" />,
+    Blank: () => <TextInput />,
     Populated: () => <TextInput value="textinput-populated@story.com" />,
     Disabled: () => (
       <TextInput editable={false} value="textinput-disabled@story.com" />

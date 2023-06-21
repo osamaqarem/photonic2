@@ -183,7 +183,7 @@ const StorybookApp: React.FC = () => {
             </Pressable>
           ) : (
             <Text className="text-center text-lg font-light tracking-wide text-black dark:text-white">
-              hobo storybook
+              Storybook
             </Text>
           )}
         </View>

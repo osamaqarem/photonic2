@@ -27,7 +27,9 @@
     "prettier": "prettier '**/*.{js,jsx,ts,tsx}' --write --ignore-path .gitignore",
     "app:prebuild": "yarn workspace @photonic/expo prebuild",
     "app:prebuild-clean": "yarn workspace @photonic/expo prebuild-clean",
+    "app:platform-colors": "turbo platform-colors",
     "app:ios": "yarn workspace @photonic/expo ios",
+    "app:ios-fresh": "yarn workspace @photonic/expo ios-fresh",
     "app:dev": "yarn workspace @photonic/expo dev",
     "app:storybook": "STORYBOOK=1 yarn app:dev",
     "app:xcode": "xed ./apps/expo/ios",
@@ -38,7 +40,7 @@
     "db:studio": "yarn workspace @photonic/fastify db:studio",
     "p": "yarn lernaupdate --lazy",
     "clean-nodemodules": "find . -name 'node_modules' -type d -prune -exec rm -rf '{}' +",
-    "postinstall": "patch-package && turbo db:generate --force",
+    "postinstall": "patch-package && turbo db:generate platform-colors --force",
     "tsc": "echo 'tsc from workspace root will give incorrect results. Run it from each app instead.' && exit 1"
   }
 }

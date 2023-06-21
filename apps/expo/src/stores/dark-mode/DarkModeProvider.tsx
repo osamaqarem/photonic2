@@ -49,18 +49,21 @@ export const DarkModeProvider: React.FC<React.PropsWithChildren> = props => {
     const storedColorScheme = getColorScheme()
     if (storedColorScheme) {
       NativeWindStyleSheet.setColorScheme(storedColorScheme)
+      darkMode.isDarkMode = storedColorScheme === "dark"
       setState({ isDarkMode: storedColorScheme === "dark", source: "user" })
     } else {
       const systemScheme = Appearance.getColorScheme()
       const systemOrDark = (systemScheme ??
         "dark") as NonNullable<ColorSchemeName>
       NativeWindStyleSheet.setColorScheme(systemOrDark)
+      darkMode.isDarkMode = systemOrDark === "dark"
       setState({ isDarkMode: systemOrDark === "dark", source: "system" })
     }
   }, [])
 
   const setDark = React.useCallback(() => {
     SystemUI.setDark()
+    darkMode.isDarkMode = true
     setState({ isDarkMode: true, source: "user" })
     saveColorScheme("dark")
     if (Platform.OS === "web") {
@@ -71,6 +74,7 @@ export const DarkModeProvider: React.FC<React.PropsWithChildren> = props => {
 
   const setLight = React.useCallback(() => {
     SystemUI.setLight()
+    darkMode.isDarkMode = false
     setState({ isDarkMode: false, source: "user" })
     saveColorScheme("light")
     if (Platform.OS === "web") {
@@ -88,6 +92,7 @@ export const DarkModeProvider: React.FC<React.PropsWithChildren> = props => {
 
     const systemIsDarkMode = systemOrDark === "dark"
     SystemUI.setSystem()
+    darkMode.isDarkMode = systemIsDarkMode
     setState({ isDarkMode: systemIsDarkMode, source: "system" })
 
     if (Platform.OS === "web") {
@@ -120,3 +125,9 @@ export const DarkModeProvider: React.FC<React.PropsWithChildren> = props => {
     </DarkModeContext.Provider>
   )
 }
+
+class DarkMode {
+  isDarkMode = true
+}
+
+export const darkMode = new DarkMode()

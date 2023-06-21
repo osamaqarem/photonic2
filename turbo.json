@@ -11,6 +11,13 @@
     },
     "lint": {
       "outputs": []
+    },
+    "platform-colors": {
+      "inputs": ["platform-colors.config.js"],
+      "outputs": [
+        "./ios/Photonic/Images.xcassets/*.colorset/**",
+        "./src/design/platform-colors/generated/*"
+      ]
     }
   }
 }

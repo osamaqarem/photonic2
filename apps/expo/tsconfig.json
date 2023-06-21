@@ -2,7 +2,7 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "jsx": "react-native",
-    "lib": ["DOM", "ESNext"],
+    "lib": ["ESNext"],
     "baseUrl": ".",
     "paths": {
       "src/*": ["./src/*"]
