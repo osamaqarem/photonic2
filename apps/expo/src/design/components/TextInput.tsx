@@ -1,23 +1,25 @@
 import * as React from "react"
 import {
-  TextInputProps,
-  TextInput as RNTextInput,
   StyleSheet,
+  TextInput as RNTextInput,
+  TextInputProps,
 } from "react-native"
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
   withTiming,
 } from "react-native-reanimated"
-import { Text } from "src/design/components/Text"
 
+import { Text } from "src/design/components/Text"
 import { font, rawThemeColors, theme } from "src/design/theme"
-import { darkMode } from "src/stores/dark-mode/DarkModeProvider"
+import { useDarkMode } from "src/stores/DarkModeProvider"
 
 const AnimatedTextInput = Animated.createAnimatedComponent(RNTextInput)
 
 export const TextInput: React.FC<TextInputProps> = props => {
   const focused = useSharedValue(false)
+
+  const colorScheme = useDarkMode(state => state.sharedColorScheme)
 
   const borderStyle = useAnimatedStyle(() => {
     const config = { duration: 150 }
@@ -25,9 +27,7 @@ export const TextInput: React.FC<TextInputProps> = props => {
     if (focused.value) {
       return {
         borderColor: withTiming(
-          darkMode.isDarkMode
-            ? rawThemeColors.borderFocused.dark
-            : rawThemeColors.borderFocused.light,
+          rawThemeColors.borderFocused[colorScheme.value],
           config,
         ),
       }
@@ -38,9 +38,7 @@ export const TextInput: React.FC<TextInputProps> = props => {
     } else {
       return {
         borderColor: withTiming(
-          darkMode.isDarkMode
-            ? rawThemeColors.border.dark
-            : rawThemeColors.border.light,
+          rawThemeColors.border[colorScheme.value],
           config,
         ),
       }
@@ -50,8 +48,8 @@ export const TextInput: React.FC<TextInputProps> = props => {
   return (
     <>
       <AnimatedTextInput
-        placeholderTextColor={theme.colors.label}
-        selectionColor={theme.colors.label}
+        placeholderTextColor={theme.colors.textLowContrast}
+        selectionColor={theme.colors.textLowContrast}
         {...props}
         onFocus={e => {
           props.onFocus?.(e)
@@ -93,7 +91,7 @@ const styles = StyleSheet.create({
     ...font().size("s").weight("medium").style,
   },
   notEditable: {
-    color: theme.colors.label,
+    color: theme.colors.textLowContrast,
   },
   placeholder: font().weight("medium").style,
 })

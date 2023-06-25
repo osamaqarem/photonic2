@@ -5,7 +5,7 @@ import { font } from "src/design/theme"
 
 export const variants = {
   h1: font().weight("bold").color("text").size("xl").style,
-  h2: font().weight("medium").color("text").size("l").style,
+  h2: font().weight("semibold").color("text").size("l").style,
   h3: font().weight("medium").color("text").size("m").style,
   p: font().weight("regular").color("text").size("s").style,
   span: font().weight("medium").color("label").size("xs").style,

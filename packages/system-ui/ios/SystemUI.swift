@@ -1,6 +1,14 @@
 import ExpoModulesCore
 
 public class SystemUI: Module {
+    public func definition() -> ModuleDefinition {
+        Name("SystemUI")
+
+        AsyncFunction("setMode") { (mode: ColorScheme, promise: Promise) in
+            setUserInterfaceStyle(mode.toUIUserInterfaceStyle())
+            promise.resolve()
+        }.runOnQueue(.main)
+    }
 
     func setUserInterfaceStyle(_ style: UIUserInterfaceStyle) {
         UIApplication.shared.windows.forEach({ window in
@@ -8,20 +16,20 @@ public class SystemUI: Module {
         })
     }
 
-    public func definition() -> ModuleDefinition {
-        Name("SystemUI")
+    enum ColorScheme: String, Enumerable {
+        case light
+        case dark
+        case system
 
-        AsyncFunction("setDark") {
-            setUserInterfaceStyle(.dark)
-        }.runOnQueue(.main)
-
-        AsyncFunction("setLight") {
-            setUserInterfaceStyle(.light)
-        }.runOnQueue(.main)
-
-        AsyncFunction("setSystem") {
-            setUserInterfaceStyle(.unspecified)
-        }.runOnQueue(.main)
+        func toUIUserInterfaceStyle() -> UIUserInterfaceStyle {
+            switch self {
+            case .light:
+                return .light
+            case .dark:
+                return .dark
+            default:
+                return .unspecified
+            }
+        }
     }
-
 }

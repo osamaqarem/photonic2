@@ -3,55 +3,26 @@ import {
   DefaultTheme,
   NavigationContainer,
 } from "@react-navigation/native"
-import * as Linking from "expo-linking"
 import * as React from "react"
+import { theme } from "src/design/theme"
 
-import { useDarkMode } from "src/stores/dark-mode/useDarkMode"
 import { OnboardingStack } from "src/navigation/OnboardingStack"
 
+const navTheme = {
+  ...DefaultTheme,
+  colors: {
+    ...DefaultTheme.colors,
+    primary: theme.colors.accent,
+    text: theme.colors.text,
+    background: theme.colors.background,
+    card: theme.colors.elementBg,
+  },
+}
+
 export function Navigation() {
-  // const { isDarkMode } = useDarkMode()
-
-  // const linking = React.useMemo(
-  //   () => ({
-  //     prefixes: [Linking.createURL("/")],
-  //     config: {
-  //       screens: {
-  //         login: "login",
-  //         home: "home",
-  //         photo: "photo/asset:id",
-  //         settings: "settings",
-  //       },
-  //     },
-  //   }),
-  //   [],
-  // )
-
-  // const theme = isDarkMode
-  //   ? {
-  //       ...DarkTheme,
-  //       colors: {
-  //         ...DarkTheme.colors,
-  //         primary: colors.blue[600],
-  //         text: colors.gray[300],
-  //         background: colors.black[800],
-  //         card: colors.black[600],
-  //       },
-  //     }
-  //   : {
-  //       ...DefaultTheme,
-  //       colors: {
-  //         ...DefaultTheme.colors,
-  //         primary: colors.blue[500],
-  //         text: colors.gray[800],
-  //         background: colors.gray[100],
-  //         card: colors.white,
-  //       },
-  //     }
-
   return (
-    // <NavigationContainer theme={theme} linking={linking}>
-    <NavigationContainer>
+    // @ts-expect-error theme does not accept platform colors
+    <NavigationContainer theme={navTheme}>
       <OnboardingStack />
     </NavigationContainer>
   )

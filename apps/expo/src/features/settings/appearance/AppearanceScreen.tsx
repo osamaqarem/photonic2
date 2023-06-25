@@ -5,7 +5,7 @@ import { Layout } from "src/design/components/Layout"
 import { Text } from "src/design/components/TextOld"
 import { View } from "react-native"
 import { AppParams } from "src/navigation/params"
-import { useDarkMode } from "src/stores/dark-mode/useDarkMode"
+import { useDarkMode } from "src/stores/DarkModeProvider"
 
 export const AppearanceScreen: React.FC<
   NativeStackScreenProps<AppParams, "appearance">

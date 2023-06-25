@@ -16,7 +16,7 @@ import { BlurButton } from "src/design/components/Blur"
 import { Icon } from "src/design/components/icons/Icons"
 import { Svg } from "src/design/components/Svg"
 import { colors } from "src/design/tailwind"
-import { useDarkMode } from "src/stores/dark-mode/useDarkMode"
+import { useDarkMode } from "src/stores/DarkModeProvider"
 
 const settingsBtnSize = 42
 

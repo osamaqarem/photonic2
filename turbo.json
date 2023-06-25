@@ -13,10 +13,13 @@
       "outputs": []
     },
     "platform-colors": {
+      "env": ["STAGE"],
       "inputs": ["platform-colors.config.js"],
       "outputs": [
-        "./ios/Photonic/Images.xcassets/*.colorset/**",
-        "./src/design/platform-colors/generated/*"
+        "ios/Photonic/Images.xcassets/*.colorset/Contents.json",
+        "ios/PhotonicDev/Images.xcassets/*.colorset/Contents.json",
+        "ios/PhotonicStorybook/Images.xcassets/*.colorset/Contents.json",
+        "src/design/platform-colors/generated/*"
       ]
     }
   }

@@ -1,23 +1,23 @@
-import Constants from "expo-constants"
-import { Platform } from "react-native"
+import RNConfig from "react-native-config"
 import { z } from "zod"
 
-const nonempty = z.string().trim().min(1)
+const env = z
+  .object({
+    STAGE: z
+      .enum(["development", "storybook", "production"])
+      .catch("development"),
+  })
+  .parse(RNConfig)
 
-const schema = z.object({
-  STAGE: z.enum(["development", "staging", "production"]).catch("development"),
-  DOMAIN: nonempty.catch("http://localhost:3000"), //DevSkim: ignore DS137138)
-  SENTRY_DSN: nonempty,
-  STORYBOOK: z.boolean(),
-})
+const ApiConfig = {
+  development: "http://localhost:3000",
+  production: "https://photonic-next-git-main-osamaqarem.vercel.app",
+  storybook: "Sir, this is a Storybook.",
+}
 
-export const config = schema.parse(
-  Platform.OS === "web"
-    ? {
-        STAGE: process.env.NEXT_PUBLIC_STAGE,
-        DOMAIN: process.env.NEXT_PUBLIC_DOMAIN,
-        SENTRY_DSN: process.env.NEXT_PUBLIC_SENTRY_DSN,
-        STORYBOOK: Boolean(process.env.NEXT_PUBLIC_STORYBOOK),
-      }
-    : Constants.manifest?.extra,
-)
+export const config = {
+  stage: env.STAGE,
+  apiBaseUrl: ApiConfig[env.STAGE] ?? "http://localhost:3000",
+  sentryDsn:
+    "https://b9884c9f02df411987bbebfd332eb35f@o1418518.ingest.sentry.io/6761728",
+}

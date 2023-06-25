@@ -13,20 +13,20 @@ import {
   useSafeAreaInsets,
 } from "react-native-safe-area-context"
 
-import { DarkModeProvider } from "src/stores/dark-mode/DarkModeProvider"
-import { useDarkMode } from "src/stores/dark-mode/useDarkMode"
+import { DarkModeProvider } from "src/stores/DarkModeProvider"
+import { useDarkMode } from "src/stores/DarkModeProvider"
 import { BlurButtonStory } from "./Blur.story"
-// import { DropdownMenuStory } from "../dropdown-menu/dropdown-menu.story"
 import { IconsStory } from "./icons/Icons.story"
 import { TextInputStory } from "./TextInput.story"
 import { TextStory } from "./Text.story"
+import { ButtonStory } from "src/design/components/Button.story"
 
 const components: Array<ComponentStory> = [
   TextInputStory,
   TextStory,
+  ButtonStory,
   BlurButtonStory,
   IconsStory,
-  // DropdownMenuStory, // FIXME: zeego web react jsx transform
 ]
 
 export interface ComponentStory {
@@ -41,7 +41,10 @@ interface State {
 }
 
 const StorybookApp: React.FC = () => {
-  const { isDarkMode, setDark, setLight } = useDarkMode()
+  const {
+    colorScheme,
+    actions: { setMode },
+  } = useDarkMode()
 
   const { bottom } = useSafeAreaInsets()
 
@@ -113,6 +116,7 @@ const StorybookApp: React.FC = () => {
       return (
         <FlatList
           data={Object.entries(state.component.stories)}
+          keyboardDismissMode="interactive"
           contentContainerStyle={{
             paddingBottom: bottom,
           }}
@@ -189,10 +193,10 @@ const StorybookApp: React.FC = () => {
         </View>
         <Pressable
           className="items-center self-end rounded bg-black p-2 dark:bg-white"
-          onPress={isDarkMode ? setLight : setDark}
+          onPress={() => setMode(colorScheme === "light" ? "dark" : "light")}
           hitSlop={{ bottom: 20, left: 20, right: 20, top: 20 }}>
           <Text className="w-24 text-center text-sm text-white dark:text-black">
-            {isDarkMode ? "Dark Mode" : "Light Mode"}
+            {`${colorScheme} mode`}
           </Text>
         </Pressable>
       </View>

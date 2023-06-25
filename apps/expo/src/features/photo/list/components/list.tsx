@@ -25,7 +25,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context"
 
 import { Text } from "src/design/components/TextOld"
 import type { GenericAsset } from "src/features/photo/list/models/asset"
-import { useDarkMode } from "src/stores/dark-mode/useDarkMode"
+import { useDarkMode } from "src/stores/DarkModeProvider"
 import { useSharedValueContext } from "../context/SharedValueContext"
 import { BottomPanel } from "./control-panel/Bottom"
 import { Thumbnail } from "./Thumbnail"

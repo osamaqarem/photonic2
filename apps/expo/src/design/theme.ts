@@ -1,16 +1,9 @@
 import { TextStyle } from "react-native"
 
-import { palette } from "src/design/palette"
 import { PlatformColors } from "src/design/platform-colors"
 import PlatformColorsConfig from "../../platform-colors.config"
 
-const rawThemeColors = PlatformColorsConfig.colors
-
-export { palette, rawThemeColors }
-
-export type AppTheme = typeof theme
-
-export const theme = {
+const theme = {
   colors: PlatformColors,
   font: {
     family: "System",
@@ -33,9 +26,12 @@ export const theme = {
   },
 } as const
 
+type AppTheme = typeof theme
+
 class Font {
   style: TextStyle = {
     fontFamily: theme.font.family,
+    color: theme.colors.text,
   }
 
   private merge(style: TextStyle) {
@@ -58,4 +54,8 @@ class Font {
   }
 }
 
-export const font = () => new Font()
+const font = () => new Font()
+
+const rawThemeColors = PlatformColorsConfig.colors
+
+export { theme, AppTheme, rawThemeColors, font }

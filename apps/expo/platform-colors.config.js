@@ -1,3 +1,4 @@
+// @ts-check
 const { palette } = require("./src/design/palette")
 
 const { light: l, dark: d } = palette
@@ -12,15 +13,19 @@ module.exports = {
       light: l.slate.slate1,
       dark: d.slate.slate1,
     },
-    card: {
-      light: l.slate.slate3,
-      dark: d.slate.slate3,
+    elementBg: {
+      light: l.blue.blue4,
+      dark: d.blue.blue4,
+    },
+    elementBgActive: {
+      light: l.blue.blue5,
+      dark: d.blue.blue5,
     },
     text: {
       light: l.slate.slate12,
       dark: d.slate.slate12,
     },
-    label: {
+    textLowContrast: {
       light: l.slate.slate11,
       dark: d.slate.slate11,
     },
@@ -36,21 +41,25 @@ module.exports = {
       light: l.slate.slate6,
       dark: d.slate.slate6,
     },
+    loadingIndicator: {
+      light: l.blue.blue8,
+      dark: d.blue.blue8,
+    },
     error: {
       light: l.tomato.tomato11,
       dark: d.tomato.tomato11,
     },
     success: {
-      light: d.grass.tomato11,
-      dark: d.grass.tomato11,
+      light: d.grass.grass11,
+      dark: d.grass.grass11,
     },
     warning: {
-      light: d.amber.tomato11,
-      dark: d.amber.tomato11,
+      light: d.amber.amber11,
+      dark: d.amber.amber11,
     },
     info: {
-      light: d.cyan.tomato11,
-      dark: d.cyan.tomato11,
+      light: d.cyan.cyan11,
+      dark: d.cyan.cyan11,
     },
   },
   javascript: {
@@ -58,6 +67,19 @@ module.exports = {
     outputDirectory: "./src/design/platform-colors/generated",
   },
   ios: {
-    outputDirectory: "./ios/Photonic/Images.xcassets/",
+    outputDirectory: (() => {
+      if (typeof __DEV__ === "boolean") return "Running in RN"
+
+      switch (process.env.STAGE) {
+        case "development":
+          return `./ios/PhotonicDev/Images.xcassets/`
+        case "production":
+          return "./ios/Photonic/Images.xcassets/"
+        case "storybook":
+          return `./ios/PhotonicStorybook/Images.xcassets/`
+        default:
+          throw new Error(`Unknown stage ${process.env.STAGE}`)
+      }
+    })(),
   },
 }

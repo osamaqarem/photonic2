@@ -1,24 +1,26 @@
-const radix = require("@radix-ui/colors")
+// @ts-check
+
+const colors = require("@radix-ui/colors")
 
 const palette = {
-  white: radix.whiteA,
-  black: radix.blackA,
+  white: colors.whiteA,
+  black: colors.blackA,
   light: {
-    blue: radix.blue,
-    slate: radix.slate,
-    tomato: radix.tomato,
-    grass: radix.grass,
-    amber: radix.amber,
-    cyan: radix.cyan,
+    blue: colors.blue,
+    slate: colors.slate,
+    tomato: colors.tomato,
+    grass: colors.grass,
+    amber: colors.amber,
+    cyan: colors.cyan,
   },
   dark: {
-    blue: radix.blueDark,
-    slate: radix.slateDark,
-    tomato: radix.tomatoDark,
-    grass: radix.grassDark,
-    amber: radix.amberDark,
-    cyan: radix.cyanDark,
+    blue: colors.blueDark,
+    slate: colors.slateDark,
+    tomato: colors.tomatoDark,
+    grass: colors.grassDark,
+    amber: colors.amberDark,
+    cyan: colors.cyanDark,
   },
 }
 
-module.exports = { palette }
+module.exports = { palette, rawPalette: colors }

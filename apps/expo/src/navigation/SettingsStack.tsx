@@ -8,7 +8,7 @@ import { Text } from "src/design/components/TextOld"
 import { LoginScreen } from "src/features/onboarding/LoginScreen"
 import { AppearanceScreen } from "src/features/settings/appearance/AppearanceScreen"
 import { SettingsScreen } from "src/features/settings/SettingsScreen"
-import { useDarkMode } from "src/stores/dark-mode/useDarkMode"
+import { useDarkMode } from "src/stores/DarkModeProvider"
 import { SettingsStackParams } from "./params"
 
 const SettingsStackNav = createNativeStackNavigator<SettingsStackParams>()

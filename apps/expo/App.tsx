@@ -6,11 +6,11 @@ import * as Sentry from "sentry-expo"
 import { AlertsProvider } from "src/design/components/alerts/AlertsContext"
 // import { useAuth } from "src/hooks/use-auth/useAuth"
 import { config } from "src/lib/config"
-import { DarkModeProvider } from "src/stores/dark-mode/DarkModeProvider"
+import { DarkModeProvider } from "src/stores/DarkModeProvider"
 import { Navigation } from "src/navigation/Navigation"
 
 export default function App() {
-  if (config.STORYBOOK) {
+  if (config.stage === "storybook") {
     const { Storybook } = require("src/design/components/Storybook")
     return <Storybook />
   }
@@ -37,9 +37,11 @@ function prepare() {
   ])
 
   Sentry.init({
-    dsn: config.SENTRY_DSN,
+    dsn: config.sentryDsn,
+    environment: config.stage,
     debug: false,
     enableInExpoDevelopment: false,
+    enableNative: false,
   })
 
   // useAuth.getState().actions.hydrate()

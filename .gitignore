@@ -71,6 +71,8 @@ web-build/
 build/**
 
 .env
+.env.shell
+
 
 .watchman-cookie-*
 

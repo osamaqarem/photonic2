@@ -14,7 +14,7 @@
     "patch-package": "^7.0.0",
     "postinstall-postinstall": "^2.1.0",
     "prettier": "^2.8.8",
-    "turbo": "^1.10.3",
+    "turbo": "^1.10.6",
     "typescript": "^5.1.3"
   },
   "engines": {
@@ -26,10 +26,11 @@
     "lint": "turbo lint",
     "prettier": "prettier '**/*.{js,jsx,ts,tsx}' --write --ignore-path .gitignore",
     "app:prebuild": "yarn workspace @photonic/expo prebuild",
+    "app:prebuild-ios": "yarn workspace @photonic/expo prebuild-ios",
     "app:prebuild-clean": "yarn workspace @photonic/expo prebuild-clean",
+    "app:prebuild-clean-ios": "yarn workspace @photonic/expo prebuild-clean-ios",
     "app:platform-colors": "turbo platform-colors",
     "app:ios": "yarn workspace @photonic/expo ios",
-    "app:ios-fresh": "yarn workspace @photonic/expo ios-fresh",
     "app:dev": "yarn workspace @photonic/expo dev",
     "app:storybook": "STORYBOOK=1 yarn app:dev",
     "app:xcode": "xed ./apps/expo/ios",
