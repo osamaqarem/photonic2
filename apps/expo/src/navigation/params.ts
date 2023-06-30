@@ -1,8 +1,8 @@
 import { GenericAsset } from "src/features/photo/list/models/asset"
 
 export type OnboardingStackParams = {
-  welcome: undefined
-  login: undefined
+  "onboarding-welcome": undefined
+  "onboarding-registration": undefined
   "onboarding-storage": undefined
   "onboarding-permissions": undefined
   "onboarding-settings": undefined

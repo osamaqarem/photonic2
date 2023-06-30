@@ -15,7 +15,8 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated"
 
-import { font, rawThemeColors, theme } from "src/design/theme"
+import { ComponentVariantMap, getThemeColorWorklet } from "src/design/variant"
+import { font, theme } from "src/design/theme"
 import { useDarkMode } from "src/stores/DarkModeProvider"
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable)
@@ -26,11 +27,17 @@ export const enum ButtonState {
   Disabled,
 }
 
+type Sizes = "default" | "wide" | "small"
+type Variants = "primary" | "secondary"
+type InteractionStates = "default" | "pressed"
+
 interface Props extends Omit<PressableProps, "disabled"> {
   text: string
   state?: ButtonState
   style?: StyleProp<ViewStyle>
   textStyle?: StyleProp<TextStyle>
+  size?: Sizes
+  variant?: Variants
 }
 
 export const Button: React.FC<Props> & { height: number } = ({
@@ -38,6 +45,8 @@ export const Button: React.FC<Props> & { height: number } = ({
   text,
   textStyle,
   state = ButtonState.Active,
+  size = "default",
+  variant = "primary",
   ...props
 }) => {
   const pressed = useSharedValue(false)
@@ -49,8 +58,12 @@ export const Button: React.FC<Props> & { height: number } = ({
     return {
       backgroundColor: withTiming(
         pressed.value
-          ? rawThemeColors.elementBgActive[colorScheme.value]
-          : rawThemeColors.elementBg[colorScheme.value],
+          ? animatedVariantStyle[variant].pressed.backgroundColor(
+              colorScheme.value,
+            )
+          : animatedVariantStyle[variant].default.backgroundColor(
+              colorScheme.value,
+            ),
         config,
       ),
       transform: [{ scale: withTiming(pressed.value ? 0.95 : 1, config) }],
@@ -97,7 +110,13 @@ export const Button: React.FC<Props> & { height: number } = ({
   return (
     <AnimatedPressable
       {...props}
-      style={[animatedStyle, styles.btn, style]}
+      style={[
+        animatedStyle,
+        styles.btn,
+        sizeStyles[size],
+        variantStyles[variant],
+        style,
+      ]}
       onPress={onPress}
       onPressIn={onPressIn}
       onPressOut={onPressOut}>
@@ -110,16 +129,57 @@ Button.height = 70
 
 const styles = StyleSheet.create({
   btn: {
-    backgroundColor: theme.colors.elementBg,
     height: Button.height,
-    width: 180,
-    borderRadius: 30,
+    borderRadius: 32,
     justifyContent: "center",
     alignItems: "center",
     alignSelf: "flex-end",
   },
-  text: font().size("l").weight("regular").style,
+  text: {
+    ...font().size("m").weight("regular").style,
+    textAlign: "center",
+    paddingHorizontal: theme.space.scale[10],
+  },
   textDisabled: {
     color: theme.colors.textLowContrast,
   },
 })
+
+const sizeStyles: ComponentVariantMap<Sizes, ViewStyle> = {
+  default: {
+    width: 180,
+  },
+  wide: {
+    width: 200,
+  },
+  small: {
+    width: 120,
+  },
+}
+
+const variantStyles: ComponentVariantMap<Variants, ViewStyle> = {
+  primary: {},
+  secondary: {},
+}
+
+const animatedVariantStyle = {
+  primary: {
+    default: {
+      backgroundColor: getThemeColorWorklet("elementBg"),
+    },
+    pressed: {
+      backgroundColor: getThemeColorWorklet("elementBgActive"),
+    },
+  },
+  secondary: {
+    default: {
+      backgroundColor: getThemeColorWorklet("elementSecondaryBg"),
+    },
+    pressed: {
+      backgroundColor: getThemeColorWorklet("elementSecondaryBgActive"),
+    },
+  },
+} satisfies ComponentVariantMap<
+  Variants,
+  ComponentVariantMap<InteractionStates, unknown>
+>

@@ -1,11 +1,9 @@
-import {
-  DarkTheme,
-  DefaultTheme,
-  NavigationContainer,
-} from "@react-navigation/native"
+import { DefaultTheme, NavigationContainer } from "@react-navigation/native"
 import * as React from "react"
-import { theme } from "src/design/theme"
+import { create } from "zustand"
 
+import { theme } from "src/design/theme"
+import { MainStack } from "src/navigation/MainStack"
 import { OnboardingStack } from "src/navigation/OnboardingStack"
 
 const navTheme = {
@@ -19,11 +17,17 @@ const navTheme = {
   },
 }
 
+export const useAuth = create(() => ({
+  authenticated: false,
+}))
+
 export function Navigation() {
+  const authenticated = useAuth(state => state.authenticated)
+
   return (
     // @ts-expect-error theme does not accept platform colors
     <NavigationContainer theme={navTheme}>
-      <OnboardingStack />
+      {authenticated ? <MainStack /> : <OnboardingStack />}
     </NavigationContainer>
   )
 }

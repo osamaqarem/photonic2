@@ -20,11 +20,14 @@ import { IconsStory } from "./icons/Icons.story"
 import { TextInputStory } from "./TextInput.story"
 import { TextStory } from "./Text.story"
 import { ButtonStory } from "src/design/components/Button.story"
+import { TextButtonStory } from "src/design/components/TextButton.story"
+import { theme } from "src/design/theme"
 
 const components: Array<ComponentStory> = [
   TextInputStory,
   TextStory,
   ButtonStory,
+  TextButtonStory,
   BlurButtonStory,
   IconsStory,
 ]
@@ -118,7 +121,7 @@ const StorybookApp: React.FC = () => {
           data={Object.entries(state.component.stories)}
           keyboardDismissMode="interactive"
           contentContainerStyle={{
-            paddingBottom: bottom,
+            padding: theme.space.contentPadding,
           }}
           keyExtractor={([name]) => name}
           renderItem={({ item }) => {
@@ -164,7 +167,7 @@ const StorybookApp: React.FC = () => {
     } else {
       return (
         <>
-          <Text className="text-2xl font-bold text-black dark:text-white">
+          <Text className="text-2xl font-bold text-black dark:text-white mt-8 ml-6">
             {state.component.name}
           </Text>
           {renderVariantsInline()}
@@ -174,7 +177,11 @@ const StorybookApp: React.FC = () => {
   }
 
   return (
-    <SafeAreaView className=" flex-1 bg-gray-100 dark:bg-black-800">
+    <SafeAreaView
+      className=" flex-1"
+      style={{
+        backgroundColor: theme.colors.background,
+      }}>
       <View className="w-full flex-row items-center justify-between px-8">
         <View className="items-center justify-center">
           {Boolean(state) ? (
@@ -201,9 +208,9 @@ const StorybookApp: React.FC = () => {
         </Pressable>
       </View>
 
-      <View className="flex-1 p-10">
+      <View className="flex-1">
         {!state ? (
-          <Text className="text-2xl font-bold text-black dark:text-white">
+          <Text className="text-2xl font-bold text-black dark:text-white mt-8 ml-6">
             Components
           </Text>
         ) : null}
@@ -213,6 +220,9 @@ const StorybookApp: React.FC = () => {
           <FlatList
             ItemSeparatorComponent={Separator}
             data={components}
+            contentContainerStyle={{
+              padding: theme.space.contentPadding,
+            }}
             renderItem={row => {
               return (
                 <>

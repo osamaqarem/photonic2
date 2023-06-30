@@ -1,10 +1,10 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack"
 
-import { LoginScreen } from "src/features/onboarding/LoginScreen"
 import { OnboardingPermissionsScreen } from "src/features/onboarding/OnboardingPermissionsScreen"
+import { OnboardingRegistrationScreen } from "src/features/onboarding/OnboardingRegistration"
 import { OnboardingSettingsScreen } from "src/features/onboarding/OnboardingSettingsScreen"
 import { OnboardingStorageScreen } from "src/features/onboarding/OnboardingStorageScreen"
-import { WelcomeScreen } from "src/features/onboarding/WelcomeScreen"
+import { OnboardingWelcomeScreen } from "src/features/onboarding/OnboardingWelcomeScreen"
 import { OnboardingStackParams } from "./params"
 
 const OnboardingStackNav = createNativeStackNavigator<OnboardingStackParams>()
@@ -12,10 +12,16 @@ const OnboardingStackNav = createNativeStackNavigator<OnboardingStackParams>()
 export const OnboardingStack = () => {
   return (
     <OnboardingStackNav.Navigator
-      initialRouteName="welcome"
+      initialRouteName="onboarding-welcome"
       screenOptions={{ headerShown: false }}>
-      <OnboardingStackNav.Screen name="welcome" component={WelcomeScreen} />
-      <OnboardingStackNav.Screen name="login" component={LoginScreen} />
+      <OnboardingStackNav.Screen
+        name="onboarding-welcome"
+        component={OnboardingWelcomeScreen}
+      />
+      <OnboardingStackNav.Screen
+        name="onboarding-registration"
+        component={OnboardingRegistrationScreen}
+      />
       <OnboardingStackNav.Screen
         name="onboarding-storage"
         component={OnboardingStorageScreen}

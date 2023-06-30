@@ -21,6 +21,14 @@ module.exports = {
       light: l.blue.blue5,
       dark: d.blue.blue5,
     },
+    elementSecondaryBg: {
+      light: l.slate.slate3,
+      dark: d.slate.slate3,
+    },
+    elementSecondaryBgActive: {
+      light: l.slate.slate4,
+      dark: d.slate.slate4,
+    },
     text: {
       light: l.slate.slate12,
       dark: d.slate.slate12,

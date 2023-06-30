@@ -12,5 +12,11 @@ export const TextInputStory: ComponentStory = {
     Disabled: () => (
       <TextInput editable={false} value="textinput-disabled@story.com" />
     ),
+    Error: () => (
+      <TextInput
+        value="textinput-populated@story.com"
+        error="The text above seems not perfectly arranged"
+      />
+    ),
   },
 }

@@ -16,7 +16,11 @@ import { useDarkMode } from "src/stores/DarkModeProvider"
 
 const AnimatedTextInput = Animated.createAnimatedComponent(RNTextInput)
 
-export const TextInput: React.FC<TextInputProps> = props => {
+interface Props extends TextInputProps {
+  error?: string
+}
+
+export const TextInput: React.FC<Props> = props => {
   const focused = useSharedValue(false)
 
   const colorScheme = useDarkMode(state => state.sharedColorScheme)
@@ -49,7 +53,7 @@ export const TextInput: React.FC<TextInputProps> = props => {
     <>
       <AnimatedTextInput
         placeholderTextColor={theme.colors.textLowContrast}
-        selectionColor={theme.colors.textLowContrast}
+        selectionColor={theme.colors.accent}
         {...props}
         onFocus={e => {
           props.onFocus?.(e)
@@ -67,20 +71,21 @@ export const TextInput: React.FC<TextInputProps> = props => {
           props.placeholder ? styles.placeholder : undefined,
         ]}
       />
-      <Text
-        variant="span"
-        style={{
-          marginTop: 6,
-          marginLeft: 6,
-          color: theme.colors.warning,
-        }}>
-        Error you are bad
-      </Text>
+      {props.error ? (
+        <Text variant="span" style={styles.error}>
+          {props.error}
+        </Text>
+      ) : null}
     </>
   )
 }
 
 const styles = StyleSheet.create({
+  error: {
+    marginTop: 6,
+    marginLeft: 6,
+    color: theme.colors.error,
+  },
   input: {
     width: "100%",
     height: 60,

@@ -4,34 +4,24 @@ import {
   ScrollViewProps as RNScrollViewProps,
   StyleProp,
   StyleSheet,
-  View,
+  View as RNView,
+  ViewProps as RNViewProps,
   ViewStyle,
 } from "react-native"
 import { useSafeAreaInsets } from "react-native-safe-area-context"
+import { Button } from "src/design/components/Button"
 import { theme } from "src/design/theme"
 
-import { Button } from "./Button"
-
 const getBottomPadding = (bottomInset: number) =>
-  bottomInset > 0 ? bottomInset + 4 : 30
+  bottomInset > 0 ? bottomInset : 30
 
-/**
- * A scroll view with default horizontal and top padding and an optional sticky button at the bottom.
- * Respects safe area margins.
- *
- * Usage:
-    <View style={{ flex: 1 }}>
-      <ScrollView>
-        {
-          // ...content
-        }
-      </ScrollView>
-      <ScrollView.StickyButton text="Text" onPress={() => {}} />
-    </View>
- */
+interface ScrollViewProps extends RNScrollViewProps {
+  stickyViewHeight?: number
+}
+
 const ScrollViewExotic = React.forwardRef<
   RNScrollView,
-  React.PropsWithChildren<RNScrollViewProps>
+  React.PropsWithChildren<ScrollViewProps>
 >((props, ref) => {
   const { bottom: bottomInset } = useSafeAreaInsets()
 
@@ -40,10 +30,13 @@ const ScrollViewExotic = React.forwardRef<
       keyboardDismissMode="interactive"
       {...props}
       ref={ref}
+      style={[styles.scrollView, props.style]}
       contentContainerStyle={[
-        styles.scrollView,
+        styles.scrollViewContent,
         {
-          paddingBottom: getBottomPadding(bottomInset) + Button.height,
+          paddingBottom:
+            getBottomPadding(bottomInset) +
+            (props.stickyViewHeight ?? Button.height),
         },
         props.contentContainerStyle,
       ]}
@@ -51,35 +44,47 @@ const ScrollViewExotic = React.forwardRef<
   )
 })
 
-interface StickyButtonProps extends React.ComponentProps<typeof Button> {
+interface StickyViewProps extends RNViewProps {
   containerStyle?: StyleProp<ViewStyle>
 }
-
-const StickyButton: React.FC<StickyButtonProps> = props => {
+const StickyView: React.FC<StickyViewProps> = ({
+  containerStyle,
+  style,
+  ...props
+}) => {
   const { bottom: bottomInset } = useSafeAreaInsets()
 
   return (
-    <View
+    <RNView
       style={[
-        styles.btnContainer,
+        styles.stickyContainer,
         {
           bottom: getBottomPadding(bottomInset),
         },
-        props.containerStyle,
+        containerStyle,
       ]}>
-      <Button {...props} />
-    </View>
+      <RNView {...props} style={[styles.stickyView, style]} />
+    </RNView>
   )
 }
 
-export const ScrollView = Object.assign(ScrollViewExotic, { StickyButton })
+export const ScrollView = Object.assign(ScrollViewExotic, {
+  StickyView,
+})
 
 const styles = StyleSheet.create({
   scrollView: {
+    paddingHorizontal: theme.space.contentPadding,
+  },
+  scrollViewContent: {
     backgroundColor: theme.colors.background,
   },
-  btnContainer: {
+  stickyContainer: {
     position: "absolute",
     alignSelf: "center",
+    width: "100%",
+  },
+  stickyView: {
+    paddingHorizontal: theme.space.contentPadding,
   },
 })

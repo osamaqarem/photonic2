@@ -8,7 +8,7 @@ export const variants = {
   h2: font().weight("semibold").color("text").size("l").style,
   h3: font().weight("medium").color("text").size("m").style,
   p: font().weight("regular").color("text").size("s").style,
-  span: font().weight("medium").color("label").size("xs").style,
+  span: font().weight("medium").color("textLowContrast").size("xs").style,
 } satisfies Record<string, TextStyle>
 
 interface Props extends TextProps {

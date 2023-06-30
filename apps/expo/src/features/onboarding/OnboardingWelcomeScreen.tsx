@@ -1,35 +1,39 @@
 import { NativeStackScreenProps } from "@react-navigation/native-stack"
 import { StyleSheet, View, ViewStyle } from "react-native"
 
+import { Button } from "src/design/components/Button"
 import { SafeAreaView } from "src/design/components/SafeAreaView"
 import { ScrollView } from "src/design/components/ScrollView"
+import { Space } from "src/design/components/Space"
 import { Text } from "src/design/components/Text"
 import { rawPalette } from "src/design/palette"
-import { theme } from "src/design/theme"
 import { AppParams } from "src/navigation/params"
 
-export const WelcomeScreen: React.FC<
-  NativeStackScreenProps<AppParams, "welcome">
-> = () => {
+export const OnboardingWelcomeScreen: React.FC<
+  NativeStackScreenProps<AppParams, "onboarding-welcome">
+> = props => {
+  const goToRegistration = () =>
+    props.navigation.navigate("onboarding-registration")
+
   return (
     <>
-      <ScrollView contentContainerStyle={styles.scroll}>
-        <SafeAreaView style={styles.safe}>
-          <View style={styles.content}>
-            <Text variant="h2">Photonic</Text>
-            <View style={styles.blobs}>
-              {blobs.map(item => (
-                <View key={item?.backgroundColor} style={[styles.blob, item]} />
-              ))}
-            </View>
+      <ScrollView contentContainerStyle={styles.scrollContainer}>
+        <SafeAreaView style={styles.safe} top>
+          <Text variant="h2">Photonic</Text>
+          <View style={styles.blobs}>
+            {blobs.map(item => (
+              <View key={item?.backgroundColor} style={[styles.blob, item]} />
+            ))}
+          </View>
+          <View>
             <Text variant="h1">The open source photo backup app.</Text>
+            <Space b={20} />
           </View>
         </SafeAreaView>
       </ScrollView>
-      <ScrollView.StickyButton
-        text={"Get started"}
-        containerStyle={styles.btnContainer}
-      />
+      <ScrollView.StickyView style={styles.btnContainer}>
+        <Button text={"Get started"} onPress={goToRegistration} />
+      </ScrollView.StickyView>
     </>
   )
 }
@@ -63,12 +67,12 @@ const blobs = [
 ] satisfies Array<ViewStyle>
 
 const styles = StyleSheet.create({
-  scroll: { flexGrow: 1 },
-  safe: { flex: 1 },
-  content: {
+  scrollContainer: {
+    flexGrow: 1,
+  },
+  safe: {
     flex: 1,
     justifyContent: "space-between",
-    margin: theme.space.contentPadding,
   },
   blob: {
     width: 150,
@@ -77,10 +81,7 @@ const styles = StyleSheet.create({
   },
   blobs: {
     position: "absolute",
-    top: 100,
+    top: "20%",
   },
-  btnContainer: {
-    alignSelf: "flex-end",
-    right: theme.space.contentPadding,
-  },
+  btnContainer: {},
 })

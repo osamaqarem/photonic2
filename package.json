@@ -32,7 +32,6 @@
     "app:platform-colors": "turbo platform-colors",
     "app:ios": "yarn workspace @photonic/expo ios",
     "app:dev": "yarn workspace @photonic/expo dev",
-    "app:storybook": "STORYBOOK=1 yarn app:dev",
     "app:xcode": "xed ./apps/expo/ios",
     "lambda:deploy": "yarn workspace @photonic/lambda deploy",
     "lambda:update-env": "yarn workspace @photonic/lambda update-env",

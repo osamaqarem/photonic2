@@ -1,22 +1,24 @@
 import { NativeStackScreenProps } from "@react-navigation/native-stack"
-import { StyleSheet, View } from "react-native"
+import { StyleSheet } from "react-native"
 
 import { Button } from "src/design/components/Button"
 import { SafeAreaView } from "src/design/components/SafeAreaView"
 import { ScrollView } from "src/design/components/ScrollView"
 import { Space } from "src/design/components/Space"
 import { Text } from "src/design/components/Text"
-import { palette } from "src/design/palette"
+import { TextInput } from "src/design/components/TextInput"
 import { theme } from "src/design/theme"
-import { useAuth } from "src/navigation/Navigation"
 import { AppParams } from "src/navigation/params"
 
-export const OnboardingSettingsScreen: React.FC<
-  NativeStackScreenProps<AppParams, "onboarding-settings">
+export const OnboardingRegistrationScreen: React.FC<
+  NativeStackScreenProps<AppParams, "onboarding-registration">
 > = props => {
-  const handleDone = () => {
-    useAuth.setState({ authenticated: true })
-    // setAuthenicated
+  const handleSignIn = () => {
+    props.navigation.navigate("onboarding-storage")
+  }
+
+  const handleSkip = () => {
+    props.navigation.navigate("onboarding-storage")
   }
 
   return (
@@ -25,25 +27,30 @@ export const OnboardingSettingsScreen: React.FC<
         <SafeAreaView style={styles.safe} top>
           <Text variant="h2">Photonic</Text>
           <Space t={80} />
-          <Text variant="h1">Adjust your experience.</Text>
+          <Text variant="h1">Create your account.</Text>
           <Space t={30} />
-          <View style={styles.table} />
+          <Text variant="p">
+            We only need your e-mail. Don’t worry, it all happens here – no
+            verification mail required.
+          </Text>
+          <Space t={60} />
+          <TextInput placeholder="E-mail" />
         </SafeAreaView>
       </ScrollView>
       <ScrollView.StickyView style={styles.stickyView}>
-        <Button text="Done" size="wide" onPress={handleDone} />
+        <Button
+          text="Skip"
+          size="small"
+          variant="secondary"
+          onPress={handleSkip}
+        />
+        <Button text="Create account" size="wide" onPress={handleSignIn} />
       </ScrollView.StickyView>
     </>
   )
 }
 
 const styles = StyleSheet.create({
-  table: {
-    backgroundColor: palette.light.slate.slate6,
-    width: "100%",
-    height: 500,
-    borderRadius: 20,
-  },
   stickyView: {
     flexDirection: "row",
     justifyContent: "center",

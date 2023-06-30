@@ -10,7 +10,7 @@ import { storage } from "src/lib/storage"
 const ColorSchemeKey =
   config.stage === "storybook" ? "ColorSchemeKeyStorybook" : "ColorSchemeKey"
 
-type ColorScheme = NonNullable<ColorSchemeName>
+export type ColorScheme = NonNullable<ColorSchemeName>
 
 const ColorSchemeStorage = {
   get: () => storage.getString(ColorSchemeKey) as Maybe<ColorScheme>,
