@@ -9,6 +9,8 @@ import { config } from "src/lib/config"
 import { DarkModeProvider } from "src/stores/DarkModeProvider"
 import { Navigation } from "src/navigation/Navigation"
 
+type Test = Maybe<string>
+
 export default function App() {
   if (config.stage === "storybook") {
     const { Storybook } = require("src/design/components/Storybook")

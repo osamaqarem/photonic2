@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "Concurrent file uploads",
   "homepage": "https://github.com/osamaqarem/Photonic",
-  "license": "MIT",
   "author": "Osama Qarem",
   "scripts": {
     "ts": "tsc",

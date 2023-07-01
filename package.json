@@ -1,6 +1,7 @@
 {
   "name": "@photonic/monorepo",
   "private": true,
+  "license": "UNLICENSED",
   "repository": "https://github.com/osamaqarem/photonic2",
   "workspaces": [
     "apps/*",
@@ -35,9 +36,11 @@
     "app:xcode": "xed ./apps/expo/ios",
     "lambda:deploy": "yarn workspace @photonic/lambda deploy",
     "lambda:update-env": "yarn workspace @photonic/lambda update-env",
-    "db:generate": "turbo db:generate --skip-generate",
-    "db:push": "yarn workspace @photonic/fastify db:push",
-    "db:studio": "yarn workspace @photonic/fastify db:studio",
+    "db:generate": "turbo db:generate",
+    "db:push": "yarn workspace @photonic/remix db:push",
+    "db:studio": "yarn workspace @photonic/remix db:studio",
+    "web:dev": "yarn workspace @photonic/remix dev",
+    "web:serve": "yarn workspace @photonic/remix serve",
     "p": "yarn lernaupdate --lazy",
     "clean-nodemodules": "find . -name 'node_modules' -type d -prune -exec rm -rf '{}' +",
     "postinstall": "patch-package && turbo db:generate platform-colors --force",
