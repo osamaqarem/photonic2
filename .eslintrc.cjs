@@ -3,9 +3,15 @@ module.exports = {
   env: {
     node: true,
   },
-  extends: ["plugin:@typescript-eslint/recommended", "turbo", "prettier"],
+  extends: [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
+    "turbo",
+    "prettier",
+  ],
   parser: "@typescript-eslint/parser",
   plugins: ["@typescript-eslint"],
+  root: true,
   rules: {
     "turbo/no-undeclared-env-vars": 0,
     "react/react-in-jsx-scope": 0,
@@ -20,5 +26,6 @@ module.exports = {
     "@typescript-eslint/no-non-null-assertion": 0,
     "@typescript-eslint/no-explicit-any": 0,
     "@typescript-eslint/no-empty-function": 0,
+    "@typescript-eslint/consistent-type-imports": "error",
   },
 }
