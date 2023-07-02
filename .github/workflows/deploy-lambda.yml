@@ -3,7 +3,8 @@ name: Lambda
 on:
   push:
     branches:
-      - main
+      # prod env not created
+      # - main
       - dev
 
 concurrency:
@@ -60,12 +61,12 @@ jobs:
         if: ${{ github.ref == 'refs/heads/dev' }}
         run: |
           yarn lambda:build
-          aws lambda update-function-code --function-name connectToPhotonic --zip-file fileb://dist/connectToPhotonic.zip --profile photonic-staging
+          aws lambda update-function-code --function-name connectToPhotonic --zip-file fileb://./apps/lambda/dist/connectToPhotonic.zip --profile photonic-staging
           aws lambda update-function-configuration --function-name connectToPhotonic --environment Variables={DOMAIN=https://photonic-remix-staging.fly.dev} --query 'Environment' --profile photonic-staging
 
       - name: Deploy Production
         if: ${{ github.ref == 'refs/heads/main' }}
         run: |
           yarn lambda:build
-          aws lambda update-function-code --function-name connectToPhotonic --zip-file fileb://dist/connectToPhotonic.zip --profile photonic
+          aws lambda update-function-code --function-name connectToPhotonic --zip-file fileb://./apps/lambda/dist/connectToPhotonic.zip --profile photonic
           aws lambda update-function-configuration --function-name connectToPhotonic --environment Variables={DOMAIN=https://photonic-remix.fly.dev} --query 'Environment' --profile photonic
