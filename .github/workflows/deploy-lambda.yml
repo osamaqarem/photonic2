@@ -1,0 +1,71 @@
+name: Lambda
+
+on:
+  push:
+    branches:
+      - main
+      - dev
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  actions: write
+  contents: read
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    # only build/deploy main branch on pushes
+    if: ${{ (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev') && github.event_name == 'push' }}
+
+    steps:
+      - name: Add staging aws profile credentials to ~/.aws/credentials
+        if: ${{ github.ref == 'refs/heads/dev' }}
+        run: |
+          aws configure set region eu-central-1 --profile photonic-staging
+          aws configure set aws_access_key_id ${{ secrets.STAGING_AWS_ACCESS_KEY_ID }} --profile photonic-staging
+          aws configure set aws_secret_access_key ${{ secrets.STAGING_AWS_SECRET_ACCESS_KEY }} --profile photonic-staging
+
+      - name: Add production aws profile credentials to ~/.aws/credentials
+        if: ${{ github.ref == 'refs/heads/main' }}
+        run: |
+          aws configure set region eu-central-1 --profile photonic
+          aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }} --profile photonic
+          aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }} --profile photonic
+
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: "16"
+
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+
+      - uses: actions/cache@v3
+        id: yarn-cache
+        with:
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: ${{ runner.os }}-yarn-
+
+      - name: Install dependencies
+        run: yarn install --immutable --prefer-offline
+
+      - name: Deploy Staging
+        if: ${{ github.ref == 'refs/heads/dev' }}
+        run: |
+          yarn lambda:build
+          aws lambda update-function-code --function-name connectToPhotonic --zip-file fileb://dist/connectToPhotonic.zip --profile photonic-staging
+          aws lambda update-function-configuration --function-name connectToPhotonic --environment Variables={DOMAIN=https://photonic-remix-staging.fly.dev} --query 'Environment' --profile photonic-staging
+
+      - name: Deploy Production
+        if: ${{ github.ref == 'refs/heads/main' }}
+        run: |
+          yarn lambda:build
+          aws lambda update-function-code --function-name connectToPhotonic --zip-file fileb://dist/connectToPhotonic.zip --profile photonic
+          aws lambda update-function-configuration --function-name connectToPhotonic --environment Variables={DOMAIN=https://photonic-remix.fly.dev} --query 'Environment' --profile photonic

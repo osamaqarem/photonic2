@@ -13,5 +13,5 @@
     "strict": true,
     "useUnknownInCatchVariables": true
   },
-  "include": ["**/*.ts", "**/*.tsx", "declarations.d.ts"]
+  "include": []
 }

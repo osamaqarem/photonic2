@@ -1,11 +1,5 @@
 {
   "extends": "../../tsconfig.json",
-  "include": [
-    "remix.env.d.ts",
-    "**/*.ts",
-    "**/*.tsx",
-    "../../declarations.d.ts"
-  ],
   "compilerOptions": {
     "lib": ["DOM", "DOM.Iterable", "ES2019"],
     "isolatedModules": true,
@@ -24,5 +18,11 @@
 
     // Remix takes care of building everything in `remix build`.
     "noEmit": true
-  }
+  },
+  "include": [
+    "remix.env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    "../../declarations.d.ts"
+  ]
 }
