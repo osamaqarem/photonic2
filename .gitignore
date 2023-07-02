@@ -77,5 +77,6 @@ build/**
 .watchman-cookie-*
 
 dist
+out
 
 todo.md

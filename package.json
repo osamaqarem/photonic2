@@ -7,6 +7,9 @@
     "apps/*",
     "packages/*"
   ],
+  "dependencies": {
+    "patch-package": "^7.0.0"
+  },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^5.60.1",
     "@typescript-eslint/parser": "^5.60.1",
@@ -14,7 +17,6 @@
     "eslint-config-prettier": "^8.8.0",
     "eslint-config-turbo": "^1.10.3",
     "lerna-update-wizard": "^1.1.2",
-    "patch-package": "^7.0.0",
     "postinstall-postinstall": "^2.1.0",
     "prettier": "^2.8.8",
     "turbo": "^1.10.6",
@@ -24,6 +26,7 @@
   "engines": {
     "node": "<17 >=16.17.0"
   },
+  "packageManager": "yarn@1.22.19",
   "scripts": {
     "checks": "turbo ts lint",
     "ts": "turbo ts",
@@ -44,9 +47,12 @@
     "db:studio": "yarn workspace @photonic/remix db:studio",
     "web:dev": "yarn workspace @photonic/remix dev",
     "web:serve": "yarn workspace @photonic/remix serve",
+    "web:deploy": "fly deploy --dockerfile ./apps/remix/Dockerfile --config ./apps/remix/fly.toml",
+    "web:docker-build": "docker build -f ./apps/remix/Dockerfile -t photonic/remix .",
+    "web:docker-run": "docker run -p 3000:3000 --name photonic-remix-container photonic/remix",
     "p": "yarn lernaupdate --lazy",
     "clean-nodemodules": "find . -name 'node_modules' -type d -prune -exec rm -rf '{}' +",
-    "postinstall": "patch-package && turbo db:generate platform-colors --force",
+    "postinstall": "patch-package",
     "tsc": "echo 'tsc from workspace root will give incorrect results. Run it from each app instead.' && exit 1"
   }
 }
