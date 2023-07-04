@@ -17,5 +17,5 @@ primary_region = "ams"
   min_machines_running = 0
   processes = ["app"]
 
-# [deploy]
-#   release_command = "bash ./scripts/migrate.sh"
+[deploy]
+  release_command = "bash ./scripts/migrate.sh"
