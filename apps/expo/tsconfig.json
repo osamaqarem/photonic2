@@ -5,7 +5,7 @@
     "lib": ["ESNext"],
     "baseUrl": ".",
     "paths": {
-      "src/*": ["./src/*"]
+      "~/*": ["./src/*"]
     },
     "resolveJsonModule": true
   },

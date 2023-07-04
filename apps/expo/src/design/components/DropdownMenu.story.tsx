@@ -1,4 +1,4 @@
-import { ComponentStory } from "src/design/components/Storybook"
+import { ComponentStory } from "~/design/components/Storybook"
 import { DropdownMenu } from "./DropdownMenu"
 import { Text } from "./text/Text"
 import { View } from "./View"

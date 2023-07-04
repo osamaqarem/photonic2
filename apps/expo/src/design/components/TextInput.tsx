@@ -10,9 +10,9 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated"
 
-import { Text } from "src/design/components/Text"
-import { font, rawThemeColors, theme } from "src/design/theme"
-import { useDarkMode } from "src/stores/DarkModeProvider"
+import { Text } from "~/design/components/Text"
+import { font, rawThemeColors, theme } from "~/design/theme"
+import { useDarkMode } from "~/stores/DarkModeProvider"
 
 const AnimatedTextInput = Animated.createAnimatedComponent(RNTextInput)
 

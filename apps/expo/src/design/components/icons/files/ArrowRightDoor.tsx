@@ -1,6 +1,6 @@
 import * as React from "react"
 import { Path } from "react-native-svg"
-import { Svg, SvgProps } from "src/design/components/Svg"
+import { Svg, SvgProps } from "~/design/components/Svg"
 
 export const ArrowRightDoor = (props: SvgProps) => (
   <Svg viewBox="0 0 20 20" fill="currentColor" {...props}>

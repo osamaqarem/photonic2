@@ -13,15 +13,15 @@ import {
   useSafeAreaInsets,
 } from "react-native-safe-area-context"
 
-import { DarkModeProvider } from "src/stores/DarkModeProvider"
-import { useDarkMode } from "src/stores/DarkModeProvider"
+import { DarkModeProvider } from "~/stores/DarkModeProvider"
+import { useDarkMode } from "~/stores/DarkModeProvider"
 import { BlurButtonStory } from "./Blur.story"
 import { IconsStory } from "./icons/Icons.story"
 import { TextInputStory } from "./TextInput.story"
 import { TextStory } from "./Text.story"
-import { ButtonStory } from "src/design/components/Button.story"
-import { TextButtonStory } from "src/design/components/TextButton.story"
-import { theme } from "src/design/theme"
+import { ButtonStory } from "~/design/components/Button.story"
+import { TextButtonStory } from "~/design/components/TextButton.story"
+import { theme } from "~/design/theme"
 
 const components: Array<ComponentStory> = [
   TextInputStory,

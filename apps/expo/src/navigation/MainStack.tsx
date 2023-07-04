@@ -1,7 +1,7 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack"
 
-import { PhotoDetailScreen } from "src/features/photo/detail/PhotoDetailScreen"
-import { PhotoListScreen } from "src/features/photo/list/PhotoListScreen"
+import { PhotoDetailScreen } from "~/features/photo/detail/PhotoDetailScreen"
+import { PhotoListScreen } from "~/features/photo/list/PhotoListScreen"
 import { MainStackParams } from "./params"
 import { SettingsStack } from "./SettingsStack"
 

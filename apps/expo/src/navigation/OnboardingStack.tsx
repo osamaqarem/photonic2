@@ -1,10 +1,10 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack"
 
-import { OnboardingPermissionsScreen } from "src/features/onboarding/OnboardingPermissionsScreen"
-import { OnboardingRegistrationScreen } from "src/features/onboarding/OnboardingRegistration"
-import { OnboardingSettingsScreen } from "src/features/onboarding/OnboardingSettingsScreen"
-import { OnboardingStorageScreen } from "src/features/onboarding/OnboardingStorageScreen"
-import { OnboardingWelcomeScreen } from "src/features/onboarding/OnboardingWelcomeScreen"
+import { OnboardingPermissionsScreen } from "~/features/onboarding/OnboardingPermissionsScreen"
+import { OnboardingRegistrationScreen } from "~/features/onboarding/OnboardingRegistration"
+import { OnboardingSettingsScreen } from "~/features/onboarding/OnboardingSettingsScreen"
+import { OnboardingStorageScreen } from "~/features/onboarding/OnboardingStorageScreen"
+import { OnboardingWelcomeScreen } from "~/features/onboarding/OnboardingWelcomeScreen"
 import { OnboardingStackParams } from "./params"
 
 const OnboardingStackNav = createNativeStackNavigator<OnboardingStackParams>()

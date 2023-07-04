@@ -4,7 +4,7 @@ import {
   AlertOptions,
   ModalOptions,
   NotificationOptions,
-} from "src/design/components/alerts/models/options"
+} from "~/design/components/alerts/models/options"
 
 export interface AlertsContextType {
   showError: {

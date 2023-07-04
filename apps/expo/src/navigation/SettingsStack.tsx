@@ -4,11 +4,11 @@ import { HeaderButtonProps } from "@react-navigation/native-stack/lib/typescript
 import * as React from "react"
 import { TouchableOpacity } from "react-native"
 
-import { Text } from "src/design/components/TextOld"
-import { LoginScreen } from "src/features/onboarding/LoginScreen"
-import { AppearanceScreen } from "src/features/settings/appearance/AppearanceScreen"
-import { SettingsScreen } from "src/features/settings/SettingsScreen"
-import { useDarkMode } from "src/stores/DarkModeProvider"
+import { Text } from "~/design/components/TextOld"
+import { LoginScreen } from "~/features/onboarding/LoginScreen"
+import { AppearanceScreen } from "~/features/settings/appearance/AppearanceScreen"
+import { SettingsScreen } from "~/features/settings/SettingsScreen"
+import { useDarkMode } from "~/stores/DarkModeProvider"
 import { SettingsStackParams } from "./params"
 
 const SettingsStackNav = createNativeStackNavigator<SettingsStackParams>()

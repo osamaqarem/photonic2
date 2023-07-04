@@ -26,9 +26,9 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated"
 
-import { clamp, interpolateValue } from "src/features/photo/detail/utils/math"
-import * as vec from "src/features/photo/detail/utils/vectors"
-import { AppParams } from "src/navigation/params"
+import { clamp, interpolateValue } from "~/features/photo/detail/utils/math"
+import * as vec from "~/features/photo/detail/utils/vectors"
+import { AppParams } from "~/navigation/params"
 
 // TODO: viewpager to swipe between images
 // TODO: use transparent nav bar

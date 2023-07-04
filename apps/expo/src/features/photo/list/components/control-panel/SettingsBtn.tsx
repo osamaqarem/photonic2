@@ -12,11 +12,11 @@ import Animated, {
 } from "react-native-reanimated"
 import { Circle as SVGCircle } from "react-native-svg"
 
-import { BlurButton } from "src/design/components/Blur"
-import { Icon } from "src/design/components/icons/Icons"
-import { Svg } from "src/design/components/Svg"
-import { colors } from "src/design/tailwind"
-import { useDarkMode } from "src/stores/DarkModeProvider"
+import { BlurButton } from "~/design/components/Blur"
+import { Icon } from "~/design/components/icons/Icons"
+import { Svg } from "~/design/components/Svg"
+import { colors } from "~/design/tailwind"
+import { useDarkMode } from "~/stores/DarkModeProvider"
 
 const settingsBtnSize = 42
 

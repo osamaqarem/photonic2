@@ -8,9 +8,9 @@ import {
 } from "react-native-reanimated"
 import { useSafeAreaInsets } from "react-native-safe-area-context"
 
-import { BlurView } from "src/design/components/Blur"
-import { Icon } from "src/design/components/icons/Icons"
-import { useSharedValueContext } from "src/features/photo/list/context/SharedValueContext"
+import { BlurView } from "~/design/components/Blur"
+import { Icon } from "~/design/components/icons/Icons"
+import { useSharedValueContext } from "~/features/photo/list/context/SharedValueContext"
 import { Option } from "./Option"
 
 const bottomPanelHeight = 120

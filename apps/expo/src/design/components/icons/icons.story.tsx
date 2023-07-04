@@ -1,6 +1,6 @@
 import * as React from "react"
 
-import { ComponentStory } from "src/design/components/Storybook"
+import { ComponentStory } from "~/design/components/Storybook"
 import { getIconNames, Icon } from "./Icons"
 
 let stories: Record<string, () => React.ReactElement> = {}

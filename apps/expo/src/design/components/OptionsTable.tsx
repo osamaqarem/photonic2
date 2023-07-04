@@ -1,8 +1,8 @@
 import * as React from "react"
 import { PixelRatio, View, StyleSheet, Pressable } from "react-native"
 
-import { Icon, IconNames } from "src/design/components/icons/Icons"
-import { Text } from "src/design/components/TextOld"
+import { Icon, IconNames } from "~/design/components/icons/Icons"
+import { Text } from "~/design/components/TextOld"
 
 interface Props {
   title: string | React.FC

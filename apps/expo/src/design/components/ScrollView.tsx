@@ -9,8 +9,8 @@ import {
   ViewStyle,
 } from "react-native"
 import { useSafeAreaInsets } from "react-native-safe-area-context"
-import { Button } from "src/design/components/Button"
-import { theme } from "src/design/theme"
+import { Button } from "~/design/components/Button"
+import { theme } from "~/design/theme"
 
 const getBottomPadding = (bottomInset: number) =>
   bottomInset > 0 ? bottomInset : 30

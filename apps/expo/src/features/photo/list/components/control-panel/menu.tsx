@@ -3,8 +3,8 @@ import * as React from "react"
 import {
   DropdownMenu,
   DropdownMenuItemIconConfig,
-} from "src/design/components/DropdownMenu"
-import { Icon } from "src/design/components/icons/Icons"
+} from "~/design/components/DropdownMenu"
+import { Icon } from "~/design/components/icons/Icons"
 import { Option } from "./Option"
 
 const iconConfig: DropdownMenuItemIconConfig = {

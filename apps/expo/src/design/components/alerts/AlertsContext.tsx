@@ -14,17 +14,17 @@ import Animated, {
   useSharedValue,
 } from "react-native-reanimated"
 
-import { AlertView } from "src/design/components/alerts/components/AlertView"
-import { ModalView } from "src/design/components/alerts/components/ModalView"
-import { NotificationView } from "src/design/components/alerts/components/NotificationView"
-import { AlertsContextType } from "src/design/components/alerts/models/context"
-import { AlertEntry } from "src/design/components/alerts/models/entry"
+import { AlertView } from "~/design/components/alerts/components/AlertView"
+import { ModalView } from "~/design/components/alerts/components/ModalView"
+import { NotificationView } from "~/design/components/alerts/components/NotificationView"
+import { AlertsContextType } from "~/design/components/alerts/models/context"
+import { AlertEntry } from "~/design/components/alerts/models/entry"
 import {
   AlertBtnResult,
   AlertOptions,
   NotificationOptions,
   ModalOptions,
-} from "src/design/components/alerts/models/options"
+} from "~/design/components/alerts/models/options"
 
 export const AlertsContext = React.createContext<AlertsContextType | null>(null)
 export let Alerts: Omit<AlertsContextType, "isPresenting">

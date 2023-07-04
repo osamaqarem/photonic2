@@ -2,15 +2,15 @@ import { create } from "zustand"
 import * as SecureStorage from "expo-secure-store"
 
 // import { ApiError } from "api/server/errors"
-import { useAlerts } from "src/design/components/alerts/useAlerts"
+import { useAlerts } from "~/design/components/alerts/useAlerts"
 import {
   AuthenticatedState,
   AuthStore,
   OfflineState,
   UnauthenticatedState,
-} from "src/stores/auth/types"
-import { Network } from "src/lib/network"
-// import { trpcClient } from "src/providers/trpc/trpc"
+} from "~/stores/auth/types"
+import { Network } from "~/lib/network"
+// import { trpcClient } from "~/providers/trpc/trpc"
 
 const enum StorageKey {
   RefreshToken = "RefreshToken",

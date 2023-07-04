@@ -7,6 +7,7 @@
     "@klarna/platform-colors": "^0.4.0",
     "@photonic/system-ui": "*",
     "@photonic/upload-service": "*",
+    "@photonic/common": "*",
     "@radix-ui/colors": "^0.1.8",
     "@react-native-menu/menu": "^0.7.2",
     "@react-navigation/native": "^6.1.6",

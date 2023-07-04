@@ -12,10 +12,10 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated"
 
-import { Icon } from "src/design/components/icons/Icons"
-import { colors } from "src/design/tailwind"
-import { GenericAsset } from "src/features/photo/list/models/asset"
-import { useDarkMode } from "src/stores/DarkModeProvider"
+import { Icon } from "~/design/components/icons/Icons"
+import { colors } from "~/design/tailwind"
+import { GenericAsset } from "~/features/photo/list/models/asset"
+import { useDarkMode } from "~/stores/DarkModeProvider"
 import { useSharedValueContext } from "../context/SharedValueContext"
 
 const longPressTiming = 300

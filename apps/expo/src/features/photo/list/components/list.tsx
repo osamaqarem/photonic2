@@ -23,9 +23,9 @@ import Animated, {
 } from "react-native-reanimated"
 import { useSafeAreaInsets } from "react-native-safe-area-context"
 
-import { Text } from "src/design/components/TextOld"
-import type { GenericAsset } from "src/features/photo/list/models/asset"
-import { useDarkMode } from "src/stores/DarkModeProvider"
+import { Text } from "~/design/components/TextOld"
+import type { GenericAsset } from "~/features/photo/list/models/asset"
+import { useDarkMode } from "~/stores/DarkModeProvider"
 import { useSharedValueContext } from "../context/SharedValueContext"
 import { BottomPanel } from "./control-panel/Bottom"
 import { Thumbnail } from "./Thumbnail"

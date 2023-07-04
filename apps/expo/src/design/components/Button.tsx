@@ -15,9 +15,9 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated"
 
-import { ComponentVariantMap, getThemeColorWorklet } from "src/design/variant"
-import { font, theme } from "src/design/theme"
-import { useDarkMode } from "src/stores/DarkModeProvider"
+import { ComponentVariantMap, getThemeColorWorklet } from "~/design/variant"
+import { font, theme } from "~/design/theme"
+import { useDarkMode } from "~/stores/DarkModeProvider"
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable)
 

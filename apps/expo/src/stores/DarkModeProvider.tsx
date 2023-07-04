@@ -4,8 +4,8 @@ import { Appearance, ColorSchemeName } from "react-native"
 import { SharedValue, useSharedValue } from "react-native-reanimated"
 import { create } from "zustand"
 
-import { config } from "src/lib/config"
-import { storage } from "src/lib/storage"
+import { config } from "~/lib/config"
+import { storage } from "~/lib/storage"
 
 const ColorSchemeKey =
   config.stage === "storybook" ? "ColorSchemeKeyStorybook" : "ColorSchemeKey"

@@ -1,8 +1,8 @@
 import * as React from "react"
 import { Alert, Linking } from "react-native"
 
-import { Media } from "src/features/photo/list/utils/media"
-import { NOOP } from "src/lib/general"
+import { Media } from "~/features/photo/list/utils/media"
+import { NOOP } from "~/lib/general"
 
 async function checkPermissions(): Promise<boolean> {
   try {

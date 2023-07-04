@@ -1,7 +1,7 @@
 import * as React from "react"
 import { Pressable } from "react-native"
 
-import { Text } from "src/design/components/TextOld"
+import { Text } from "~/design/components/TextOld"
 import { View } from "react-native"
 
 interface Props {

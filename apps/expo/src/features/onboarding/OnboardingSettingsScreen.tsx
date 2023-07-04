@@ -1,15 +1,15 @@
 import { NativeStackScreenProps } from "@react-navigation/native-stack"
 import { StyleSheet, View } from "react-native"
 
-import { Button } from "src/design/components/Button"
-import { SafeAreaView } from "src/design/components/SafeAreaView"
-import { ScrollView } from "src/design/components/ScrollView"
-import { Space } from "src/design/components/Space"
-import { Text } from "src/design/components/Text"
-import { palette } from "src/design/palette"
-import { theme } from "src/design/theme"
-import { useAuth } from "src/navigation/Navigation"
-import { AppParams } from "src/navigation/params"
+import { Button } from "~/design/components/Button"
+import { SafeAreaView } from "~/design/components/SafeAreaView"
+import { ScrollView } from "~/design/components/ScrollView"
+import { Space } from "~/design/components/Space"
+import { Text } from "~/design/components/Text"
+import { palette } from "~/design/palette"
+import { theme } from "~/design/theme"
+import { useAuth } from "~/navigation/Navigation"
+import { AppParams } from "~/navigation/params"
 
 export const OnboardingSettingsScreen: React.FC<
   NativeStackScreenProps<AppParams, "onboarding-settings">

@@ -2,7 +2,7 @@ import * as React from "react"
 import { StyleSheet, ViewProps as RNViewProps, View } from "react-native"
 import { useSafeAreaInsets } from "react-native-safe-area-context"
 
-import { theme } from "src/design/theme"
+import { theme } from "~/design/theme"
 
 interface Props extends RNViewProps {
   top?: boolean

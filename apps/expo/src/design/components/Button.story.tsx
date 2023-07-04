@@ -1,9 +1,9 @@
 import React from "react"
 import { View } from "react-native"
 
-import { Button, ButtonState } from "src/design/components/Button"
-import { ComponentStory } from "src/design/components/Storybook"
-import { theme } from "src/design/theme"
+import { Button, ButtonState } from "~/design/components/Button"
+import { ComponentStory } from "~/design/components/Storybook"
+import { theme } from "~/design/theme"
 
 export const ButtonStory: ComponentStory = {
   name: "Button",

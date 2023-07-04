@@ -6,7 +6,7 @@ import {
   ViewStyle,
 } from "react-native"
 
-import { Text } from "src/design/components/Text"
+import { Text } from "~/design/components/Text"
 
 interface Props extends React.ComponentProps<typeof Text> {
   btnStyle?: StyleProp<ViewStyle>

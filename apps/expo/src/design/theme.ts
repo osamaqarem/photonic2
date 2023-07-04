@@ -1,6 +1,6 @@
 import { TextStyle } from "react-native"
 
-import { PlatformColors } from "src/design/platform-colors"
+import { PlatformColors } from "~/design/platform-colors"
 import PlatformColorsConfig from "../../platform-colors.config"
 
 const theme = {
