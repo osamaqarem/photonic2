@@ -67,7 +67,6 @@ const expoConfig = ({ config }: ConfigContext): ExpoConfig => ({
         config: {
           organization: "photonic",
           project: "expo",
-          authToken: process.env.SENTRY_AUTH_TOKEN,
         },
       },
     ],

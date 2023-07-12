@@ -32,6 +32,7 @@
     "ts": "turbo ts",
     "lint": "turbo lint",
     "prettier": "prettier '**/*.{js,jsx,ts,tsx}' --write --ignore-path .gitignore",
+    "dev": "turbo dev",
     "app:prebuild": "yarn workspace @photonic/expo prebuild",
     "app:prebuild-ios": "yarn workspace @photonic/expo prebuild-ios",
     "app:prebuild-clean": "yarn workspace @photonic/expo prebuild-clean",
