@@ -1,4 +1,4 @@
-import type Animated from "react-native-reanimated";
+import type Animated from "react-native-reanimated"
 import { useSharedValue } from "react-native-reanimated"
 
 interface Vector<T = number> {

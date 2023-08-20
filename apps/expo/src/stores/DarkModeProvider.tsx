@@ -1,8 +1,8 @@
 import { SystemUI } from "@photonic/system-ui"
 import * as React from "react"
-import type { ColorSchemeName } from "react-native";
+import type { ColorSchemeName } from "react-native"
 import { Appearance } from "react-native"
-import type { SharedValue} from "react-native-reanimated";
+import type { SharedValue } from "react-native-reanimated"
 import { useSharedValue } from "react-native-reanimated"
 import { create } from "zustand"
 

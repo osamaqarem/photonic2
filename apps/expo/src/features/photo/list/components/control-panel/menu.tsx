@@ -1,10 +1,7 @@
 import * as React from "react"
 
-import type {
-  DropdownMenuItemIconConfig} from "~/design/components/DropdownMenu";
-import {
-  DropdownMenu
-} from "~/design/components/DropdownMenu"
+import type { DropdownMenuItemIconConfig } from "~/design/components/DropdownMenu"
+import { DropdownMenu } from "~/design/components/DropdownMenu"
 import { Icon } from "~/design/components/icons/Icons"
 import { Option } from "./Option"
 

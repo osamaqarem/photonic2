@@ -3,11 +3,12 @@ import type {
   ScrollViewProps as RNScrollViewProps,
   StyleProp,
   ViewProps as RNViewProps,
-  ViewStyle} from "react-native";
+  ViewStyle,
+} from "react-native"
 import {
   ScrollView as RNScrollView,
   StyleSheet,
-  View as RNView
+  View as RNView,
 } from "react-native"
 import { useSafeAreaInsets } from "react-native-safe-area-context"
 import { Button } from "~/design/components/Button"

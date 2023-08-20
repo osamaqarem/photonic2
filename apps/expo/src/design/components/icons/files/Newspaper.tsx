@@ -1,5 +1,5 @@
 import { Path } from "react-native-svg"
-import type { SvgProps } from "~/design/components/Svg";
+import type { SvgProps } from "~/design/components/Svg"
 import { Svg } from "~/design/components/Svg"
 
 export const Newspaper = (props: SvgProps) => (

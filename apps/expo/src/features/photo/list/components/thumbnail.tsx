@@ -1,12 +1,8 @@
 import * as React from "react"
-import type { FastImageProps } from "react-native-fast-image";
+import type { FastImageProps } from "react-native-fast-image"
 import FastImage from "react-native-fast-image"
-import type {
-  PanGesture} from "react-native-gesture-handler";
-import {
-  Gesture,
-  GestureDetector
-} from "react-native-gesture-handler"
+import type { PanGesture } from "react-native-gesture-handler"
+import { Gesture, GestureDetector } from "react-native-gesture-handler"
 import Animated, {
   Easing,
   useAnimatedStyle,

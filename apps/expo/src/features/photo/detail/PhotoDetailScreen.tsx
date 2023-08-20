@@ -6,16 +6,17 @@ import {
   StyleSheet,
   useWindowDimensions,
 } from "react-native"
-import type { OnLoadEvent } from "react-native-fast-image";
+import type { OnLoadEvent } from "react-native-fast-image"
 import FastImage from "react-native-fast-image"
 import type {
   PanGestureHandlerGestureEvent,
   PinchGestureHandlerGestureEvent,
-  TapGestureHandlerGestureEvent} from "react-native-gesture-handler";
+  TapGestureHandlerGestureEvent,
+} from "react-native-gesture-handler"
 import {
   PanGestureHandler,
   PinchGestureHandler,
-  TapGestureHandler
+  TapGestureHandler,
 } from "react-native-gesture-handler"
 import Animated, {
   Easing,

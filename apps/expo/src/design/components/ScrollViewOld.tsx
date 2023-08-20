@@ -1,6 +1,6 @@
 import { styled } from "nativewind"
 import * as React from "react"
-import type { ScrollViewProps } from "react-native";
+import type { ScrollViewProps } from "react-native"
 import { ScrollView as RNScrollView } from "react-native"
 
 const className = "bg-gray-100 dark:bg-black-800"

@@ -1,5 +1,5 @@
 import type { NativeStackScreenProps } from "@react-navigation/native-stack"
-import type { ViewStyle } from "react-native";
+import type { ViewStyle } from "react-native"
 import { StyleSheet, View } from "react-native"
 
 import { Button } from "~/design/components/Button"

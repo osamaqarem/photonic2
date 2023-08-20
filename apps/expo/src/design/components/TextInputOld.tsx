@@ -1,5 +1,5 @@
 import * as React from "react"
-import type { TextInputProps} from "react-native";
+import type { TextInputProps } from "react-native"
 import { TextInput as TextInputRN } from "react-native"
 import { styled } from "nativewind"
 import colors from "tailwindcss/colors"

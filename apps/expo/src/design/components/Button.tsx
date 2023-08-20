@@ -3,20 +3,16 @@ import type {
   PressableProps,
   StyleProp,
   TextStyle,
-  ViewStyle} from "react-native";
-import {
-  ActivityIndicator,
-  Pressable,
-  StyleSheet,
-  Text
+  ViewStyle,
 } from "react-native"
+import { ActivityIndicator, Pressable, StyleSheet, Text } from "react-native"
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
   withTiming,
 } from "react-native-reanimated"
 
-import type { ComponentVariantMap} from "~/design/variant";
+import type { ComponentVariantMap } from "~/design/variant"
 import { getThemeColorWorklet } from "~/design/variant"
 import { font, theme } from "~/design/theme"
 import { useDarkMode } from "~/stores/DarkModeProvider"

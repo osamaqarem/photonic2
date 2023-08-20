@@ -1,5 +1,5 @@
 import * as React from "react"
-import type { ViewProps as RNViewProps} from "react-native";
+import type { ViewProps as RNViewProps } from "react-native"
 import { StyleSheet, View } from "react-native"
 import { useSafeAreaInsets } from "react-native-safe-area-context"
 
