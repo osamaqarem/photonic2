@@ -1,7 +1,7 @@
 import * as React from "react"
 import { StyleSheet, View } from "react-native"
 
-import { NotificationOptions } from "~/design/components/alerts/models/options"
+import type { NotificationOptions } from "~/design/components/alerts/models/options"
 import { Text } from "~/design/components/TextOld"
 
 interface Props extends NotificationOptions {

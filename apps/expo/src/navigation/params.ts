@@ -1,4 +1,4 @@
-import { GenericAsset } from "~/features/photo/list/models/asset"
+import type { GenericAsset } from "~/features/photo/list/models/asset"
 
 export type OnboardingStackParams = {
   "onboarding-welcome": undefined

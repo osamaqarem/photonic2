@@ -2,7 +2,7 @@ import * as React from "react"
 
 // import { useQuery } from "@tanstack/react-query"
 // import { trpcReact } from "app/providers/trpc/trpc"
-import { GenericAsset, RemoteAsset } from "../models/asset"
+import type { GenericAsset, RemoteAsset } from "../models/asset"
 import { Media } from "../utils/media"
 
 const fetchLocalAssets = async () => {

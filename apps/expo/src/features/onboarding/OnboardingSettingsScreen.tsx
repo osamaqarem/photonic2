@@ -1,4 +1,4 @@
-import { NativeStackScreenProps } from "@react-navigation/native-stack"
+import type { NativeStackScreenProps } from "@react-navigation/native-stack"
 import { StyleSheet, View } from "react-native"
 
 import { Button } from "~/design/components/Button"
@@ -9,7 +9,7 @@ import { Text } from "~/design/components/Text"
 import { palette } from "~/design/palette"
 import { theme } from "~/design/theme"
 import { useAuth } from "~/navigation/Navigation"
-import { AppParams } from "~/navigation/params"
+import type { AppParams } from "~/navigation/params"
 
 export const OnboardingSettingsScreen: React.FC<
   NativeStackScreenProps<AppParams, "onboarding-settings">

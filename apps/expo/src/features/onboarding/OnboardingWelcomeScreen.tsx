@@ -1,5 +1,6 @@
-import { NativeStackScreenProps } from "@react-navigation/native-stack"
-import { StyleSheet, View, ViewStyle } from "react-native"
+import type { NativeStackScreenProps } from "@react-navigation/native-stack"
+import type { ViewStyle } from "react-native";
+import { StyleSheet, View } from "react-native"
 
 import { Button } from "~/design/components/Button"
 import { SafeAreaView } from "~/design/components/SafeAreaView"
@@ -7,7 +8,7 @@ import { ScrollView } from "~/design/components/ScrollView"
 import { Space } from "~/design/components/Space"
 import { Text } from "~/design/components/Text"
 import { rawPalette } from "~/design/palette"
-import { AppParams } from "~/navigation/params"
+import type { AppParams } from "~/navigation/params"
 
 export const OnboardingWelcomeScreen: React.FC<
   NativeStackScreenProps<AppParams, "onboarding-welcome">

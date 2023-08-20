@@ -8,10 +8,7 @@ import {
   Text,
   View,
 } from "react-native"
-import {
-  SafeAreaProvider,
-  useSafeAreaInsets,
-} from "react-native-safe-area-context"
+import { SafeAreaProvider } from "react-native-safe-area-context"
 
 import { DarkModeProvider } from "~/stores/DarkModeProvider"
 import { useDarkMode } from "~/stores/DarkModeProvider"
@@ -48,8 +45,6 @@ const StorybookApp: React.FC = () => {
     colorScheme,
     actions: { setMode },
   } = useDarkMode()
-
-  const { bottom } = useSafeAreaInsets()
 
   const [state, actualSetState] = React.useState<Nullable<State>>(null)
   const prevState = React.useRef<Array<State>>([])

@@ -1,4 +1,4 @@
-import { AlertOptionsUnion } from "~/design/components/alerts/models/context"
+import type { AlertOptionsUnion } from "~/design/components/alerts/models/context"
 
 interface AlertBaseEntry {
   type: "ShowAlert" | "ShowModal" | "ShowError"

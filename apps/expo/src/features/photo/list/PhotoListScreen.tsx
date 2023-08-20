@@ -1,9 +1,9 @@
-import { NativeStackScreenProps } from "@react-navigation/native-stack"
+import type { NativeStackScreenProps } from "@react-navigation/native-stack"
 import * as React from "react"
 import { LayoutAnimation } from "react-native"
 import { useDerivedValue, useSharedValue } from "react-native-reanimated"
 import { UploadService } from "@photonic/upload-service"
-import { UploadEvent } from "@photonic/upload-service/types"
+import type { UploadEvent } from "@photonic/upload-service/types"
 import { Logger } from "@photonic/common"
 
 import { useAlerts } from "~/design/components/alerts/useAlerts"
@@ -15,7 +15,7 @@ import type {
   RemoteAsset,
 } from "~/features/photo/list/models/asset"
 import { Media } from "~/features/photo/list/utils/media"
-import { AppParams } from "~/navigation/params"
+import type { AppParams } from "~/navigation/params"
 // import { PhotoRouterInputs } from "~/providers/trpc/inference"
 // import { trpcClient } from "~/providers/trpc/trpc"
 import { ControlPanel } from "./components/control-panel/ControlPanel"

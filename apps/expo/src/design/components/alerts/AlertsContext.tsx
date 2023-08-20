@@ -1,6 +1,7 @@
+import type {
+  BottomSheetBackdropProps} from "@gorhom/bottom-sheet";
 import {
   BottomSheetBackdrop,
-  BottomSheetBackdropProps,
   BottomSheetModal,
   BottomSheetModalProvider,
   useBottomSheetDynamicSnapPoints,
@@ -17,9 +18,9 @@ import Animated, {
 import { AlertView } from "~/design/components/alerts/components/AlertView"
 import { ModalView } from "~/design/components/alerts/components/ModalView"
 import { NotificationView } from "~/design/components/alerts/components/NotificationView"
-import { AlertsContextType } from "~/design/components/alerts/models/context"
-import { AlertEntry } from "~/design/components/alerts/models/entry"
-import {
+import type { AlertsContextType } from "~/design/components/alerts/models/context"
+import type { AlertEntry } from "~/design/components/alerts/models/entry"
+import type {
   AlertBtnResult,
   AlertOptions,
   NotificationOptions,

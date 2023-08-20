@@ -1,8 +1,9 @@
 import * as React from "react"
+import type {
+  SharedValue} from "react-native-reanimated";
 import Animated, {
   cancelAnimation,
   Easing,
-  SharedValue,
   useAnimatedProps,
   useAnimatedStyle,
   useDerivedValue,

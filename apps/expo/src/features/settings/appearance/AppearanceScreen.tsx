@@ -1,10 +1,10 @@
-import { NativeStackScreenProps } from "@react-navigation/native-stack"
+import type { NativeStackScreenProps } from "@react-navigation/native-stack"
 import * as React from "react"
 
 import { Layout } from "~/design/components/Layout"
 import { Text } from "~/design/components/TextOld"
 import { View } from "react-native"
-import { AppParams } from "~/navigation/params"
+import type { AppParams } from "~/navigation/params"
 import { useDarkMode } from "~/stores/DarkModeProvider"
 
 export const AppearanceScreen: React.FC<

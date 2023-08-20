@@ -1,9 +1,10 @@
 import * as React from "react"
-import {
+import type {
   StyleProp,
-  TouchableOpacity,
   TouchableOpacityProps,
-  ViewStyle,
+  ViewStyle} from "react-native";
+import {
+  TouchableOpacity
 } from "react-native"
 
 import { Text } from "~/design/components/Text"

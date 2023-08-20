@@ -2,7 +2,7 @@ import * as React from "react"
 import { StyleSheet, View } from "react-native"
 
 import { Text } from "~/design/components/TextOld"
-import { AlertBtnResult, AlertOptions } from "../models/options"
+import type { AlertBtnResult, AlertOptions } from "../models/options"
 
 type Props = AlertOptions & {
   onDismiss: (result: AlertBtnResult) => void

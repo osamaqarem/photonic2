@@ -1,7 +1,7 @@
 import * as React from "react"
 import { Button, StyleSheet, View } from "react-native"
 
-import {
+import type {
   AlertBtnResult,
   ModalOptions,
 } from "~/design/components/alerts/models/options"
@@ -67,11 +67,6 @@ const styles = StyleSheet.create({
     width: "100%",
     justifyContent: "center",
     alignItems: "center",
-  },
-  closeBtn: {
-    position: "absolute",
-    top: 14,
-    right: 0,
   },
   title: {
     fontSize: 20,

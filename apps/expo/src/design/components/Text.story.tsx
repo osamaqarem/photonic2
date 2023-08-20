@@ -1,6 +1,6 @@
 import React from "react"
 
-import { ComponentStory } from "~/design/components/Storybook"
+import type { ComponentStory } from "~/design/components/Storybook"
 import { Text, variants } from "~/design/components/Text"
 
 const phrase = "The Photonic app manages photos."

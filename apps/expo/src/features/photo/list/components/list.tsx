@@ -2,11 +2,12 @@ import { FlashList } from "@shopify/flash-list"
 import * as Haptics from "expo-haptics"
 import * as ExpoStatusBar from "expo-status-bar"
 import * as React from "react"
+import type {
+  LayoutRectangle,
+  ViewStyle} from "react-native";
 import {
   View,
-  LayoutRectangle,
-  useWindowDimensions,
-  ViewStyle,
+  useWindowDimensions
 } from "react-native"
 import { Gesture, GestureDetector } from "react-native-gesture-handler"
 import Animated, {

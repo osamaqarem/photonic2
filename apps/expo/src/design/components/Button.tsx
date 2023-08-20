@@ -1,13 +1,14 @@
 import * as React from "react"
+import type {
+  PressableProps,
+  StyleProp,
+  TextStyle,
+  ViewStyle} from "react-native";
 import {
   ActivityIndicator,
   Pressable,
-  PressableProps,
-  StyleProp,
   StyleSheet,
-  Text,
-  TextStyle,
-  ViewStyle,
+  Text
 } from "react-native"
 import Animated, {
   useAnimatedStyle,
@@ -15,7 +16,8 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated"
 
-import { ComponentVariantMap, getThemeColorWorklet } from "~/design/variant"
+import type { ComponentVariantMap} from "~/design/variant";
+import { getThemeColorWorklet } from "~/design/variant"
 import { font, theme } from "~/design/theme"
 import { useDarkMode } from "~/stores/DarkModeProvider"
 

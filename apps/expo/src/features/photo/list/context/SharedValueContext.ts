@@ -1,7 +1,7 @@
 import * as React from "react"
-import { SharedValue } from "react-native-reanimated"
+import type { SharedValue } from "react-native-reanimated"
 
-import { GenericAsset } from "~/features/photo/list/models/asset"
+import type { GenericAsset } from "~/features/photo/list/models/asset"
 
 interface SharedValueContextType {
   assetRecord: SharedValue<Record<string, GenericAsset>>

@@ -3,7 +3,7 @@ import * as SecureStorage from "expo-secure-store"
 
 // import { ApiError } from "api/server/errors"
 import { useAlerts } from "~/design/components/alerts/useAlerts"
-import {
+import type {
   AuthenticatedState,
   AuthStore,
   OfflineState,

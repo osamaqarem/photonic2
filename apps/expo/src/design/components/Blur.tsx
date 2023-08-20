@@ -1,10 +1,12 @@
+import type {
+  BlurViewProps as ExpoBlurViewProps} from "expo-blur";
 import {
-  BlurView as ExpoBlurView,
-  BlurViewProps as ExpoBlurViewProps,
+  BlurView as ExpoBlurView
 } from "expo-blur"
 import { styled } from "nativewind"
 import * as React from "react"
-import { Pressable, PressableProps } from "react-native"
+import type { PressableProps } from "react-native";
+import { Pressable } from "react-native"
 import Animated from "react-native-reanimated"
 
 import { useDarkMode } from "~/stores/DarkModeProvider"

@@ -1,4 +1,4 @@
-import { NativeStackScreenProps } from "@react-navigation/native-stack"
+import type { NativeStackScreenProps } from "@react-navigation/native-stack"
 import * as React from "react"
 import {
   Platform,
@@ -6,14 +6,16 @@ import {
   StyleSheet,
   useWindowDimensions,
 } from "react-native"
-import FastImage, { OnLoadEvent } from "react-native-fast-image"
+import type { OnLoadEvent } from "react-native-fast-image";
+import FastImage from "react-native-fast-image"
+import type {
+  PanGestureHandlerGestureEvent,
+  PinchGestureHandlerGestureEvent,
+  TapGestureHandlerGestureEvent} from "react-native-gesture-handler";
 import {
   PanGestureHandler,
-  PanGestureHandlerGestureEvent,
   PinchGestureHandler,
-  PinchGestureHandlerGestureEvent,
-  TapGestureHandler,
-  TapGestureHandlerGestureEvent,
+  TapGestureHandler
 } from "react-native-gesture-handler"
 import Animated, {
   Easing,
@@ -28,7 +30,7 @@ import Animated, {
 
 import { clamp, interpolateValue } from "~/features/photo/detail/utils/math"
 import * as vec from "~/features/photo/detail/utils/vectors"
-import { AppParams } from "~/navigation/params"
+import type { AppParams } from "~/navigation/params"
 
 // TODO: viewpager to swipe between images
 // TODO: use transparent nav bar

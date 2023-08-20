@@ -1,4 +1,4 @@
-import { TextStyle } from "react-native"
+import type { TextStyle } from "react-native"
 
 import { PlatformColors } from "~/design/platform-colors"
 import PlatformColorsConfig from "../../platform-colors.config"

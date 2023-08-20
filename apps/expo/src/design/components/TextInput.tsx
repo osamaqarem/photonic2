@@ -1,8 +1,9 @@
 import * as React from "react"
+import type {
+  TextInputProps} from "react-native";
 import {
   StyleSheet,
-  TextInput as RNTextInput,
-  TextInputProps,
+  TextInput as RNTextInput
 } from "react-native"
 import Animated, {
   useAnimatedStyle,

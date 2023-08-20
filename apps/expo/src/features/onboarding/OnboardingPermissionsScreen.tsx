@@ -1,4 +1,4 @@
-import { NativeStackScreenProps } from "@react-navigation/native-stack"
+import type { NativeStackScreenProps } from "@react-navigation/native-stack"
 import { Linking, StyleSheet } from "react-native"
 
 import { Button } from "~/design/components/Button"
@@ -7,7 +7,7 @@ import { ScrollView } from "~/design/components/ScrollView"
 import { Space } from "~/design/components/Space"
 import { Text } from "~/design/components/Text"
 import { theme } from "~/design/theme"
-import { AppParams } from "~/navigation/params"
+import type { AppParams } from "~/navigation/params"
 
 export const OnboardingPermissionsScreen: React.FC<
   NativeStackScreenProps<AppParams, "onboarding-permissions">

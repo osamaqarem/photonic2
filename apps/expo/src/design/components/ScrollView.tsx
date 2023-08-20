@@ -1,12 +1,13 @@
 import * as React from "react"
-import {
-  ScrollView as RNScrollView,
+import type {
   ScrollViewProps as RNScrollViewProps,
   StyleProp,
-  StyleSheet,
-  View as RNView,
   ViewProps as RNViewProps,
-  ViewStyle,
+  ViewStyle} from "react-native";
+import {
+  ScrollView as RNScrollView,
+  StyleSheet,
+  View as RNView
 } from "react-native"
 import { useSafeAreaInsets } from "react-native-safe-area-context"
 import { Button } from "~/design/components/Button"

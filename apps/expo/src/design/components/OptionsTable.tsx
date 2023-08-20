@@ -1,7 +1,8 @@
 import * as React from "react"
 import { PixelRatio, View, StyleSheet, Pressable } from "react-native"
 
-import { Icon, IconNames } from "~/design/components/icons/Icons"
+import type { IconNames } from "~/design/components/icons/Icons";
+import { Icon } from "~/design/components/icons/Icons"
 import { Text } from "~/design/components/TextOld"
 
 interface Props {

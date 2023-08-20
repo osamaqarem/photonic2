@@ -1,9 +1,11 @@
 import * as React from "react"
-import FastImage, { FastImageProps } from "react-native-fast-image"
+import type { FastImageProps } from "react-native-fast-image";
+import FastImage from "react-native-fast-image"
+import type {
+  PanGesture} from "react-native-gesture-handler";
 import {
   Gesture,
-  GestureDetector,
-  PanGesture,
+  GestureDetector
 } from "react-native-gesture-handler"
 import Animated, {
   Easing,
@@ -14,7 +16,7 @@ import Animated, {
 
 import { Icon } from "~/design/components/icons/Icons"
 import { colors } from "~/design/tailwind"
-import { GenericAsset } from "~/features/photo/list/models/asset"
+import type { GenericAsset } from "~/features/photo/list/models/asset"
 import { useDarkMode } from "~/stores/DarkModeProvider"
 import { useSharedValueContext } from "../context/SharedValueContext"
 

@@ -1,5 +1,5 @@
 import { colors } from "~/design/tailwind"
-import { ComponentStory } from "../storybook"
+import type { ComponentStory } from "../storybook"
 import { Text } from "../text"
 import { OptionTable } from "./OptionsTable"
 

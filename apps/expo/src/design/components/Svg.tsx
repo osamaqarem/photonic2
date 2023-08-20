@@ -1,7 +1,9 @@
-import { styled, StyledProps } from "nativewind"
+import type { StyledProps } from "nativewind";
+import { styled } from "nativewind"
 import React from "react"
 import Animated from "react-native-reanimated"
-import RNSvg, { SvgProps as RNSvgProps } from "react-native-svg"
+import type { SvgProps as RNSvgProps } from "react-native-svg";
+import RNSvg from "react-native-svg"
 
 type RNSvgPropsStyle = Pick<RNSvgProps, "style">
 

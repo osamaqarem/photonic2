@@ -1,4 +1,4 @@
-import { ExpoConfig, ConfigContext } from "@expo/config"
+import type { ExpoConfig, ConfigContext } from "@expo/config"
 import packageConfig from "./package.json"
 
 type VariantConfig = Pick<ExpoConfig, "name" | "scheme" | "ios">

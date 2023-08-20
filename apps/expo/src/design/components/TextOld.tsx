@@ -2,7 +2,8 @@ import type { VariantProps } from "class-variance-authority"
 import { cva } from "class-variance-authority"
 import { styled } from "nativewind"
 import * as React from "react"
-import { Text as RNText, TextProps } from "react-native"
+import type { TextProps } from "react-native";
+import { Text as RNText } from "react-native"
 
 const StyledText = styled(RNText)
 

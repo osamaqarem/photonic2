@@ -1,6 +1,7 @@
 import * as React from "react"
 import { Path } from "react-native-svg"
-import { Svg, SvgProps } from "~/design/components/Svg"
+import type { SvgProps } from "~/design/components/Svg";
+import { Svg } from "~/design/components/Svg"
 
 export const CloudUp = (props: SvgProps) => (
   <Svg

@@ -1,7 +1,7 @@
 import React from "react"
 
 import { TextInput } from "~/design/components/TextInput"
-import { ComponentStory } from "~/design/components/Storybook"
+import type { ComponentStory } from "~/design/components/Storybook"
 
 export const TextInputStory: ComponentStory = {
   name: "TextInput",

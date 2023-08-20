@@ -1,6 +1,7 @@
 import { LinearGradient } from "expo-linear-gradient"
 import * as React from "react"
-import { View, ViewProps } from "react-native"
+import type { ViewProps } from "react-native";
+import { View } from "react-native"
 import Animated, {
   Easing,
   useAnimatedProps,
