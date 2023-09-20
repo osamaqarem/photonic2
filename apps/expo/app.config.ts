@@ -1,4 +1,6 @@
 import type { ExpoConfig, ConfigContext } from "@expo/config"
+import merge from "lodash.merge"
+
 import packageConfig from "./package.json"
 
 type VariantConfig = Pick<ExpoConfig, "name" | "scheme" | "ios">
@@ -29,9 +31,6 @@ const variants: Variants = {
     scheme: "com.osamaqarem.photonic",
     ios: {
       bundleIdentifier: "com.osamaqarem.photonic",
-      config: {
-        usesNonExemptEncryption: false,
-      },
     },
   },
 }
@@ -40,37 +39,47 @@ const stage = process.env.STAGE as "development" | "production" | "storybook"
 if (!stage) throw new Error("Missing STAGE environment variable")
 console.log(`Using ${stage} configuration`)
 
-const expoConfig = ({ config }: ConfigContext): ExpoConfig => ({
-  ...config,
-  ...variants[stage],
-  version: packageConfig.version,
-  slug: "photonic",
-  platforms: ["ios"],
-  jsEngine: "hermes",
-  userInterfaceStyle: "automatic",
-  splash: {
-    image:
-      "https://raw.githubusercontent.com/expo/expo/main/templates/expo-template-blank/assets/splash.png",
-    resizeMode: "contain",
-    backgroundColor: "#000",
-  },
-  plugins: [
-    "./plugins/build/with-ios-deployment-target",
-    "./plugins/build/with-ios-sdwebimage",
-    "./plugins/build/with-ios-entitlements",
-    "sentry-expo",
-  ],
-  hooks: {
-    postPublish: [
-      {
-        file: "sentry-expo/upload-sourcemaps",
-        config: {
-          organization: "photonic",
-          project: "expo",
-        },
+const expoConfig = ({ config }: ConfigContext): ExpoConfig =>
+  merge(config, variants[stage], {
+    version: packageConfig.version,
+    ios: {
+      config: {
+        usesNonExemptEncryption: false,
       },
+      // Update this to real domain
+      associatedDomains: [
+        `webcredentials:https://photonic-remix${
+          stage === "development" ? "-staging" : ""
+        }.fly.dev`,
+      ],
+    },
+    slug: "photonic",
+    platforms: ["ios"],
+    jsEngine: "hermes",
+    userInterfaceStyle: "automatic",
+    splash: {
+      image:
+        "https://raw.githubusercontent.com/expo/expo/main/templates/expo-template-blank/assets/splash.png",
+      resizeMode: "contain",
+      backgroundColor: "#000",
+    },
+    plugins: [
+      "./plugins/build/with-ios-deployment-target",
+      "./plugins/build/with-ios-sdwebimage",
+      "./plugins/build/with-ios-entitlements",
+      "sentry-expo",
     ],
-  },
-})
+    hooks: {
+      postPublish: [
+        {
+          file: "sentry-expo/upload-sourcemaps",
+          config: {
+            organization: "photonic",
+            project: "expo",
+          },
+        },
+      ],
+    },
+  } satisfies Partial<ExpoConfig>)
 
 export default expoConfig
