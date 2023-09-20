@@ -1,7 +1,7 @@
 import * as React from "react"
 import { StyleSheet, View } from "react-native"
 
-import { Text } from "~/design/components/TextOld"
+import { Text } from "~/design/components/Text"
 import type { AlertBtnResult, AlertOptions } from "../models/options"
 
 type Props = AlertOptions & {
@@ -46,14 +46,10 @@ export const AlertView: React.FC<Props> = (props: Props) => {
       {props.btn && (
         <View style={[styles.btnContainer, btnLayoutStyle]}>
           {props.btn.cancelBtnTitle ? (
-            <Text onPress={onCancel} intent="link">
-              {props.btn.cancelBtnTitle}
-            </Text>
+            <Text onPress={onCancel}>{props.btn.cancelBtnTitle}</Text>
           ) : null}
           <View style={styles.space} />
-          <Text onPress={onConfirm} intent="link">
-            {props.btn.confirmBtnTitle}
-          </Text>
+          <Text onPress={onConfirm}>{props.btn.confirmBtnTitle}</Text>
         </View>
       )}
     </>

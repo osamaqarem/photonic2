@@ -10,15 +10,14 @@ import {
 } from "react-native"
 import { SafeAreaProvider } from "react-native-safe-area-context"
 
-import { DarkModeProvider } from "~/stores/DarkModeProvider"
-import { useDarkMode } from "~/stores/DarkModeProvider"
-import { BlurButtonStory } from "./Blur.story"
-import { IconsStory } from "./icons/Icons.story"
-import { TextInputStory } from "./TextInput.story"
-import { TextStory } from "./Text.story"
+import { BlurButtonStory } from "~/design/components/Blur.story"
 import { ButtonStory } from "~/design/components/Button.story"
+import { TextStory } from "~/design/components/Text.story"
 import { TextButtonStory } from "~/design/components/TextButton.story"
+import { TextInputStory } from "~/design/components/TextInput.story"
+import { IconsStory } from "~/design/components/icons/icons.story"
 import { theme } from "~/design/theme"
+import { DarkModeProvider, useDarkMode } from "~/stores/DarkModeProvider"
 
 const components: Array<ComponentStory> = [
   TextInputStory,

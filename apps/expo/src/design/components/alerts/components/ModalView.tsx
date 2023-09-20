@@ -5,7 +5,7 @@ import type {
   AlertBtnResult,
   ModalOptions,
 } from "~/design/components/alerts/models/options"
-import { Text } from "~/design/components/TextOld"
+import { Text } from "~/design/components/Text"
 
 type Props = ModalOptions & {
   onDismiss: (result: AlertBtnResult) => void
