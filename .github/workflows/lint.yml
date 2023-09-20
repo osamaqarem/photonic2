@@ -33,12 +33,12 @@ jobs:
       - name: Install dependencies
         run: yarn install --immutable --prefer-offline
 
-      - name: [Staging] Generate platform colors
+      - name: Staging Generate platform colors
         run: yarn app:platform-colors
         env:
           STAGE: development
 
-      - name: [Production] Generate platform colors
+      - name: Generate Production platform colors
         run: yarn app:platform-colors
         env:
           STAGE: production
