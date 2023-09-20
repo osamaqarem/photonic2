@@ -1,7 +1,13 @@
 import { NativeEventEmitter, NativeModules } from "react-native"
 
-import { AssetUploadTask } from "@photonic/expo/src/features/photo/list/types/asset"
-import { UploadEvent, UploadEvents } from "./types"
+import type { UploadEvent } from "./types"
+import { UploadEvents } from "./types"
+
+export type AssetUploadTask = {
+  localIdentifier: string // rename to localId
+  name: string // rename to externalId
+  uploadUrl: string
+}
 
 const emitter = new NativeEventEmitter(NativeModules.UploadService)
 

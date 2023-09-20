@@ -1,5 +1,3 @@
-import type { GenericAsset } from "~/features/photo/list/models/asset"
-
 export type OnboardingStackParams = {
   "onboarding-welcome": undefined
   "onboarding-registration": undefined
@@ -8,19 +6,4 @@ export type OnboardingStackParams = {
   "onboarding-settings": undefined
 }
 
-export type MainStackParams = {
-  home: undefined
-  photo: {
-    asset: GenericAsset
-  }
-  "settings-stack": undefined
-}
-
-export type SettingsStackParams = {
-  settings: undefined
-  appearance: undefined
-}
-
-export type AppParams = OnboardingStackParams &
-  MainStackParams &
-  SettingsStackParams
+export type AppParams = OnboardingStackParams

@@ -1,5 +1,5 @@
 import type { NativeStackScreenProps } from "@react-navigation/native-stack"
-import { Linking, StyleSheet } from "react-native"
+import { StyleSheet } from "react-native"
 
 import { Button } from "~/design/components/Button"
 import { SafeAreaView } from "~/design/components/SafeAreaView"

@@ -13,7 +13,7 @@ import type { AppParams } from "~/navigation/params"
 
 export const OnboardingSettingsScreen: React.FC<
   NativeStackScreenProps<AppParams, "onboarding-settings">
-> = props => {
+> = () => {
   const handleDone = () => {
     useAuth.setState({ authenticated: true })
     // setAuthenicated

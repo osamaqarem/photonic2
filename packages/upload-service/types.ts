@@ -1,4 +1,4 @@
-import { AssetUploadTask } from "@photonic/expo/src/features/photo/list/types/asset"
+import type { AssetUploadTask } from "."
 
 export interface UploadEvent extends AssetUploadTask {
   percent: string

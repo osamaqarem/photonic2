@@ -4,7 +4,6 @@ import { SafeAreaProvider } from "react-native-safe-area-context"
 import * as Sentry from "sentry-expo"
 
 import { AlertsProvider } from "~/design/components/alerts/AlertsContext"
-// import { useAuth } from "~/hooks/use-auth/useAuth"
 import { config } from "~/lib/config"
 import { DarkModeProvider } from "~/stores/DarkModeProvider"
 import { Navigation } from "~/navigation/Navigation"
@@ -43,6 +42,4 @@ function prepare() {
     enableInExpoDevelopment: false,
     enableNative: false,
   })
-
-  // useAuth.getState().actions.hydrate()
 }
