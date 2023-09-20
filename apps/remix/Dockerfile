@@ -3,7 +3,7 @@
 # Adjust NODE_VERSION as desired
 ARG NODE_VERSION=16.17.0
 
-FROM node:${NODE_VERSION}-slim as base
+FROM node:${NODE_VERSION}-bullseye-slim as base
 LABEL fly_launch_runtime="Remix"
 WORKDIR /app/temp
 RUN yarn global add turbo
@@ -24,7 +24,7 @@ RUN yarn install --production=false && \
 
 
 # Final stage for app image
-FROM node:${NODE_VERSION}-alpine as main
+FROM node:${NODE_VERSION}-bullseye-slim as main
 WORKDIR /app
 # Copy built application
 COPY --from=build --link /app/slim .
