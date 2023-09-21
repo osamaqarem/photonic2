@@ -25,7 +25,7 @@ export const enum ButtonState {
   Disabled,
 }
 
-type Sizes = "default" | "wide" | "small"
+type Sizes = "default" | "small" | "wide" | "widest"
 type Variants = "primary" | "secondary"
 type InteractionStates = "default" | "pressed"
 
@@ -147,11 +147,14 @@ const sizeStyles: ComponentVariantMap<Sizes, ViewStyle> = {
   default: {
     width: 180,
   },
+  small: {
+    width: 120,
+  },
   wide: {
     width: 200,
   },
-  small: {
-    width: 120,
+  widest: {
+    width: 280,
   },
 }
 
