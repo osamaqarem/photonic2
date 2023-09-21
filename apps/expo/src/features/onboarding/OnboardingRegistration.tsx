@@ -17,10 +17,6 @@ export const OnboardingRegistrationScreen: React.FC<
     props.navigation.navigate("onboarding-storage")
   }
 
-  const handleSkip = () => {
-    props.navigation.navigate("onboarding-storage")
-  }
-
   return (
     <>
       <ScrollView contentContainerStyle={styles.scroll}>
@@ -38,13 +34,7 @@ export const OnboardingRegistrationScreen: React.FC<
         </SafeAreaView>
       </ScrollView>
       <ScrollView.StickyView style={styles.stickyView}>
-        <Button
-          text="Skip"
-          size="small"
-          variant="secondary"
-          onPress={handleSkip}
-        />
-        <Button text="Create account" size="wide" onPress={handleSignIn} />
+        <Button text="Create account" size="widest" onPress={handleSignIn} />
       </ScrollView.StickyView>
     </>
   )
