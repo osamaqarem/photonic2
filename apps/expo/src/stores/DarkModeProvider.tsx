@@ -22,7 +22,7 @@ const ColorSchemeStorage = {
 
 interface DarkModeStore {
   colorScheme: ColorScheme
-  sharedColorScheme: SharedValue<ColorScheme>
+  sharedColorScheme: Pick<SharedValue<ColorScheme>, "value">
   source: "system" | "user"
   actions: {
     setMode: (cs: ColorScheme) => void

@@ -3,7 +3,6 @@ import {
   BottomSheetBackdrop,
   BottomSheetModal,
   BottomSheetModalProvider,
-  useBottomSheetDynamicSnapPoints,
 } from "@gorhom/bottom-sheet"
 import type { BackdropPressBehavior } from "@gorhom/bottom-sheet/lib/typescript/components/bottomSheetBackdrop/types"
 import * as React from "react"
@@ -28,8 +27,6 @@ import type {
 
 export const AlertsContext = React.createContext<AlertsContextType | null>(null)
 export let Alerts: Omit<AlertsContextType, "isPresenting">
-
-const INITIAL_SNAP_POINTS = ["CONTENT_HEIGHT"]
 
 export const AlertsProvider: React.FC<React.PropsWithChildren> = props => {
   //#region Variables
@@ -58,13 +55,6 @@ export const AlertsProvider: React.FC<React.PropsWithChildren> = props => {
   const entryList = React.useRef<Array<AlertEntry>>([])
   const prevEntryLength = React.useRef<number>(0)
   const handleDismissResult = React.useRef<unknown>()
-
-  const {
-    animatedHandleHeight,
-    animatedSnapPoints,
-    animatedContentHeight,
-    handleContentLayout,
-  } = useBottomSheetDynamicSnapPoints(INITIAL_SNAP_POINTS)
   //#endregion Variables
 
   //#region Internal methods
@@ -288,9 +278,7 @@ export const AlertsProvider: React.FC<React.PropsWithChildren> = props => {
         <BottomSheetModal
           ref={sheet}
           onDismiss={onDismiss}
-          snapPoints={animatedSnapPoints}
-          handleHeight={animatedHandleHeight}
-          contentHeight={animatedContentHeight}
+          enableDynamicSizing
           bottomInset={floatBottomDistance.value}
           enablePanDownToClose={false}
           backgroundComponent={null}
@@ -298,9 +286,7 @@ export const AlertsProvider: React.FC<React.PropsWithChildren> = props => {
           backdropComponent={renderBackdrop}
           detached={detached.value}
           style={[styles.sheetContainer, sheetStyle]}>
-          <Animated.View
-            style={styles.contentContainerStyle}
-            onLayout={handleContentLayout}>
+          <Animated.View style={styles.contentContainerStyle}>
             {currentContent}
           </Animated.View>
         </BottomSheetModal>

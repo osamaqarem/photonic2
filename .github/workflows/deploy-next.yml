@@ -1,4 +1,4 @@
-name: Deploy Remix
+name: Deploy Next
 
 on:
   push:
@@ -29,14 +29,14 @@ jobs:
         uses: SebRollen/toml-action@v1.0.2
         id: app_name
         with:
-          file: ./apps/remix/fly.toml
+          file: ./apps/next/fly.toml
           field: app
 
       - name: Deploy Staging
         if: ${{ github.ref == 'refs/heads/dev' }}
         uses: superfly/flyctl-actions@1.4
         with:
-          args: deploy --dockerfile ./apps/remix/Dockerfile --config ./apps/remix/fly.toml --remote-only --build-arg COMMIT_SHA=${{ github.sha }} --app ${{ steps.app_name.outputs.value }}-staging
+          args: deploy --dockerfile ./apps/next/Dockerfile --config ./apps/next/fly.toml --remote-only --build-arg COMMIT_SHA=${{ github.sha }} --app ${{ steps.app_name.outputs.value }}-staging
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
 
@@ -44,6 +44,6 @@ jobs:
         if: ${{ github.ref == 'refs/heads/main' }}
         uses: superfly/flyctl-actions@1.4
         with:
-          args: deploy --dockerfile ./apps/remix/Dockerfile --config ./apps/remix/fly.toml --remote-only --build-arg COMMIT_SHA=${{ github.sha }} --app ${{ steps.app_name.outputs.value }}
+          args: deploy --dockerfile ./apps/next/Dockerfile --config ./apps/next/fly.toml --remote-only --build-arg COMMIT_SHA=${{ github.sha }} --app ${{ steps.app_name.outputs.value }}
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
