@@ -5,7 +5,6 @@ export class Logger {
 
   constructor(prefix: string) {
     this.prefix = prefix
-    if (!__DEV__) return { log: NOOP, warn: NOOP, error: NOOP, prefix }
   }
 
   log = (...args: Array<unknown>) => {
