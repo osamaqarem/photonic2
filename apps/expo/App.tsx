@@ -7,6 +7,7 @@ import { AlertsProvider } from "~/design/components/alerts/AlertsContext"
 import { config } from "~/lib/config"
 import { DarkModeProvider } from "~/stores/DarkModeProvider"
 import { Navigation } from "~/navigation/Navigation"
+import { TrpcProvider } from "~/stores/TrpcProvider"
 
 export default function App() {
   if (config.stage === "storybook") {
@@ -20,7 +21,9 @@ export default function App() {
     <SafeAreaProvider>
       <DarkModeProvider>
         <AlertsProvider>
-          <Navigation />
+          <TrpcProvider>
+            <Navigation />
+          </TrpcProvider>
         </AlertsProvider>
       </DarkModeProvider>
     </SafeAreaProvider>
