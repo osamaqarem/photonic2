@@ -10,7 +10,6 @@ import {
 } from "react-native"
 import { SafeAreaProvider } from "react-native-safe-area-context"
 
-import { BlurButtonStory } from "~/design/components/Blur.story"
 import { ButtonStory } from "~/design/components/Button.story"
 import { TextStory } from "~/design/components/Text.story"
 import { TextButtonStory } from "~/design/components/TextButton.story"
@@ -24,7 +23,6 @@ const components: Array<ComponentStory> = [
   TextStory,
   ButtonStory,
   TextButtonStory,
-  BlurButtonStory,
   IconsStory,
 ]
 

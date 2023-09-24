@@ -9,10 +9,15 @@ import { Text } from "~/design/components/Text"
 import { TextInput } from "~/design/components/TextInput"
 import { theme } from "~/design/theme"
 import type { AppParams } from "~/navigation/params"
+import { trpc } from "~/stores/TrpcProvider"
 
 export const OnboardingRegistrationScreen: React.FC<
   NativeStackScreenProps<AppParams, "onboarding-registration">
 > = props => {
+  const { data, isLoading } = trpc.auth.useQuery()
+
+  console.log({ data, isLoading })
+
   const handleSignIn = () => {
     props.navigation.navigate("onboarding-storage")
   }

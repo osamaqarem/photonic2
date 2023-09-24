@@ -1,6 +1,5 @@
-import type { StyledProps } from "nativewind"
-import { styled } from "nativewind"
 import React from "react"
+import type { AnimatedProps } from "react-native-reanimated"
 import Animated from "react-native-reanimated"
 import type { SvgProps as RNSvgProps } from "react-native-svg"
 import RNSvg from "react-native-svg"
@@ -11,14 +10,10 @@ type PatchedSvgProps = RNSvgProps & {
   style?: RNSvgPropsStyle & { color?: string } // manual patch to support 'color' style
 }
 
-type AnimatedSvgProps = Animated.AnimateProps<PatchedSvgProps>
+type AnimatedSvgProps = AnimatedProps<PatchedSvgProps>
 
 const AnimatedSvg = Animated.createAnimatedComponent(
   RNSvg,
 ) as React.ComponentClass<AnimatedSvgProps, any>
 
-export type SvgProps = StyledProps<AnimatedSvgProps>
-
-export const Svg = styled((props: AnimatedSvgProps) => (
-  <AnimatedSvg {...props} />
-))
+export const Svg = (props: AnimatedSvgProps) => <AnimatedSvg {...props} />
