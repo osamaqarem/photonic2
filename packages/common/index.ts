@@ -1,7 +1,7 @@
 export const NOOP = () => {}
 
 export class Logger {
-  prefix: string
+  prefix: Nullable<string>
 
   constructor(prefix: string) {
     this.prefix = prefix

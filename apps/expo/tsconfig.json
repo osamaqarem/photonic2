@@ -10,7 +10,7 @@
     },
     "resolveJsonModule": true
   },
-  "include": ["**/*.ts", "**/*.tsx", "../../declarations.d.ts"],
+  "include": ["**/*.ts", "**/*.tsx", "../../packages/common/declarations.d.ts"],
   "exclude": [
     "node_modules",
     "babel.config.js",
