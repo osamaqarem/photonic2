@@ -2,8 +2,8 @@ import { DefaultTheme, NavigationContainer } from "@react-navigation/native"
 import * as React from "react"
 import { create } from "zustand"
 
-import { theme } from "~/design/theme"
-import { OnboardingStack } from "~/navigation/OnboardingStack"
+import { theme } from "~/expo/design/theme"
+import { OnboardingStack } from "~/expo/navigation/OnboardingStack"
 
 const navTheme = {
   ...DefaultTheme,

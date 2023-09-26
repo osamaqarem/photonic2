@@ -11,9 +11,9 @@ import { observable } from "@trpc/server/observable"
 import * as React from "react"
 
 import { Logger } from "@photonic/common"
-import type { AppRouter } from "@photonic/next/trpc/_app"
-import { config } from "~/lib/config"
-import { Network } from "~/lib/network"
+import type { AppRouter } from "~/next/trpc/_app"
+import { config } from "~/expo/lib/config"
+import { Network } from "~/expo/lib/network"
 
 const loggerLink: TRPCLink<AppRouter> = () => {
   const logger = new Logger("trpc")

@@ -4,7 +4,7 @@ import type {
   AlertOptions,
   ModalOptions,
   NotificationOptions,
-} from "~/design/components/alerts/models/options"
+} from "~/expo/design/components/alerts/models/options"
 
 export interface AlertsContextType {
   showError: {

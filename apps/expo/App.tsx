@@ -3,15 +3,15 @@ import { LogBox } from "react-native"
 import { SafeAreaProvider } from "react-native-safe-area-context"
 import * as Sentry from "sentry-expo"
 
-import { AlertsProvider } from "~/design/components/alerts/AlertsContext"
-import { config } from "~/lib/config"
-import { DarkModeProvider } from "~/stores/DarkModeProvider"
-import { Navigation } from "~/navigation/Navigation"
-import { TrpcProvider } from "~/stores/TrpcProvider"
+import { AlertsProvider } from "~/expo/design/components/alerts/AlertsContext"
+import { config } from "~/expo/lib/config"
+import { DarkModeProvider } from "~/expo/stores/DarkModeProvider"
+import { Navigation } from "~/expo/navigation/Navigation"
+import { TrpcProvider } from "~/expo/stores/TrpcProvider"
 
 export default function App() {
   if (config.stage === "storybook") {
-    const { Storybook } = require("~/design/components/Storybook")
+    const { Storybook } = require("~/expo/design/components/Storybook")
     return <Storybook />
   }
 

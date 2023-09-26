@@ -1,8 +1,8 @@
 import ms from "ms"
 
 import { Logger } from "@photonic/common"
-import type { AwsAccount, User } from "~/lib/db"
-import type { RoleCredentials } from "~/lib/validations/role-cred"
+import type { AwsAccount, User } from "~/next/lib/db"
+import type { RoleCredentials } from "~/next/lib/validations/role-cred"
 import { cache } from "./init"
 
 const logger = new Logger("redis")

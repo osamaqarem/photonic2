@@ -1,11 +1,11 @@
 import type * as trpc from "@trpc/server"
 import type * as trpcNext from "@trpc/server/adapters/next"
 
-import type { User } from "~/lib/db"
-import { db } from "~/lib/db"
-import type { UserWithAwsAccount } from "~/lib/db/types"
-import * as redis from "~/lib/cache"
-import * as jwt from "~/lib/jwt"
+import type { User } from "~/next/lib/db"
+import { db } from "~/next/lib/db"
+import type { UserWithAwsAccount } from "~/next/lib/db/types"
+import * as redis from "~/next/lib/cache"
+import * as jwt from "~/next/lib/jwt"
 
 export const createContext = async ({
   req,

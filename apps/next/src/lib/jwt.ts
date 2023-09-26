@@ -1,8 +1,8 @@
 import type { JwtPayload } from "jsonwebtoken"
 import jwt from "jsonwebtoken"
-import type { UserWithAwsAccount } from "~/lib/db/types"
+import type { UserWithAwsAccount } from "~/next/lib/db/types"
 
-import { config } from "~/config"
+import { config } from "~/next/config"
 
 function verify<CustomPayload>(
   token: string,

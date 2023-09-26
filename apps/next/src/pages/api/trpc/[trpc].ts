@@ -1,8 +1,8 @@
 import { createNextApiHandler } from "@trpc/server/adapters/next"
 
 import { Logger } from "@photonic/common"
-import { appRouter } from "~/trpc/_app"
-import { createContext } from "~/trpc/context"
+import { appRouter } from "~/next/trpc/_app"
+import { createContext } from "~/next/trpc/context"
 
 const logger = new Logger("@trpc/server")
 

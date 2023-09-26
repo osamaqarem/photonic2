@@ -1,7 +1,10 @@
 import { useContext } from "react"
 
-import { Alerts, AlertsContext } from "~/design/components/alerts/AlertsContext"
-import type { AlertsContextType } from "~/design/components/alerts/models/context"
+import {
+  Alerts,
+  AlertsContext,
+} from "~/expo/design/components/alerts/AlertsContext"
+import type { AlertsContextType } from "~/expo/design/components/alerts/models/context"
 
 export function useAlerts(): AlertsContextType {
   const alerts = useContext(AlertsContext)

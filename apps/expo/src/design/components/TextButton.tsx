@@ -2,7 +2,7 @@ import * as React from "react"
 import type { StyleProp, TouchableOpacityProps, ViewStyle } from "react-native"
 import { TouchableOpacity } from "react-native"
 
-import { Text } from "~/design/components/Text"
+import { Text } from "~/expo/design/components/Text"
 
 interface Props extends React.ComponentProps<typeof Text> {
   btnStyle?: StyleProp<ViewStyle>

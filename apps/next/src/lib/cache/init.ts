@@ -1,6 +1,6 @@
 import Redis from "ioredis"
 
-import { config } from "~/config"
+import { config } from "~/next/config"
 
 declare global {
   // eslint-disable-next-line no-var

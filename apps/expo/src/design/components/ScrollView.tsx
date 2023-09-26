@@ -11,8 +11,8 @@ import {
   View as RNView,
 } from "react-native"
 import { useSafeAreaInsets } from "react-native-safe-area-context"
-import { Button } from "~/design/components/Button"
-import { theme } from "~/design/theme"
+import { Button } from "~/expo/design/components/Button"
+import { theme } from "~/expo/design/theme"
 
 const getBottomPadding = (bottomInset: number) =>
   bottomInset > 0 ? bottomInset : 30

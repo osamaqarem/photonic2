@@ -1,7 +1,7 @@
 import React from "react"
 
-import type { ComponentStory } from "~/design/components/Storybook"
-import { Text, variants } from "~/design/components/Text"
+import type { ComponentStory } from "~/expo/design/components/Storybook"
+import { Text, variants } from "~/expo/design/components/Text"
 
 const phrase = "The Photonic app manages photos."
 

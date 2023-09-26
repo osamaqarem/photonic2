@@ -4,8 +4,8 @@ import { Button, StyleSheet, View } from "react-native"
 import type {
   AlertBtnResult,
   ModalOptions,
-} from "~/design/components/alerts/models/options"
-import { Text } from "~/design/components/Text"
+} from "~/expo/design/components/alerts/models/options"
+import { Text } from "~/expo/design/components/Text"
 
 type Props = ModalOptions & {
   onDismiss: (result: AlertBtnResult) => void

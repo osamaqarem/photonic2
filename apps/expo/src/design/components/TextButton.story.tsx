@@ -1,7 +1,7 @@
 import React from "react"
 
-import { TextButton } from "~/design/components/TextButton"
-import type { ComponentStory } from "~/design/components/Storybook"
+import { TextButton } from "~/expo/design/components/TextButton"
+import type { ComponentStory } from "~/expo/design/components/Storybook"
 
 export const TextButtonStory: ComponentStory = {
   name: "TextButton",

@@ -1,6 +1,6 @@
 import * as React from "react"
 import { View } from "react-native"
-import { theme } from "~/design/theme"
+import { theme } from "~/expo/design/theme"
 
 type Spacing = keyof (typeof theme)["space"]["scale"]
 

@@ -2,7 +2,7 @@ import * as React from "react"
 import type { TextProps, TextStyle } from "react-native"
 import { Text as RNText } from "react-native"
 
-import { font } from "~/design/theme"
+import { font } from "~/expo/design/theme"
 
 export const variants = {
   h1: font().weight("bold").color("text").size("xl").style,

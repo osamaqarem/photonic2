@@ -6,8 +6,8 @@ import type { SharedValue } from "react-native-reanimated"
 import { useSharedValue } from "react-native-reanimated"
 import { create } from "zustand"
 
-import { config } from "~/lib/config"
-import { storage } from "~/lib/storage"
+import { config } from "~/expo/lib/config"
+import { storage } from "~/expo/lib/storage"
 
 const ColorSchemeKey =
   config.stage === "storybook" ? "ColorSchemeKeyStorybook" : "ColorSchemeKey"
