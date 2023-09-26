@@ -27,8 +27,8 @@ COPY --from=builder /app/out/full/ .
 COPY turbo.json turbo.json
 COPY tsconfig.json tsconfig.json
 COPY .eslintrc.cjs .eslintrc.cjs
-RUN yarn turbo build --filter=@photonic/next...
 RUN yarn db:generate
+RUN yarn turbo build --filter=@photonic/next...
 
 FROM base AS runner
 WORKDIR /app
