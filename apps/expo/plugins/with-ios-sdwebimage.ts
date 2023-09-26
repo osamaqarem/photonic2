@@ -18,10 +18,10 @@ const SDWebImagePhotosPlugin = {
 #import <SDWebImagePhotosPlugin.h>`,
   },
   init: {
-    before: `[super application:application didFinishLaunchingWithOptions:launchOptions]`,
-    after: `[super application:application didFinishLaunchingWithOptions:launchOptions];
-  SDImageLoadersManager.sharedManager.loaders = @[SDWebImageDownloader.sharedDownloader, SDImagePhotosLoader.sharedLoader];
-  SDWebImageManager.defaultImageLoader = SDImageLoadersManager.sharedManager;`,
+    before: `return [super application:application didFinishLaunchingWithOptions:launchOptions];`,
+    after: `SDImageLoadersManager.sharedManager.loaders = @[SDWebImageDownloader.sharedDownloader, SDImagePhotosLoader.sharedLoader];
+  SDWebImageManager.defaultImageLoader = SDImageLoadersManager.sharedManager;
+  return [super application:application didFinishLaunchingWithOptions:launchOptions];`,
   },
   pod: {
     before: `post_install do |installer|`,
