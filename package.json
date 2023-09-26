@@ -35,8 +35,6 @@
     "dev": "turbo dev",
     "app:prebuild": "yarn workspace @photonic/expo prebuild",
     "app:prebuild-ios": "yarn workspace @photonic/expo prebuild-ios",
-    "app:prebuild-clean": "yarn workspace @photonic/expo prebuild-clean",
-    "app:prebuild-clean-ios": "yarn workspace @photonic/expo prebuild-clean-ios",
     "app:platform-colors": "turbo platform-colors",
     "app:ios": "yarn workspace @photonic/expo ios",
     "app:dev": "yarn workspace @photonic/expo dev",
