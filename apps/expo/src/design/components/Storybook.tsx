@@ -1,4 +1,5 @@
 import * as React from "react"
+import type { TextProps } from "react-native"
 import {
   FlatList,
   LayoutAnimation,
@@ -98,9 +99,12 @@ const StorybookApp: React.FC = () => {
       return keys.map((variantName, index) => (
         <View key={variantName}>
           <Pressable
-            className="h-16 justify-center"
+            style={{
+              justifyContent: "center",
+              height: 64,
+            }}
             onPress={() => goToVariant(variantName)}>
-            <Text className="text-black dark:text-white">{variantName}</Text>
+            <StorybookText>{variantName}</StorybookText>
           </Pressable>
           {keys.length - 1 === index ? null : <Separator />}
         </View>
@@ -120,8 +124,17 @@ const StorybookApp: React.FC = () => {
           renderItem={({ item }) => {
             const [name, Variant] = item
             return (
-              <View className="mt-10">
-                <Text className="text-violet-600 dark:text-violet-400">{`→ ${name}`}</Text>
+              <View
+                style={{
+                  marginTop: 40,
+                }}>
+                <StorybookText
+                  style={{
+                    color:
+                      colorScheme === "dark"
+                        ? rawPalette.violetDark.violet8
+                        : rawPalette.violet.violet8,
+                  }}>{`→ ${name}`}</StorybookText>
                 <Variant />
               </View>
             )
@@ -137,7 +150,11 @@ const StorybookApp: React.FC = () => {
       if (!Variant) return null
       return (
         <>
-          <View className="mt-10" />
+          <View
+            style={{
+              marginTop: 40,
+            }}
+          />
           <Variant />
         </>
       )
@@ -145,24 +162,40 @@ const StorybookApp: React.FC = () => {
 
     if (state.component.showSeparately) {
       return (
-        <View className="mt-10">
-          <Text className="text-2xl font-bold text-black dark:text-white">
+        <View
+          style={{
+            marginTop: 40,
+          }}>
+          <StorybookText
+            style={{
+              fontSize: 24,
+              fontWeight: "bold",
+            }}>
             {state.component.name}
             {state.variant ? (
-              <Text className="text-violet-400">
+              <StorybookText
+                style={{
+                  color: rawPalette.violet.violet4,
+                }}>
                 {" →"} {state.variant}
-              </Text>
+              </StorybookText>
             ) : null}
-          </Text>
+          </StorybookText>
           {state.variant ? renderVariant() : renderVariantNames()}
         </View>
       )
     } else {
       return (
         <>
-          <Text className="text-2xl font-bold text-black dark:text-white mt-8 ml-6">
+          <StorybookText
+            style={{
+              fontWeight: "bold",
+              fontSize: 24,
+              marginTop: 32,
+              marginLeft: 24,
+            }}>
             {state.component.name}
-          </Text>
+          </StorybookText>
           {renderVariantsInline()}
         </>
       )
@@ -171,39 +204,91 @@ const StorybookApp: React.FC = () => {
 
   return (
     <SafeAreaView
-      className=" flex-1"
       style={{
         backgroundColor: theme.colors.background,
+        flex: 1,
       }}>
-      <View className="w-full flex-row items-center justify-between px-8">
-        <View className="items-center justify-center">
+      <View
+        style={{
+          justifyContent: "space-between",
+          alignItems: "center",
+          flexDirection: "row",
+          width: "100%",
+          paddingHorizontal: 32,
+        }}>
+        <View
+          style={{
+            alignItems: "center",
+            justifyContent: "center",
+          }}>
           {Boolean(state) ? (
             <Pressable
               disabled={!Boolean(state)}
-              className="items-center rounded bg-blue-500 p-2 dark:bg-blue-700"
+              style={{
+                backgroundColor:
+                  colorScheme === "light"
+                    ? rawPalette.blue.blue10
+                    : rawPalette.blueDark.blue8,
+                alignItems: "center",
+                borderRadius: 4,
+                padding: 8,
+              }}
               onPress={goBack}
               hitSlop={{ bottom: 20, left: 20, right: 20, top: 20 }}>
-              <Text className="text-sm text-white">Back</Text>
+              <StorybookText
+                style={{
+                  fontSize: 14,
+                  color: "white",
+                }}>
+                Back
+              </StorybookText>
             </Pressable>
           ) : (
-            <Text className="text-center text-lg font-light tracking-wide text-black dark:text-white">
+            <StorybookText
+              style={{
+                textAlign: "center",
+                fontSize: 18,
+                fontWeight: "300",
+              }}>
               Storybook
-            </Text>
+            </StorybookText>
           )}
         </View>
         <Pressable
-          className="items-center self-end rounded bg-black p-2 dark:bg-white"
+          style={{
+            alignItems: "center",
+            alignSelf: "flex-end",
+            borderRadius: 4,
+            backgroundColor: colorScheme === "light" ? "black" : "white",
+            padding: 8,
+          }}
           onPress={() => setMode(colorScheme === "light" ? "dark" : "light")}
           hitSlop={{ bottom: 20, left: 20, right: 20, top: 20 }}>
-          <Text className="w-24 text-center text-sm text-white dark:text-black">
+          <StorybookText
+            style={{
+              color: colorScheme === "dark" ? "black" : "white",
+              width: 96,
+              fontSize: 14,
+              textAlign: "center",
+            }}>
             {`${colorScheme} mode`}
-          </Text>
+          </StorybookText>
         </Pressable>
       </View>
 
-      <View className="flex-1">
+      <View
+        style={{
+          flex: 1,
+        }}>
         {!state ? (
-          <Text className="text-2xl font-bold text-black dark:text-white mt-8 ml-6">
+          <Text
+            style={{
+              fontSize: 24,
+              fontWeight: "bold",
+              marginTop: 32,
+              marginLeft: 24,
+              color: colorScheme === "light" ? "black" : "white",
+            }}>
             Components
           </Text>
         ) : null}
@@ -220,14 +305,24 @@ const StorybookApp: React.FC = () => {
               return (
                 <>
                   <Pressable
-                    className="flex-1 py-6"
+                    style={{
+                      flex: 1,
+                      paddingVertical: 24,
+                    }}
                     onPress={() => goToStory(row.item)}>
-                    <Text className="text-base text-black dark:text-white">
+                    <StorybookText
+                      style={{
+                        fontSize: 16,
+                      }}>
                       {row.index + 1}.
-                      <Text className="text-lg font-medium text-black dark:text-white">
+                      <StorybookText
+                        style={{
+                          fontSize: 18,
+                          fontWeight: "500",
+                        }}>
                         {"  " + row.item.name}
-                      </Text>
-                    </Text>
+                      </StorybookText>
+                    </StorybookText>
                   </Pressable>
                 </>
               )
@@ -242,14 +337,25 @@ const StorybookApp: React.FC = () => {
 function Separator() {
   return (
     <View
-      className="w-full bg-gray-300"
       style={{
         height: StyleSheet.hairlineWidth,
+        width: "100%",
+        backgroundColor: "lightgray",
       }}
     />
   )
 }
 
+function StorybookText({ style, ...props }: TextProps) {
+  const { colorScheme } = useDarkMode()
+  return (
+    <Text
+      {...props}
+      style={[{ color: colorScheme === "light" ? "black" : "white" }, style]}>
+      {props.children}
+    </Text>
+  )
+}
 export const Storybook = () => {
   return (
     <DarkModeProvider>

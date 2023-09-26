@@ -16,8 +16,8 @@ getIconNames().forEach(iconName => {
         key={iconName}
         name={iconName}
         style={{
-          height: 20,
-          width: 20,
+          height: 40,
+          width: 40,
           color: colorScheme === "light" ? "black" : "white",
         }}
       />
