@@ -3,19 +3,19 @@ import type * as trpcNext from "@trpc/server/adapters/next"
 
 import type { User } from "~/next/lib/db"
 import { db } from "~/next/lib/db"
-import type { UserWithAwsAccount } from "~/next/lib/db/types"
-import * as redis from "~/next/lib/cache"
-import * as jwt from "~/next/lib/jwt"
+import type { UserJoinAwsAccount } from "~/next/lib/db/types"
+import { cache } from "~/next/lib/cache"
+import { jwt } from "~/next/lib/jwt"
 
 export const createContext = async ({
   req,
   res,
 }: trpcNext.CreateNextContextOptions) => {
   async function getUserFromHeader(): Promise<Nullable<User>> {
-    const withAwsAccount = async (user: UserWithAwsAccount) => {
+    const withAwsAccount = async (user: UserJoinAwsAccount) => {
       if (user.awsAccount) return user
       // When the cloudformation is initially created, the user's access token won't contain the AWS account. until the user refreshes their token, their AWS account is cached on redis.
-      const awsAccount = await redis.awsRepo.getAccountForUser(user)
+      const awsAccount = await cache.awsAccount.get(user)
       if (!awsAccount) return user
       return {
         ...user,
@@ -40,7 +40,7 @@ export const createContext = async ({
     req,
     res,
     db,
-    redis,
+    cache,
     user,
   }
 }
