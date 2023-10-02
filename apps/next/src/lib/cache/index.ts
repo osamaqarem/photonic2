@@ -57,7 +57,7 @@ class CacheManager<KeyHolder, Payload> {
 }
 
 export const cache = {
-  emailCode: new CacheManager<string, { email: string; code: string }>({
+  loginCode: new CacheManager<string, { email: string; code: string }>({
     expiresIn: "10min",
     extractKey: email => email,
   }),
