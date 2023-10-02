@@ -1,5 +1,6 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack"
 
+import { OnboardingCodeVerification } from "~/expo/features/onboarding/OnboardingCodeVerification"
 import { OnboardingPermissionsScreen } from "~/expo/features/onboarding/OnboardingPermissionsScreen"
 import { OnboardingRegistrationScreen } from "~/expo/features/onboarding/OnboardingRegistration"
 import { OnboardingSettingsScreen } from "~/expo/features/onboarding/OnboardingSettingsScreen"
@@ -21,6 +22,10 @@ export const OnboardingStack = () => {
       <OnboardingStackNav.Screen
         name="onboarding-registration"
         component={OnboardingRegistrationScreen}
+      />
+      <OnboardingStackNav.Screen
+        name="onboarding-code-verification"
+        component={OnboardingCodeVerification}
       />
       <OnboardingStackNav.Screen
         name="onboarding-storage"

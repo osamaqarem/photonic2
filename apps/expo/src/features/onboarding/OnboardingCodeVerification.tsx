@@ -12,20 +12,23 @@ import { theme } from "~/expo/design/theme"
 import type { AppParams } from "~/expo/navigation/params"
 import { trpc } from "~/expo/stores/TrpcProvider"
 
-export const OnboardingRegistrationScreen: React.FC<
-  NativeStackScreenProps<AppParams, "onboarding-registration">
+export const OnboardingCodeVerification: React.FC<
+  NativeStackScreenProps<AppParams, "onboarding-code-verification">
 > = props => {
-  const { isLoading, mutateAsync } = trpc.auth.getLoginCode.useMutation()
+  const { email } = props.route.params
 
-  const [email, setEmail] = React.useState("")
+  const { isLoading, mutateAsync } = trpc.auth.verifyLoginCode.useMutation()
 
-  const handleLogin = async () => {
-    await mutateAsync({ email })
-    props.navigation.navigate("onboarding-code-verification", { email })
+  const [code, setCode] = React.useState("")
+
+  const handleVerify = async () => {
+    const { accessToken, refreshToken } = await mutateAsync({ code, email })
+    // TODO: store access token and refresh token
+    props.navigation.navigate("onboarding-storage")
   }
 
   const loginButtonState = () => {
-    if (email.length === 0) return ButtonState.Disabled
+    if (code.length === 0) return ButtonState.Disabled
     else if (isLoading) return ButtonState.Loading
     else return ButtonState.Active
   }
@@ -36,21 +39,20 @@ export const OnboardingRegistrationScreen: React.FC<
         <SafeAreaView style={styles.safe} top>
           <Text variant="h2">Photonic</Text>
           <Space t={80} />
-          <Text variant="h1">Create your account.</Text>
+          <Text variant="h1">Verification</Text>
           <Space t={30} />
           <Text variant="p">
-            We only need your e-mail. We'll send you a verification code. Please
-            enter it in the next screen.
+            Enter the verification code we sent to your e-mail.
           </Text>
           <Space t={60} />
-          <TextInput placeholder="E-mail" onChangeText={setEmail} />
+          <TextInput placeholder="Code" onChangeText={setCode} />
         </SafeAreaView>
       </ScrollView>
       <ScrollView.StickyView style={styles.stickyView}>
         <Button
-          text="Login"
+          text="Verify"
           size="widest"
-          onPress={handleLogin}
+          onPress={handleVerify}
           state={loginButtonState()}
         />
       </ScrollView.StickyView>
