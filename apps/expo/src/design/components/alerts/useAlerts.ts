@@ -1,8 +1,8 @@
 import { useContext } from "react"
 
 import {
-  Alerts,
   AlertsContext,
+  AlertsStatic,
 } from "~/expo/design/components/alerts/AlertsContext"
 import type { AlertsContextType } from "~/expo/design/components/alerts/models/context"
 
@@ -16,4 +16,4 @@ export function useAlerts(): AlertsContextType {
   return alerts
 }
 
-useAlerts.get = () => Alerts
+useAlerts.get = () => AlertsStatic

@@ -1,32 +1,34 @@
+import type { Icons } from "~/expo/design/components/icons/Icons"
+
 interface StandardLayout {
   type: "Standard"
-  icon?: AnyObject
   title: string
-  message?: string
   btn: AlertButtons
+  message?: string
+  icon?: Icons
   dismissOnBackdropPress?: boolean
-}
-
-interface CustomLayoutContentProps {
-  onDismiss: (arg?: any) => void
 }
 
 interface CustomLayout {
   type: "Custom"
-  content: (props: CustomLayoutContentProps) => JSX.Element
+  content: React.FC<CustomContentProps>
   btn?: AlertButtons
   dismissOnBackdropPress?: boolean
 }
 
-export type AlertOptions = StandardLayout | CustomLayout
+interface CustomContentProps {
+  dismiss: (result: AlertBtnResult) => void
+}
 
-export type ModalOptions = AlertOptions & {
+export type BaseOptions = StandardLayout | CustomLayout
+
+export type ModalOptions = BaseOptions & {
   showCloseBtn?: boolean
 }
 
 export interface NotificationOptions {
   message: string
-  icon?: AnyObject
+  icon?: Icons
   dismissAfterMs?: number
 }
 
@@ -37,4 +39,4 @@ export interface AlertButtons {
   layout?: "row" | "column"
 }
 
-export type AlertBtnResult = "confirm" | "cancel" | "backdrop"
+export type AlertBtnResult = "confirm" | "cancel" | "backdrop" | undefined

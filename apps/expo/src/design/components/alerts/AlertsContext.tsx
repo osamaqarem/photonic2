@@ -7,11 +7,11 @@ import {
 import type { BackdropPressBehavior } from "@gorhom/bottom-sheet/lib/typescript/components/bottomSheetBackdrop/types"
 import * as React from "react"
 import { Pressable, StyleSheet } from "react-native"
-import { useSafeAreaInsets } from "react-native-safe-area-context"
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
 } from "react-native-reanimated"
+import { useSafeAreaInsets } from "react-native-safe-area-context"
 
 import { AlertView } from "~/expo/design/components/alerts/components/AlertView"
 import { ModalView } from "~/expo/design/components/alerts/components/ModalView"
@@ -20,13 +20,13 @@ import type { AlertsContextType } from "~/expo/design/components/alerts/models/c
 import type { AlertEntry } from "~/expo/design/components/alerts/models/entry"
 import type {
   AlertBtnResult,
-  AlertOptions,
-  NotificationOptions,
+  BaseOptions,
   ModalOptions,
+  NotificationOptions,
 } from "~/expo/design/components/alerts/models/options"
 
 export const AlertsContext = React.createContext<AlertsContextType | null>(null)
-export let Alerts: Omit<AlertsContextType, "isPresenting">
+export let AlertsStatic: AlertsContextType
 
 export const AlertsProvider: React.FC<React.PropsWithChildren> = props => {
   //#region Variables
@@ -49,12 +49,13 @@ export const AlertsProvider: React.FC<React.PropsWithChildren> = props => {
         marginHorizontal: 0,
       }
     }
-  })
+  }, [detached.value])
 
   const sheet = React.useRef<BottomSheetModal>(null)
   const entryList = React.useRef<Array<AlertEntry>>([])
   const prevEntryLength = React.useRef<number>(0)
-  const handleDismissResult = React.useRef<unknown>()
+  const dismissResult = React.useRef<Nullable<AlertBtnResult>>()
+
   //#endregion Variables
 
   //#region Internal methods
@@ -73,7 +74,10 @@ export const AlertsProvider: React.FC<React.PropsWithChildren> = props => {
         break
       case "ShowAlert":
       case "ShowModal":
-        currentEntry.promiseResolver(handleDismissResult.current)
+        if (!dismissResult.current) {
+          throw new Error("Unexpected null result")
+        }
+        currentEntry.promiseResolver(dismissResult.current)
         break
       default:
         throw new Error("Unsupported AlertEntry type")
@@ -83,7 +87,7 @@ export const AlertsProvider: React.FC<React.PropsWithChildren> = props => {
   const configureSheet = React.useCallback(
     (mode: "detached" | "modal", dismissOnBackdropPress: Maybe<boolean>) => {
       backdropPressBehavior.value = dismissOnBackdropPress ? "close" : "none"
-      handleDismissResult.current = null
+      dismissResult.current = null
 
       switch (mode) {
         case "detached":
@@ -140,14 +144,14 @@ export const AlertsProvider: React.FC<React.PropsWithChildren> = props => {
   //#endregion Internal methods
 
   //#region Public API
-  const handleDismiss = React.useCallback((result?: unknown) => {
-    handleDismissResult.current = result
+  const handleDismiss = React.useCallback((result?: AlertBtnResult) => {
+    dismissResult.current = result
     sheet.current?.dismiss()
   }, [])
 
   const showAlert = React.useCallback(
-    (options: AlertOptions) => {
-      const { promise, resolve } = getPromiseResolve<AlertBtnResult>()
+    (options: BaseOptions) => {
+      const { promise, resolve } = getPromiseAndResolver<AlertBtnResult>()
 
       const content = () => <AlertView {...options} onDismiss={handleDismiss} />
 
@@ -166,7 +170,7 @@ export const AlertsProvider: React.FC<React.PropsWithChildren> = props => {
 
   const showModal = React.useCallback(
     (options: ModalOptions) => {
-      const { promise, resolve } = getPromiseResolve<AlertBtnResult>()
+      const { promise, resolve } = getPromiseAndResolver<AlertBtnResult>()
 
       const content = () => <ModalView {...options} onDismiss={handleDismiss} />
 
@@ -191,14 +195,14 @@ export const AlertsProvider: React.FC<React.PropsWithChildren> = props => {
       return showModal({
         type: "Custom",
         content,
-      }) as unknown as Promise<void>
+      }) as Promise<void>
     },
     [handleDismiss, showModal],
   )
 
-  const showError = React.useMemo(() => {
-    function showError(message: string) {
-      const { promise, resolve } = getPromiseResolve<void>()
+  const showError = React.useCallback(
+    (message: string) => {
+      const { promise, resolve } = getPromiseAndResolver<void>()
 
       const text = message || "Something went wrong"
 
@@ -220,26 +224,16 @@ export const AlertsProvider: React.FC<React.PropsWithChildren> = props => {
 
       shouldPresent()
       return promise
-    }
-    // Helper for handling errors
-    showError.handle = (err: unknown) => {
-      if (err instanceof Error) {
-        return showError(err.message)
-      } else if (typeof err === "string") {
-        return showError(err)
-      } else {
-        return showError("Something went wrong")
-      }
-    }
-    return showError
-  }, [handleDismiss, shouldPresent])
+    },
+    [handleDismiss, shouldPresent],
+  )
   //#endregion
 
   const renderBackdrop = React.useCallback(
     (backdropProps: BottomSheetBackdropProps) => {
       const dismissFromBackdrop = () => {
         if (backdropPressBehavior.value === "close") {
-          handleDismissResult.current = "backdrop"
+          dismissResult.current = "backdrop"
         }
       }
 
@@ -260,30 +254,25 @@ export const AlertsProvider: React.FC<React.PropsWithChildren> = props => {
     [backdropPressBehavior.value],
   )
 
-  React.useLayoutEffect(() => {
-    Alerts = { showAlert, showError, showModal, showNotification }
+  const memoized = React.useMemo(() => {
+    AlertsStatic = { showAlert, showError, showModal, showNotification }
+    return AlertsStatic
   }, [showAlert, showError, showModal, showNotification])
 
   return (
-    <AlertsContext.Provider
-      value={{
-        showAlert,
-        showModal,
-        showNotification,
-        showError,
-        isPresenting: Boolean(currentContent),
-      }}>
+    <AlertsContext.Provider value={memoized}>
       {props.children}
       <BottomSheetModalProvider>
         <BottomSheetModal
           ref={sheet}
           onDismiss={onDismiss}
-          enableDynamicSizing
+          enableDynamicSizing={true}
           bottomInset={floatBottomDistance.value}
           enablePanDownToClose={false}
           backgroundComponent={null}
           handleComponent={null}
           backdropComponent={renderBackdrop}
+          snapPoints={["CONTENT_HEIGHT"]}
           detached={detached.value}
           style={[styles.sheetContainer, sheetStyle]}>
           <Animated.View style={styles.contentContainerStyle}>
@@ -295,12 +284,12 @@ export const AlertsProvider: React.FC<React.PropsWithChildren> = props => {
   )
 }
 
-function getPromiseResolve<ResultType = void>() {
-  let resolve: (value: ResultType) => void
+function getPromiseAndResolver<ResultType = void>() {
+  let resolve!: (value: ResultType) => void
   const promise = new Promise<ResultType>(res => {
     resolve = res
   })
-  return { promise, resolve: resolve! }
+  return { promise, resolve }
 }
 
 const styles = StyleSheet.create({

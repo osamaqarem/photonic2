@@ -46,10 +46,10 @@ const Icons = {
   Xmark: () => Xmark,
 }
 
-export type IconNames = keyof typeof Icons
+export type Icons = keyof typeof Icons
 
 interface Props extends SvgProps {
-  name: IconNames
+  name: Icons
 }
 
 export const Icon: React.FC<Props> = ({ name, ...rest }) => {
@@ -57,4 +57,4 @@ export const Icon: React.FC<Props> = ({ name, ...rest }) => {
   return <Component {...rest} />
 }
 
-export const getIconNames = () => Object.keys(Icons) as Array<IconNames>
+export const getIconNames = () => Object.keys(Icons) as Array<Icons>

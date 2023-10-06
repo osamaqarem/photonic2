@@ -1,4 +1,8 @@
-import type { AlertOptionsUnion } from "~/expo/design/components/alerts/models/context"
+import type {
+  BaseOptions,
+  AlertBtnResult,
+  ModalOptions,
+} from "~/expo/design/components/alerts/models/options"
 
 interface AlertBaseEntry {
   type: "ShowAlert" | "ShowModal" | "ShowError"
@@ -7,14 +11,14 @@ interface AlertBaseEntry {
 
 interface ShowAlertEntry extends AlertBaseEntry {
   type: "ShowAlert"
-  promiseResolver: (arg?: any) => void
-  options: AlertOptionsUnion
+  promiseResolver: (result: AlertBtnResult) => void
+  options: BaseOptions
 }
 
 interface ShowModalEntry extends AlertBaseEntry {
   type: "ShowModal"
-  promiseResolver: (arg?: any) => void
-  options: AlertOptionsUnion
+  promiseResolver: (result: AlertBtnResult) => void
+  options: ModalOptions
 }
 
 interface ShowErrorEntry extends AlertBaseEntry {

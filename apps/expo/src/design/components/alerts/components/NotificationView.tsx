@@ -2,6 +2,7 @@ import * as React from "react"
 import { StyleSheet, View } from "react-native"
 
 import type { NotificationOptions } from "~/expo/design/components/alerts/models/options"
+import { Icon } from "~/expo/design/components/icons/Icons"
 import { Text } from "~/expo/design/components/Text"
 
 interface Props extends NotificationOptions {
@@ -21,7 +22,7 @@ export const NotificationView: React.FC<Props> = ({
 
   return (
     <View style={styles.content}>
-      {icon ? "icon" : null}
+      {icon ? <Icon name={icon} /> : null}
       <Text style={[styles.message]}>{message}</Text>
     </View>
   )

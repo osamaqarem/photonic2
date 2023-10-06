@@ -2,13 +2,15 @@ import * as React from "react"
 import { StyleSheet, View } from "react-native"
 
 import { Text } from "~/expo/design/components/Text"
-import type { AlertBtnResult, AlertOptions } from "../models/options"
+import { Icon } from "~/expo/design/components/icons/Icons"
 
-type Props = AlertOptions & {
+import type { AlertBtnResult, BaseOptions } from "../models/options"
+
+type Props = BaseOptions & {
   onDismiss: (result: AlertBtnResult) => void
 }
 
-export const AlertView: React.FC<Props> = (props: Props) => {
+export const AlertView: React.FC<Props> = props => {
   const btnLayoutStyle =
     props.btn?.layout === "row" ? styles.btnRowStyle : styles.btnColumnStyle
 
@@ -18,11 +20,11 @@ export const AlertView: React.FC<Props> = (props: Props) => {
   function renderContent() {
     if (props.type === "Custom") {
       const Component = props.content
-      return <Component onDismiss={props.onDismiss} />
+      return <Component dismiss={props.onDismiss} />
     } else {
       return (
         <>
-          {props.icon ? "Icon" : null}
+          {props.icon ? <Icon name={props.icon} /> : null}
           <Text
             style={[
               styles.title,

@@ -5,13 +5,14 @@ import type {
   AlertBtnResult,
   ModalOptions,
 } from "~/expo/design/components/alerts/models/options"
+import { Icon } from "~/expo/design/components/icons/Icons"
 import { Text } from "~/expo/design/components/Text"
 
 type Props = ModalOptions & {
   onDismiss: (result: AlertBtnResult) => void
 }
 
-export const ModalView: React.FC<Props> = (props: Props) => {
+export const ModalView: React.FC<Props> = props => {
   const btnLayoutStyle =
     props.btn?.layout === "row" ? styles.btnRowStyle : styles.btnColumnStyle
 
@@ -21,11 +22,11 @@ export const ModalView: React.FC<Props> = (props: Props) => {
   function renderContent() {
     if (props.type === "Custom") {
       const Component = props.content
-      return <Component onDismiss={props.onDismiss} />
+      return <Component dismiss={props.onDismiss} />
     } else {
       return (
         <>
-          {props.icon ? "Icon" : null}
+          {props.icon ? <Icon name={props.icon} /> : null}
           <Text
             style={[
               styles.title,
