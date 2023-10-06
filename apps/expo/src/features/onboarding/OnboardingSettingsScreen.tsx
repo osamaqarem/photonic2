@@ -8,16 +8,12 @@ import { Space } from "~/expo/design/components/Space"
 import { Text } from "~/expo/design/components/Text"
 import { palette } from "~/expo/design/palette"
 import { theme } from "~/expo/design/theme"
-import { useAuth } from "~/expo/navigation/Navigation"
 import type { AppParams } from "~/expo/navigation/params"
 
 export const OnboardingSettingsScreen: React.FC<
   NativeStackScreenProps<AppParams, "onboarding-settings">
-> = () => {
-  const handleDone = () => {
-    useAuth.setState({ authenticated: true })
-    // setAuthenicated
-  }
+> = props => {
+  const handleDone = () => props.navigation.replace("home")
 
   return (
     <>

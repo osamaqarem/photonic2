@@ -9,4 +9,13 @@ export type OnboardingStackParams = {
   "onboarding-settings": undefined
 }
 
-export type AppParams = OnboardingStackParams
+export type MainStackParams = {
+  home: undefined
+}
+
+export type RootStackParams = {
+  onboarding: undefined
+  main: undefined
+}
+
+export type AppParams = OnboardingStackParams & MainStackParams

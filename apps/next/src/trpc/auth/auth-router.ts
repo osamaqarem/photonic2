@@ -76,7 +76,7 @@ export const authRouter = router({
         refreshToken: z.string(),
       }),
     )
-    .query(async ({ input, ctx }) => {
+    .mutation(async ({ input, ctx }) => {
       const { refreshToken } = input
 
       let [refreshTokenJwt, error] = jwt.refreshToken.verify(refreshToken)

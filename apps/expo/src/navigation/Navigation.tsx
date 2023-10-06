@@ -1,9 +1,11 @@
 import { DefaultTheme, NavigationContainer } from "@react-navigation/native"
+import { createNativeStackNavigator } from "@react-navigation/native-stack"
 import * as React from "react"
-import { create } from "zustand"
 
 import { theme } from "~/expo/design/theme"
+import { MainStack } from "~/expo/navigation/MainStack"
 import { OnboardingStack } from "~/expo/navigation/OnboardingStack"
+import type { RootStackParams } from "~/expo/navigation/params"
 
 const navTheme = {
   ...DefaultTheme,
@@ -16,18 +18,19 @@ const navTheme = {
   },
 }
 
-export const useAuth = create(() => ({
-  authenticated: false,
-}))
+const RootStackNavigator = createNativeStackNavigator<RootStackParams>()
 
 export function Navigation() {
-  const authenticated = useAuth(state => state.authenticated)
-
   return (
     // @ts-expect-error theme does not accept platform colors
     <NavigationContainer theme={navTheme}>
-      {/* TODO: main stack */}
-      {authenticated ? null : <OnboardingStack />}
+      <RootStackNavigator.Navigator screenOptions={{ headerShown: false }}>
+        <RootStackNavigator.Screen
+          name="onboarding"
+          component={OnboardingStack}
+        />
+        <RootStackNavigator.Screen name="main" component={MainStack} />
+      </RootStackNavigator.Navigator>
     </NavigationContainer>
   )
 }

@@ -11,9 +11,13 @@ import { observable } from "@trpc/server/observable"
 import * as React from "react"
 
 import { Logger } from "@photonic/common"
-import type { AppRouter } from "~/next/trpc/_app"
+import type { AppRouter } from "@photonic/next/src/trpc/_app"
+import { ApiError } from "@photonic/next/src/trpc/api-error"
+
 import { config } from "~/expo/lib/config"
 import { Network } from "~/expo/lib/network"
+import type { AuthStore } from "~/expo/stores/auth-store"
+import { useAuth } from "~/expo/stores/auth-store"
 
 const loggerLink: TRPCLink<AppRouter> = () => {
   const logger = new Logger("trpc")
@@ -38,22 +42,71 @@ const loggerLink: TRPCLink<AppRouter> = () => {
   }
 }
 
+const httpLink = httpBatchLink({
+  url: `${config.apiBaseUrl}/api/trpc`,
+  async headers() {
+    const { accessToken } = useAuth.getState()
+    if (accessToken) {
+      return {
+        Authorization: `Bearer ${accessToken}`,
+      }
+    }
+    return {}
+  },
+})
+
+const authRefreshLink: TRPCLink<AppRouter> = () => {
+  let authRefresh: Nullable<ReturnType<AuthStore["actions"]["maybeRefresh"]>> =
+    null
+
+  return ({ next, op }) => {
+    return observable(observer => {
+      const unsubscribe = next(op).subscribe({
+        next: observer.next,
+        complete: observer.complete,
+        async error(err) {
+          if (err.message !== ApiError.InvalidAccessToken) {
+            observer.error(err)
+          } else {
+            const refresh = (refreshToken: string) =>
+              trpcClient.auth.refresh.mutate({ refreshToken })
+
+            authRefresh ??= useAuth.getState().actions.maybeRefresh(refresh)
+            const outcome = await authRefresh
+
+            if (outcome === "authorized") {
+              const retry = next(op).subscribe({
+                next(value) {
+                  authRefresh = null
+                  observer.next(value)
+                  retry.unsubscribe()
+                },
+                error(error) {
+                  authRefresh = null
+                  observer.error(error)
+                  retry.unsubscribe()
+                },
+                complete() {
+                  authRefresh = null
+                  observer.complete()
+                  retry.unsubscribe()
+                },
+              })
+            } else {
+              authRefresh = null
+              observer.error(err)
+            }
+          }
+        },
+      })
+
+      return unsubscribe
+    })
+  }
+}
+
 const opts: CreateTRPCClientOptions<AppRouter> = {
-  links: [
-    loggerLink,
-    httpBatchLink({
-      url: `${config.apiBaseUrl}/api/trpc`,
-      async headers() {
-        // const { accessToken } = useAuth.getState()
-        // if (accessToken) {
-        //   return {
-        //     Authorization: `Bearer ${accessToken}`,
-        //   }
-        // }
-        return {}
-      },
-    }),
-  ],
+  links: [loggerLink, authRefreshLink, httpLink],
 }
 
 export const trpcClient = createTRPCProxyClient<AppRouter>(opts)
@@ -67,7 +120,6 @@ export const TrpcProvider: React.FC<React.PropsWithChildren> = ({
   const [queryClient] = React.useState(
     () =>
       new QueryClient({
-        logger: new Logger("ReactQuery"),
         defaultOptions: {
           queries: {
             retry: false,
@@ -78,14 +130,10 @@ export const TrpcProvider: React.FC<React.PropsWithChildren> = ({
   )
 
   React.useEffect(function configReactQuery() {
-    onlineManager.setEventListener(setOnline => {
+    onlineManager.setEventListener(reactQuerySetOnline => {
       return new Network().addEventListener(online => {
-        if (!online) {
-          // useAuth.getState().actions.setOffline()
-          setOnline(false)
-        } else {
-          setOnline(true)
-        }
+        reactQuerySetOnline(online)
+        useAuth.getState().actions.setOnline(online)
       })
     })
   }, [])

@@ -5,9 +5,10 @@ import * as Sentry from "sentry-expo"
 
 import { AlertsProvider } from "~/expo/design/components/alerts/AlertsContext"
 import { config } from "~/expo/lib/config"
-import { DarkModeProvider } from "~/expo/stores/DarkModeProvider"
 import { Navigation } from "~/expo/navigation/Navigation"
+import { DarkModeProvider } from "~/expo/stores/DarkModeProvider"
 import { TrpcProvider } from "~/expo/stores/TrpcProvider"
+import { useAuth } from "~/expo/stores/auth-store"
 
 export default function App() {
   if (config.stage === "storybook") {
@@ -45,4 +46,6 @@ function prepare() {
     enableInExpoDevelopment: false,
     enableNative: false,
   })
+
+  useAuth.getState().actions.hydrate()
 }

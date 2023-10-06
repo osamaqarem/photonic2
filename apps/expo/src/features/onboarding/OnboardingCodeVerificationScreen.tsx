@@ -11,8 +11,9 @@ import { TextInput } from "~/expo/design/components/TextInput"
 import { theme } from "~/expo/design/theme"
 import type { AppParams } from "~/expo/navigation/params"
 import { trpc } from "~/expo/stores/TrpcProvider"
+import { useAuth } from "~/expo/stores/auth-store"
 
-export const OnboardingCodeVerification: React.FC<
+export const OnboardingCodeVerificationScreen: React.FC<
   NativeStackScreenProps<AppParams, "onboarding-code-verification">
 > = props => {
   const { email } = props.route.params
@@ -22,9 +23,15 @@ export const OnboardingCodeVerification: React.FC<
   const [code, setCode] = React.useState("")
 
   const handleVerify = async () => {
-    const { accessToken, refreshToken } = await mutateAsync({ code, email })
-    // TODO: store access token and refresh token
-    props.navigation.navigate("onboarding-storage")
+    try {
+      const { accessToken, refreshToken } = await mutateAsync({ code, email })
+      await useAuth
+        .getState()
+        .actions.setSignedIn({ accessToken, refreshToken })
+      props.navigation.navigate("onboarding-storage")
+    } catch (err) {
+      // TODO:
+    }
   }
 
   const loginButtonState = () => {
