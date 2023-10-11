@@ -1,4 +1,3 @@
-import type { StateCreator, StoreApi } from "zustand"
 import { create } from "zustand"
 
 import { Logger, getErrorMsg } from "@photonic/common"
@@ -25,6 +24,7 @@ interface AuthStoreActions {
 export interface AuthStore {
   accessToken: Nullable<string>
   online: boolean
+  hydrated: boolean
   actions: AuthStoreActions
 }
 
@@ -35,6 +35,7 @@ export const useAuth = create<AuthStore>(
   logMiddleware.connect((set, get) => ({
     accessToken: null,
     online: false,
+    hydrated: false,
     actions: {
       async setSignedIn({ accessToken, refreshToken }) {
         await Promise.all([
@@ -44,14 +45,14 @@ export const useAuth = create<AuthStore>(
           ),
           SecureStorage.setItemAsync(SecureStorageKey.AccessToken, accessToken),
         ])
-        return set({ accessToken })
+        return set({ accessToken, hydrated: true })
       },
       async setSignedOut() {
         await Promise.all([
           SecureStorage.deleteItemAsync(SecureStorageKey.RefreshToken),
           SecureStorage.deleteItemAsync(SecureStorageKey.AccessToken),
         ])
-        return set({ accessToken: null })
+        return set({ accessToken: null, hydrated: false })
       },
       setOnline(online) {
         set({ online })

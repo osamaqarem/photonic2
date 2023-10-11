@@ -2,6 +2,7 @@ import * as React from "react"
 import { LogBox } from "react-native"
 import { SafeAreaProvider } from "react-native-safe-area-context"
 import * as Sentry from "sentry-expo"
+import * as SplashScreen from "expo-splash-screen"
 
 import { AlertsProvider } from "~/expo/design/components/alerts/AlertsContext"
 import { config } from "~/expo/lib/config"
@@ -32,6 +33,8 @@ export default function App() {
 }
 
 function prepare() {
+  SplashScreen.preventAutoHideAsync()
+
   LogBox.ignoreLogs([
     // sentry-expo
     "Constants.platform.ios.model has been deprecated",
