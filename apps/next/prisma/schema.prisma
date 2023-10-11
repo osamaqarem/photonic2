@@ -40,7 +40,8 @@ model Album {
 }
 
 model Photo {
-  name          String      @id
+  id            Int       @id @default(autoincrement())
+  name          String    @unique
   mediaType     MediaType
   width         Int
   height        Int

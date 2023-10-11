@@ -16,6 +16,9 @@
     "db:proxy": "fly proxy 5432:5432 -a photonic-next-staging-postgres"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.427.0",
+    "@aws-sdk/client-sts": "^3.427.0",
+    "@aws-sdk/s3-request-presigner": "^3.427.0",
     "@photonic/common": "*",
     "@prisma/client": "^4.16.2",
     "@trpc/client": "^10.38.4",
