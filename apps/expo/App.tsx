@@ -40,6 +40,7 @@ function prepare() {
     "Constants.platform.ios.model has been deprecated",
     // expo-splash-screen
     "No native splash screen registered for given view controller",
+    "`useBottomSheetDynamicSnapPoints`",
   ])
 
   Sentry.init({

@@ -23,6 +23,7 @@ interface CustomContentProps {
 export type BaseOptions = StandardLayout | CustomLayout
 
 export type ModalOptions = BaseOptions & {
+  // TODO: not implemented
   showCloseBtn?: boolean
 }
 
@@ -39,4 +40,9 @@ export interface AlertButtons {
   layout?: "row" | "column"
 }
 
-export type AlertBtnResult = "confirm" | "cancel" | "backdrop" | undefined
+export type AlertBtnResult =
+  | "confirm"
+  | "cancel"
+  | "backdrop"
+  | "timeout"
+  | undefined

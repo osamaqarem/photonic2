@@ -9,24 +9,26 @@ import { Icon } from "~/expo/design/components/icons/Icons"
 import { Text } from "~/expo/design/components/Text"
 
 type Props = ModalOptions & {
-  onDismiss: (result: AlertBtnResult) => void
+  handleDismiss: (result: AlertBtnResult) => void
 }
 
 export const ModalView: React.FC<Props> = props => {
   const btnLayoutStyle =
     props.btn?.layout === "row" ? styles.btnRowStyle : styles.btnColumnStyle
 
-  const onConfirm = () => props.onDismiss("confirm")
-  const onCancel = () => props.onDismiss("cancel")
+  const onConfirm = () => props.handleDismiss("confirm")
+  const onCancel = () => props.handleDismiss("cancel")
 
   function renderContent() {
     if (props.type === "Custom") {
       const Component = props.content
-      return <Component dismiss={props.onDismiss} />
+      return <Component dismiss={props.handleDismiss} />
     } else {
       return (
         <>
-          {props.icon ? <Icon name={props.icon} /> : null}
+          {props.icon ? (
+            <Icon name={props.icon} style={styles.iconStyle} />
+          ) : null}
           <Text
             style={[
               styles.title,
@@ -63,6 +65,10 @@ export const ModalView: React.FC<Props> = props => {
 }
 
 const styles = StyleSheet.create({
+  iconStyle: {
+    height: 40,
+    width: 40,
+  },
   content: {
     paddingVertical: 12,
     width: "100%",
@@ -71,13 +77,11 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 20,
-    color: "black",
     fontWeight: "500",
     textAlign: "center",
   },
   message: {
     fontSize: 16,
-    color: "black",
     marginTop: 24,
     textAlign: "center",
   },

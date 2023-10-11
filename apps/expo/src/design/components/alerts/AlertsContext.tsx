@@ -3,6 +3,7 @@ import {
   BottomSheetBackdrop,
   BottomSheetModal,
   BottomSheetModalProvider,
+  useBottomSheetDynamicSnapPoints,
 } from "@gorhom/bottom-sheet"
 import type { BackdropPressBehavior } from "@gorhom/bottom-sheet/lib/typescript/components/bottomSheetBackdrop/types"
 import * as React from "react"
@@ -24,6 +25,7 @@ import type {
   ModalOptions,
   NotificationOptions,
 } from "~/expo/design/components/alerts/models/options"
+import { theme } from "~/expo/design/theme"
 
 export const AlertsContext = React.createContext<AlertsContextType | null>(null)
 export let AlertsStatic: AlertsContextType
@@ -35,10 +37,10 @@ export const AlertsProvider: React.FC<React.PropsWithChildren> = props => {
 
   const [currentContent, setCurrentContent] =
     React.useState<React.ReactNode>(null)
+  const [floatBottomDistance, setFloatBottomDistance] = React.useState(0)
 
   const detached = useSharedValue(true)
   const backdropPressBehavior = useSharedValue<BackdropPressBehavior>("none")
-  const floatBottomDistance = useSharedValue<number>(bottomInset)
   const sheetStyle = useAnimatedStyle(() => {
     if (detached.value) {
       return {
@@ -53,21 +55,20 @@ export const AlertsProvider: React.FC<React.PropsWithChildren> = props => {
 
   const sheet = React.useRef<BottomSheetModal>(null)
   const entryList = React.useRef<Array<AlertEntry>>([])
-  const prevEntryLength = React.useRef<number>(0)
+  const prevEntryLength = React.useRef(0)
   const dismissResult = React.useRef<Nullable<AlertBtnResult>>()
 
+  const {
+    animatedHandleHeight,
+    animatedSnapPoints,
+    animatedContentHeight,
+    handleContentLayout,
+  } = useBottomSheetDynamicSnapPoints(["CONTENT_HEIGHT"])
   //#endregion Variables
 
   //#region Internal methods
   function onDismiss() {
     const currentEntry = entryList.current.shift()
-    if (entryList.current.length === 0) {
-      prevEntryLength.current = 0
-      setCurrentContent(null)
-    } else {
-      shouldPresent()
-    }
-
     switch (currentEntry?.type) {
       case "ShowError":
         currentEntry.promiseResolver()
@@ -82,6 +83,13 @@ export const AlertsProvider: React.FC<React.PropsWithChildren> = props => {
       default:
         throw new Error("Unsupported AlertEntry type")
     }
+
+    if (entryList.current.length === 0) {
+      prevEntryLength.current = 0
+      setCurrentContent(null)
+    } else {
+      shouldPresent()
+    }
   }
 
   const configureSheet = React.useCallback(
@@ -91,20 +99,16 @@ export const AlertsProvider: React.FC<React.PropsWithChildren> = props => {
 
       switch (mode) {
         case "detached":
-          if (!detached.value) {
-            detached.value = true
-            floatBottomDistance.value = bottomInset
-          }
+          detached.value = true
+          setFloatBottomDistance(bottomInset)
           return
         case "modal":
-          if (detached.value) {
-            detached.value = false
-            floatBottomDistance.value = 0
-          }
+          detached.value = false
+          setFloatBottomDistance(0)
           return
       }
     },
-    [bottomInset, backdropPressBehavior, floatBottomDistance, detached],
+    [bottomInset, backdropPressBehavior, detached],
   )
 
   const shouldPresent = React.useCallback(() => {
@@ -143,17 +147,18 @@ export const AlertsProvider: React.FC<React.PropsWithChildren> = props => {
   }, [configureSheet])
   //#endregion Internal methods
 
-  //#region Public API
-  const handleDismiss = React.useCallback((result?: AlertBtnResult) => {
+  const dismiss = React.useCallback((result?: AlertBtnResult) => {
     dismissResult.current = result
     sheet.current?.dismiss()
   }, [])
+
+  //#region Public API
 
   const showAlert = React.useCallback(
     (options: BaseOptions) => {
       const { promise, resolve } = getPromiseAndResolver<AlertBtnResult>()
 
-      const content = () => <AlertView {...options} onDismiss={handleDismiss} />
+      const content = () => <AlertView {...options} handleDismiss={dismiss} />
 
       entryList.current.push({
         type: "ShowAlert",
@@ -165,14 +170,14 @@ export const AlertsProvider: React.FC<React.PropsWithChildren> = props => {
       shouldPresent()
       return promise
     },
-    [handleDismiss, shouldPresent],
+    [dismiss, shouldPresent],
   )
 
   const showModal = React.useCallback(
     (options: ModalOptions) => {
       const { promise, resolve } = getPromiseAndResolver<AlertBtnResult>()
 
-      const content = () => <ModalView {...options} onDismiss={handleDismiss} />
+      const content = () => <ModalView {...options} handleDismiss={dismiss} />
 
       entryList.current.push({
         type: "ShowModal",
@@ -184,20 +189,23 @@ export const AlertsProvider: React.FC<React.PropsWithChildren> = props => {
       shouldPresent()
       return promise
     },
-    [handleDismiss, shouldPresent],
+    [dismiss, shouldPresent],
   )
 
   const showNotification = React.useCallback(
     (options: NotificationOptions) => {
       const content = () => (
-        <NotificationView {...options} onDismiss={handleDismiss} />
+        <NotificationView
+          {...options}
+          handleDismiss={() => dismiss("timeout")}
+        />
       )
       return showModal({
         type: "Custom",
         content,
       }) as Promise<void>
     },
-    [handleDismiss, showModal],
+    [dismiss, showModal],
   )
 
   const showError = React.useCallback(
@@ -209,7 +217,7 @@ export const AlertsProvider: React.FC<React.PropsWithChildren> = props => {
       const content = () => (
         <AlertView
           btn={{ confirmBtnTitle: "OK" }}
-          onDismiss={handleDismiss}
+          handleDismiss={dismiss}
           type="Standard"
           title={"Error"}
           message={text}
@@ -225,7 +233,7 @@ export const AlertsProvider: React.FC<React.PropsWithChildren> = props => {
       shouldPresent()
       return promise
     },
-    [handleDismiss, shouldPresent],
+    [dismiss, shouldPresent],
   )
   //#endregion
 
@@ -266,16 +274,19 @@ export const AlertsProvider: React.FC<React.PropsWithChildren> = props => {
         <BottomSheetModal
           ref={sheet}
           onDismiss={onDismiss}
-          enableDynamicSizing={true}
-          bottomInset={floatBottomDistance.value}
-          enablePanDownToClose={false}
+          // @ts-expect-error bad lib type
+          snapPoints={animatedSnapPoints}
+          handleHeight={animatedHandleHeight}
+          contentHeight={animatedContentHeight}
+          bottomInset={floatBottomDistance}
           backgroundComponent={null}
           handleComponent={null}
           backdropComponent={renderBackdrop}
-          snapPoints={["CONTENT_HEIGHT"]}
-          detached={detached.value}
+          detached
           style={[styles.sheetContainer, sheetStyle]}>
-          <Animated.View style={styles.contentContainerStyle}>
+          <Animated.View
+            style={styles.contentContainerStyle}
+            onLayout={handleContentLayout}>
             {currentContent}
           </Animated.View>
         </BottomSheetModal>
@@ -301,7 +312,7 @@ const styles = StyleSheet.create({
   sheetContainer: {
     marginHorizontal: 16,
     borderRadius: 16,
-    backgroundColor: "white",
+    backgroundColor: theme.colors.elementSecondaryBg,
     shadowColor: "black",
     shadowOffset: {
       width: 0,

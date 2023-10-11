@@ -6,29 +6,33 @@ import { Icon } from "~/expo/design/components/icons/Icons"
 import { Text } from "~/expo/design/components/Text"
 
 interface Props extends NotificationOptions {
-  onDismiss: () => void
+  handleDismiss: () => void
 }
 
 export const NotificationView: React.FC<Props> = ({
   icon,
   message,
   dismissAfterMs,
-  onDismiss,
+  handleDismiss,
 }) => {
   React.useEffect(() => {
-    setTimeout(onDismiss, dismissAfterMs ?? 1500)
+    setTimeout(handleDismiss, dismissAfterMs ?? 1500)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return (
     <View style={styles.content}>
-      {icon ? <Icon name={icon} /> : null}
-      <Text style={[styles.message]}>{message}</Text>
+      {icon ? <Icon name={icon} style={styles.iconStyle} /> : null}
+      <Text style={styles.message}>{message}</Text>
     </View>
   )
 }
 
 const styles = StyleSheet.create({
+  iconStyle: {
+    height: 80,
+    width: 80,
+  },
   content: {
     paddingVertical: 12,
     width: "100%",
@@ -37,7 +41,6 @@ const styles = StyleSheet.create({
   },
   message: {
     fontSize: 16,
-    color: "black",
     textAlign: "center",
     marginTop: 24,
   },
