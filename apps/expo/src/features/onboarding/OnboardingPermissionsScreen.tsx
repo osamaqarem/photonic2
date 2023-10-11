@@ -1,5 +1,6 @@
 import type { NativeStackScreenProps } from "@react-navigation/native-stack"
-import { StyleSheet } from "react-native"
+import { PermissionStatus, usePermissions } from "expo-media-library"
+import { Linking, StyleSheet } from "react-native"
 
 import { Button } from "~/expo/design/components/Button"
 import { SafeAreaView } from "~/expo/design/components/SafeAreaView"
@@ -12,11 +13,20 @@ import type { AppParams } from "~/expo/navigation/params"
 export const OnboardingPermissionsScreen: React.FC<
   NativeStackScreenProps<AppParams, "onboarding-permissions">
 > = props => {
-  const handleSelect = async () => {
-    // show allow all photos popup
-    // await Linking.openSettings()
-    props.navigation.navigate("onboarding-settings")
+  const [permissionResponse, requestPermission] = usePermissions()
+
+  const handleSelect = () => {
+    switch (permissionResponse?.status) {
+      case PermissionStatus.UNDETERMINED:
+        return requestPermission()
+      case PermissionStatus.DENIED:
+        return Linking.openSettings()
+      case PermissionStatus.GRANTED:
+        return completeOnboarding()
+    }
   }
+
+  const completeOnboarding = () => props.navigation.navigate("main")
 
   return (
     <>
@@ -33,6 +43,12 @@ export const OnboardingPermissionsScreen: React.FC<
         </SafeAreaView>
       </ScrollView>
       <ScrollView.StickyView style={styles.stickyView}>
+        <Button
+          text="Skip"
+          size="small"
+          variant="secondary"
+          onPress={completeOnboarding}
+        />
         <Button text="Select" size="wide" onPress={handleSelect} />
       </ScrollView.StickyView>
     </>

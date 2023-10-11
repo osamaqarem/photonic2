@@ -6,7 +6,6 @@ export type OnboardingStackParams = {
   }
   "onboarding-storage": undefined
   "onboarding-permissions": undefined
-  "onboarding-settings": undefined
 }
 
 export type MainStackParams = {
@@ -18,4 +17,6 @@ export type RootStackParams = {
   main: undefined
 }
 
-export type AppParams = OnboardingStackParams & MainStackParams
+export type AppParams = OnboardingStackParams &
+  MainStackParams &
+  RootStackParams

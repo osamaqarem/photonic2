@@ -3,7 +3,6 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack"
 import { OnboardingCodeVerificationScreen } from "~/expo/features/onboarding/OnboardingCodeVerificationScreen"
 import { OnboardingPermissionsScreen } from "~/expo/features/onboarding/OnboardingPermissionsScreen"
 import { OnboardingRegistrationScreen } from "~/expo/features/onboarding/OnboardingRegistration"
-import { OnboardingSettingsScreen } from "~/expo/features/onboarding/OnboardingSettingsScreen"
 import { OnboardingStorageScreen } from "~/expo/features/onboarding/OnboardingStorageScreen"
 import { OnboardingWelcomeScreen } from "~/expo/features/onboarding/OnboardingWelcomeScreen"
 import type { OnboardingStackParams } from "./params"
@@ -34,10 +33,6 @@ export const OnboardingStack = () => {
       <OnboardingStackNav.Screen
         name="onboarding-permissions"
         component={OnboardingPermissionsScreen}
-      />
-      <OnboardingStackNav.Screen
-        name="onboarding-settings"
-        component={OnboardingSettingsScreen}
       />
     </OnboardingStackNav.Navigator>
   )
