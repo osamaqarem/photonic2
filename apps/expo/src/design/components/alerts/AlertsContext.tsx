@@ -17,7 +17,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context"
 import { AlertView } from "~/expo/design/components/alerts/components/AlertView"
 import { ModalView } from "~/expo/design/components/alerts/components/ModalView"
 import { NotificationView } from "~/expo/design/components/alerts/components/NotificationView"
-import type { AlertsContextType } from "~/expo/design/components/alerts/models/context"
+import type { AlertsContext } from "~/expo/design/components/alerts/models/context"
 import type { AlertEntry } from "~/expo/design/components/alerts/models/entry"
 import type {
   AlertBtnResult,
@@ -27,8 +27,8 @@ import type {
 } from "~/expo/design/components/alerts/models/options"
 import { theme } from "~/expo/design/theme"
 
-export const AlertsContext = React.createContext<AlertsContextType | null>(null)
-export let AlertsStatic: AlertsContextType
+export const alertsContext = React.createContext<AlertsContext | null>(null)
+export let AlertsStatic: AlertsContext
 
 export const AlertsProvider: React.FC<React.PropsWithChildren> = props => {
   //#region Variables
@@ -268,7 +268,7 @@ export const AlertsProvider: React.FC<React.PropsWithChildren> = props => {
   }, [showAlert, showError, showModal, showNotification])
 
   return (
-    <AlertsContext.Provider value={memoized}>
+    <alertsContext.Provider value={memoized}>
       {props.children}
       <BottomSheetModalProvider>
         <BottomSheetModal
@@ -291,7 +291,7 @@ export const AlertsProvider: React.FC<React.PropsWithChildren> = props => {
           </Animated.View>
         </BottomSheetModal>
       </BottomSheetModalProvider>
-    </AlertsContext.Provider>
+    </alertsContext.Provider>
   )
 }
 

@@ -1,13 +1,13 @@
 import { useContext } from "react"
 
 import {
-  AlertsContext,
+  alertsContext,
   AlertsStatic,
 } from "~/expo/design/components/alerts/AlertsContext"
-import type { AlertsContextType } from "~/expo/design/components/alerts/models/context"
+import type { AlertsContext } from "~/expo/design/components/alerts/models/context"
 
-export function useAlerts(): AlertsContextType {
-  const alerts = useContext(AlertsContext)
+export function useAlerts(): AlertsContext {
+  const alerts = useContext(alertsContext)
 
   if (!alerts) {
     throw new Error("useAlerts must be used within AlertsProvider")

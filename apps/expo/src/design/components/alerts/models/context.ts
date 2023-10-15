@@ -5,7 +5,7 @@ import type {
   NotificationOptions,
 } from "~/expo/design/components/alerts/models/options"
 
-export interface AlertsContextType {
+export interface AlertsContext {
   showAlert: (opt: BaseOptions) => Promise<AlertBtnResult>
   showModal: (opt: ModalOptions) => Promise<AlertBtnResult>
   showError: (message: string) => Promise<void>
