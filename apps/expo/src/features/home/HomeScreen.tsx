@@ -3,7 +3,7 @@ import React from "react"
 import { StyleSheet, View } from "react-native"
 
 import { AssetList } from "~/expo/features/home/components/AssetList"
-import { DragSelectContextProvider } from "~/expo/features/home/context/drag-select-context"
+import { DragSelectContextProvider } from "~/expo/features/home/context/DragSelectContextProvider"
 import type { AppParams } from "~/expo/navigation/params"
 
 export const HomeScreen: React.FC<
@@ -26,6 +26,5 @@ export const HomeScreen: React.FC<
 const styles = StyleSheet.create({
   root: {
     flex: 1,
-    // backgroundColor: theme.colors.background,
   },
 })

@@ -27,7 +27,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context"
 
 import { Text } from "~/expo/design/components/Text"
 import { Thumbnail } from "~/expo/features/home/components/Thumbnail"
-import { useDragSelectContext } from "~/expo/features/home/context/drag-select-context"
+import { useDragSelectContext } from "~/expo/features/home/context/DragSelectContextProvider"
 import { useAssets } from "~/expo/features/home/hooks/useAssets"
 import type {
   AssetRecordMap,
@@ -70,12 +70,12 @@ export const AssetList: React.FC<Props> = ({ openPhoto }) => {
 
   const headerHeight = 60
   const headerArea = topInset + headerHeight
-  const numColumns = 3
+  const numColumns = 4
   const numSeparators = numColumns - 1
   const columnSeparatorWidth = 0.01 * deviceWidth
   const imgWidth =
     (deviceWidth - columnSeparatorWidth * numSeparators) / numColumns
-  const imgHeight = 125
+  const imgHeight = 100
 
   // Map of asset file names to the asset
   const flatlist = useAnimatedRef<FlashList<GenericAsset>>()
@@ -462,7 +462,12 @@ const ListHeaderComponent: React.FC<ListHeaderProps> = ({
 }) => {
   return (
     <Animated.View style={[{ height: height }, headerAnimatedStyle]}>
-      <View style={{ marginTop: height / 2, paddingLeft: 8 }}>
+      <View
+        // eslint-disable-next-line react-native/no-inline-styles
+        style={{
+          marginTop: height / 2,
+          paddingLeft: 8,
+        }}>
         <Text variant="h2">photos</Text>
       </View>
     </Animated.View>

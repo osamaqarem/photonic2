@@ -30,6 +30,7 @@ export const AlertView: React.FC<Props> = props => {
           <Text
             style={[
               styles.title,
+              // eslint-disable-next-line react-native/no-inline-styles
               {
                 marginTop: props.icon ? 20 : 0,
               },

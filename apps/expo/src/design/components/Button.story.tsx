@@ -1,5 +1,5 @@
 import React from "react"
-import { View } from "react-native"
+import { StyleSheet, View } from "react-native"
 
 import { Button, ButtonState } from "~/expo/design/components/Button"
 import type { ComponentStory } from "~/expo/design/components/Storybook"
@@ -14,16 +14,19 @@ export const ButtonStory: ComponentStory = {
     Wide: () => <Button text="Get Started" size="wide" />,
     Small: () => <Button text="Skip" size="small" />,
     SecondaryVariant: () => (
-      <View
-        style={{
-          flexDirection: "row",
-          justifyContent: "center",
-          columnGap: theme.space.scale[20],
-          marginTop: theme.space.scale[20],
-        }}>
+      <View style={styles.container}>
         <Button text="Skip" size="small" variant="secondary" />
         <Button text="Create account" size="wide" />
       </View>
     ),
   },
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flexDirection: "row",
+    justifyContent: "center",
+    columnGap: theme.space.scale[20],
+    marginTop: theme.space.scale[20],
+  },
+})

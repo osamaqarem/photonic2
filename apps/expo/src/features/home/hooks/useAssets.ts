@@ -37,8 +37,10 @@ export const useAssets = (onData: OnData) => {
 
     const sub = mediaManager.addListener(({ hasIncrementalChanges }) => {
       if (!hasIncrementalChanges) {
+        console.log("sub: fetchAllAssets")
         return fetchAllAssets()
       } else {
+        console.log("TODO: incremental changes")
         // TODO: incremental changes
       }
     })

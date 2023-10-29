@@ -1,5 +1,5 @@
-import { colors } from "platform-colors.config"
 import * as React from "react"
+import { StyleSheet } from "react-native"
 import type { FastImageProps } from "react-native-fast-image"
 import FastImage from "react-native-fast-image"
 import {
@@ -7,6 +7,7 @@ import {
   GestureDetector,
   type PanGesture,
 } from "react-native-gesture-handler"
+import type { SharedValue } from "react-native-reanimated"
 import Animated, {
   Easing,
   useAnimatedStyle,
@@ -16,7 +17,8 @@ import Animated, {
 
 import { Icon } from "~/expo/design/components/icons/Icons"
 import { palette } from "~/expo/design/palette"
-import { useDragSelectContext } from "~/expo/features/home/context/drag-select-context"
+import { theme } from "~/expo/design/theme"
+import { useDragSelectContext } from "~/expo/features/home/context/DragSelectContextProvider"
 import type { GenericAsset } from "~/expo/features/home/types/asset"
 import { useDarkMode } from "~/expo/stores/DarkModeProvider"
 
@@ -91,7 +93,6 @@ export const Thumbnail: React.FC<Props> & {
     <GestureDetector gesture={composed}>
       <Animated.View
         // R2 = R1 + D
-        // className="items-center justify-center rounded-[14px] border-2 border-dotted"
         style={[
           containerStyle,
           {
@@ -103,46 +104,19 @@ export const Thumbnail: React.FC<Props> & {
           resizeMode="cover"
           source={{ uri }}
           // R1
-          //   className="h-full w-full rounded-lg bg-gray-200 dark:bg-black-600"
           downscaleSize={80}
-          style={{
-            height: "100%",
-            width: "100%",
-            borderRadius: 10,
-            backgroundColor: palette.light.slate.slate2,
-          }}>
+          style={styles.image}>
+          <Animated.View style={[overlayStyle, styles.overlay]} />
           <Animated.View
-            style={overlayStyle}
-            // className="absolute h-full w-full bg-black"
-          />
-          <Animated.View
-            // className="absolute bottom-1 left-1 rounded-full bg-black/50 p-1"
-            style={uploadIndicatorStyle}>
+            style={[uploadIndicatorStyle, styles.cloudIconContainer]}>
             <Icon
               name="CloudUp"
-              //   className="h-4 w-4"
-              style={[
-                uploadIndicatorIconStyle,
-                {
-                  height: 16,
-                  width: 16,
-                },
-              ]}
+              style={[uploadIndicatorIconStyle, styles.cloudIcon]}
             />
           </Animated.View>
         </AnimatedFastImage>
-        <Animated.View
-          style={checkIconStyle}
-          //   className="absolute bottom-[-6] right-[-6] h-6 w-6 items-center justify-center rounded-full bg-gray-100  dark:bg-black-800"
-        >
-          <Icon
-            name="Check"
-            // className="h-6 w-6 text-blue-500 dark:text-blue-400"
-            style={{
-              height: 16,
-              width: 16,
-            }}
-          />
+        <Animated.View style={[checkIconStyle, styles.checkIconContainer]}>
+          <Icon name="Check" style={styles.checkIcon} />
         </Animated.View>
       </Animated.View>
     </GestureDetector>
@@ -155,14 +129,14 @@ const AnimatedFastImage = Animated.createAnimatedComponent(
   FastImage as React.FC<FastImageProps>,
 )
 
-const useContainerStyle = (isSelected: Animated.SharedValue<boolean>) => {
-  const { colorScheme } = useDarkMode()
-  const isDarkMode = colorScheme === "dark"
+const useContainerStyle = (isSelected: SharedValue<boolean>) => {
+  const { sharedColorScheme } = useDarkMode()
 
   const containerStyle = useAnimatedStyle(() => {
-    const [normal, selected] = isDarkMode
-      ? [palette.black.blackA12, palette.dark.blue.blue6]
-      : [palette.white.whiteA12, palette.light.blue.blue5]
+    const [normal, selected] =
+      sharedColorScheme.value === "dark"
+        ? [palette.black.blackA12, palette.dark.blue.blue6]
+        : [palette.white.whiteA12, palette.light.blue.blue5]
     return {
       borderColor: isSelected.value ? selected : normal,
       padding: withTiming(isSelected.value ? 4 : 0, {
@@ -178,7 +152,48 @@ const useContainerStyle = (isSelected: Animated.SharedValue<boolean>) => {
         },
       ],
     }
-  }, [isDarkMode])
+  }, [])
 
   return containerStyle
 }
+
+const styles = StyleSheet.create({
+  image: {
+    height: "100%",
+    width: "100%",
+    borderRadius: 8,
+    backgroundColor: palette.light.slate.slate2,
+  },
+  overlay: {
+    position: "absolute",
+    height: "100%",
+    width: "100%",
+    backgroundColor: palette.black.blackA12,
+  },
+  cloudIconContainer: {
+    position: "absolute",
+    bottom: 4,
+    left: 4,
+    borderRadius: 100,
+    backgroundColor: palette.black.blackA9,
+    padding: 4,
+  },
+  cloudIcon: {
+    height: 16,
+    width: 16,
+  },
+  checkIconContainer: {
+    position: "absolute",
+    bottom: -6,
+    right: -6,
+    height: 30,
+    width: 30,
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 100,
+    backgroundColor: theme.colors.background,
+  },
+  checkIcon: {
+    color: palette.light.blue.blue10,
+  },
+})

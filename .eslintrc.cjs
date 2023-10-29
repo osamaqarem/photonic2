@@ -15,7 +15,6 @@ module.exports = {
   rules: {
     "turbo/no-undeclared-env-vars": 0,
     "react/react-in-jsx-scope": 0,
-    "react-native/no-inline-styles": 0,
     "prettier/prettier": 0,
     "prefer-const": 0,
     "no-inner-declarations": 0,

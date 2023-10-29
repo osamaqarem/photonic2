@@ -15,6 +15,7 @@ getIconNames().forEach(iconName => {
       <Icon
         key={iconName}
         name={iconName}
+        // eslint-disable-next-line react-native/no-inline-styles
         style={{
           height: 40,
           width: 40,
