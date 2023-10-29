@@ -52,7 +52,7 @@ export const useAuth = create<AuthStore>(
           SecureStorage.deleteItemAsync(SecureStorageKey.RefreshToken),
           SecureStorage.deleteItemAsync(SecureStorageKey.AccessToken),
         ])
-        return set({ accessToken: null, hydrated: false })
+        return set({ accessToken: null, hydrated: true })
       },
       setOnline(online) {
         set({ online })
