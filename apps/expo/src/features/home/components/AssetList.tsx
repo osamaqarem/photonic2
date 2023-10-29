@@ -63,7 +63,7 @@ export const AssetList: React.FC<Props> = ({ openPhoto }) => {
     showGradientOverlay,
   } = useDragSelectContext()
 
-  const { colorScheme } = useDarkMode()
+  const { sharedColorScheme } = useDarkMode()
 
   const { width: deviceWidth } = useWindowDimensions()
   const { bottom: bottomInset, top: topInset } = useSafeAreaInsets()
@@ -136,14 +136,12 @@ export const AssetList: React.FC<Props> = ({ openPhoto }) => {
 
     if (event.contentOffset.y >= headerHeight / 2) {
       showGradientOverlay.value = true
-      if (colorScheme === "light") {
-        runOnJS(ExpoStatusBar.setStatusBarStyle)("light")
-      }
+      runOnJS(ExpoStatusBar.setStatusBarStyle)("light")
     } else {
       showGradientOverlay.value = false
-      if (colorScheme === "light") {
-        runOnJS(ExpoStatusBar.setStatusBarStyle)("dark")
-      }
+      runOnJS(ExpoStatusBar.setStatusBarStyle)(
+        sharedColorScheme.value === "light" ? "dark" : "light",
+      )
     }
   })
 

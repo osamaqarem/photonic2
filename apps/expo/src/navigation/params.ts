@@ -1,3 +1,5 @@
+import type { GenericAsset } from "~/expo/features/home/types/asset"
+
 export type OnboardingStackParams = {
   "onboarding-welcome": undefined
   "onboarding-registration": undefined
@@ -10,6 +12,9 @@ export type OnboardingStackParams = {
 
 export type MainStackParams = {
   home: undefined
+  photo: {
+    asset: GenericAsset
+  }
 }
 
 export type RootStackParams = {
