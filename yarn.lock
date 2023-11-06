@@ -10331,6 +10331,11 @@ setprototypeof@1.2.0:
   resolved "https://registry.yarnpkg.com/setprototypeof/-/setprototypeof-1.2.0.tgz#66c9a24a73f9fc28cbe66b09fed3d33dcaf1b424"
   integrity sha512-E5LDX7Wrp85Kil5bhZv46j8jOeboKq5JMmYM3gVGdGH8xFpPWXUMsNrlODCrkoxMEeNi/XZIwuRvY4XNwYMJpw==
 
+sf-symbols-typescript@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/sf-symbols-typescript/-/sf-symbols-typescript-1.0.0.tgz#94e9210bf27e7583f9749a0d07bd4f4937ea488f"
+  integrity sha512-DkS7q3nN68dEMb4E18HFPDAvyrjDZK9YAQQF2QxeFu9gp2xRDXFMF8qLJ1EmQ/qeEGQmop4lmMM1WtYJTIcCMw==
+
 shallow-clone@^3.0.0:
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/shallow-clone/-/shallow-clone-3.0.1.tgz#8f2981ad92531f55035b01fb230769a40e02efa3"
@@ -11707,13 +11712,14 @@ yocto-queue@^0.1.0:
   resolved "https://registry.yarnpkg.com/yocto-queue/-/yocto-queue-0.1.0.tgz#0294eb3dee05028d31ee1a5fa2c556a6aaf10a1b"
   integrity sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==
 
-zeego@canary:
-  version "1.0.0-beta.2"
-  resolved "https://registry.yarnpkg.com/zeego/-/zeego-1.0.0-beta.2.tgz#b175ca53ae3f38f173844e3bc19ed537c99c1389"
-  integrity sha512-Li/0hg9oPbrBGK1E3dM+LQSGZ2ddBPvhlREcML21qLhh8BxTc3RzNopvuJq9V6zZasByaVVh7Ne0EI7vsCdzNQ==
+zeego@^1.7.2:
+  version "1.7.2"
+  resolved "https://registry.yarnpkg.com/zeego/-/zeego-1.7.2.tgz#f9eb3699c9b045cf0b63eb03c9a3558d5f960a47"
+  integrity sha512-IgF2jlCnrRx1XqexnDPQKYXqcshk2KwUpRXTikQJaOp0PRhYywBRenE6hSBEnHtVj8jcFs8KeVVdB8IGPzevgw==
   dependencies:
     "@radix-ui/react-context-menu" "^2.0.1"
     "@radix-ui/react-dropdown-menu" "^2.0.1"
+    sf-symbols-typescript "^1.0.0"
 
 zod@3.21.4:
   version "3.21.4"

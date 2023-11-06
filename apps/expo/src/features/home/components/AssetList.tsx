@@ -63,7 +63,7 @@ export const AssetList: React.FC<Props> = ({ openPhoto }) => {
     showGradientOverlay,
   } = useDragSelectContext()
 
-  const { sharedColorScheme } = useDarkMode()
+  const sharedColorScheme = useDarkMode(s => s.sharedColorScheme)
 
   const { width: deviceWidth } = useWindowDimensions()
   const { bottom: bottomInset, top: topInset } = useSafeAreaInsets()
