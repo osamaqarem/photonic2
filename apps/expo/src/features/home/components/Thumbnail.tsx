@@ -7,7 +7,6 @@ import {
   GestureDetector,
   type PanGesture,
 } from "react-native-gesture-handler"
-import type { SharedValue } from "react-native-reanimated"
 import Animated, {
   Easing,
   useAnimatedStyle,
@@ -44,9 +43,31 @@ export const Thumbnail: React.FC<Props> & {
 
   const { assetRecord, selectedItems } = useDragSelectContext()
 
+  const { sharedColorScheme } = useDarkMode()
+
   const isSelected = useDerivedValue(() => !!selectedItems.value[asset.name])
 
-  const containerStyle = useContainerStyle(isSelected)
+  const containerStyle = useAnimatedStyle(() => {
+    const [normal, selected] =
+      sharedColorScheme.value === "dark"
+        ? [palette.black.blackA12, palette.dark.blue.blue6]
+        : [palette.white.whiteA12, palette.light.blue.blue5]
+    return {
+      borderColor: isSelected.value ? selected : normal,
+      padding: withTiming(isSelected.value ? 4 : 0, {
+        duration: scaleTiming,
+        easing: Easing.bezier(0.33, 1, 0.68, 1),
+      }),
+      transform: [
+        {
+          scale: withTiming(isSelected.value ? 0.9 : 1, {
+            duration: scaleTiming,
+            easing: Easing.bezier(0.33, 1, 0.68, 1),
+          }),
+        },
+      ],
+    }
+  })
 
   const checkIconStyle = useAnimatedStyle(() => ({
     opacity: withTiming(isSelected.value ? 1 : 0, {
@@ -128,34 +149,6 @@ Thumbnail.longPressTiming = longPressTiming
 const AnimatedFastImage = Animated.createAnimatedComponent(
   FastImage as React.FC<FastImageProps>,
 )
-
-const useContainerStyle = (isSelected: SharedValue<boolean>) => {
-  const { sharedColorScheme } = useDarkMode()
-
-  const containerStyle = useAnimatedStyle(() => {
-    const [normal, selected] =
-      sharedColorScheme.value === "dark"
-        ? [palette.black.blackA12, palette.dark.blue.blue6]
-        : [palette.white.whiteA12, palette.light.blue.blue5]
-    return {
-      borderColor: isSelected.value ? selected : normal,
-      padding: withTiming(isSelected.value ? 4 : 0, {
-        duration: scaleTiming,
-        easing: Easing.bezier(0.33, 1, 0.68, 1),
-      }),
-      transform: [
-        {
-          scale: withTiming(isSelected.value ? 0.9 : 1, {
-            duration: scaleTiming,
-            easing: Easing.bezier(0.33, 1, 0.68, 1),
-          }),
-        },
-      ],
-    }
-  }, [])
-
-  return containerStyle
-}
 
 const styles = StyleSheet.create({
   image: {
