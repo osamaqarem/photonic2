@@ -40,8 +40,9 @@ export const useAssets = (onData: OnData) => {
         console.log("sub: fetchAllAssets")
         return fetchAllAssets()
       } else {
-        console.log("TODO: incremental changes")
+        console.log("sub: incremental changes, fetchAllAssets")
         // TODO: incremental changes
+        return fetchAllAssets()
       }
     })
     return sub.remove

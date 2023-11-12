@@ -3,13 +3,7 @@ import * as Haptics from "expo-haptics"
 import * as ExpoStatusBar from "expo-status-bar"
 import React from "react"
 import type { LayoutRectangle, ViewStyle } from "react-native"
-import {
-  LayoutAnimation,
-  ActivityIndicator,
-  View,
-  useWindowDimensions,
-  StyleSheet,
-} from "react-native"
+import { View, useWindowDimensions } from "react-native"
 import { Gesture, GestureDetector } from "react-native-gesture-handler"
 import Animated, {
   Easing,
@@ -29,33 +23,15 @@ import { Text } from "~/expo/design/components/Text"
 import { Thumbnail } from "~/expo/features/home/components/Thumbnail"
 import { BottomPanel } from "~/expo/features/home/components/control-panel/Bottom"
 import { useDragSelectContext } from "~/expo/features/home/context/DragSelectContextProvider"
-import { useAssets } from "~/expo/features/home/hooks/useAssets"
-import type {
-  AssetRecordMap,
-  GenericAsset,
-} from "~/expo/features/home/types/asset"
+import type { GenericAsset } from "~/expo/features/home/types/asset"
 import { useDarkMode } from "~/expo/stores/DarkModeProvider"
 
 interface Props {
   openPhoto: (asset: GenericAsset) => void
+  assetList: Array<GenericAsset>
 }
 
-export const AssetList: React.FC<Props> = ({ openPhoto }) => {
-  const [{ assetList }, setState] = React.useState({
-    loading: true,
-    assetRecords: null as Nullable<AssetRecordMap>,
-    assetList: null as Nullable<Array<GenericAsset>>,
-  })
-
-  useAssets(({ assetList, assetRecords }) => {
-    LayoutAnimation.configureNext({
-      ...LayoutAnimation.Presets.linear,
-      duration: 150,
-    })
-    setState({ assetList, assetRecords, loading: false })
-    assetRecord.value = assetRecords
-  })
-
+export const AssetList: React.FC<Props> = ({ openPhoto, assetList }) => {
   const {
     assetRecord,
     selectedItems,
@@ -407,8 +383,6 @@ export const AssetList: React.FC<Props> = ({ openPhoto }) => {
     )
   }
 
-  if (!assetList) return <Loading />
-
   return (
     <GestureDetector gesture={panGesture}>
       <AnimatedFlashList
@@ -472,17 +446,3 @@ const ListHeaderComponent: React.FC<ListHeaderProps> = ({
     </Animated.View>
   )
 }
-
-const Loading = () => (
-  <View style={styles.loading}>
-    <ActivityIndicator color={"white"} />
-  </View>
-)
-
-const styles = StyleSheet.create({
-  loading: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-})
