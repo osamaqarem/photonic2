@@ -27,11 +27,11 @@ import type { GenericAsset } from "~/expo/features/home/types/asset"
 import { useDarkMode } from "~/expo/stores/DarkModeProvider"
 
 interface Props {
-  openPhoto: (asset: GenericAsset) => void
-  assetList: Array<GenericAsset>
+  onItemPress: (asset: GenericAsset) => void
+  data: Array<GenericAsset>
 }
 
-export const AssetList: React.FC<Props> = ({ openPhoto, assetList }) => {
+export const AssetList: React.FC<Props> = ({ onItemPress, data }) => {
   const {
     assetRecord,
     selectedItems,
@@ -93,7 +93,7 @@ export const AssetList: React.FC<Props> = ({ openPhoto, assetList }) => {
         selectedItems.value = { ...selectedItems.value, [assetName]: asset }
       }
     } else {
-      runOnJS(openPhoto)(asset)
+      runOnJS(onItemPress)(asset)
     }
   }
 
@@ -160,7 +160,7 @@ export const AssetList: React.FC<Props> = ({ openPhoto, assetList }) => {
       runOnJS(panScrollFrameCb.setActive)(true)
     })
     .onUpdate(e => {
-      if (!selectModeActive.value || !flatlistLayout.value || !assetList) return
+      if (!selectModeActive.value || !flatlistLayout.value || !data) return
       panY.value = e.y
 
       const windowHeight = flatlistLayout.value.height
@@ -259,7 +259,7 @@ export const AssetList: React.FC<Props> = ({ openPhoto, assetList }) => {
         const itemIndex = getArrayIndexForDimensions(upperBoundY, upperBoundX)
 
         const getItemFromState = (index: number) => {
-          const itemInState = assetList[index]
+          const itemInState = data[index]
           return itemInState ? assetRecord.value[itemInState.name] : undefined
         }
 
@@ -314,7 +314,7 @@ export const AssetList: React.FC<Props> = ({ openPhoto, assetList }) => {
           const fromIndex = panTransitionFromIndex.value
 
           const axisItem = selectedItems.value[selectedAxisName.value]
-          const axisIndex = assetList.findIndex(
+          const axisIndex = data.findIndex(
             asset => asset.name === axisItem?.name,
           )
 
@@ -373,7 +373,7 @@ export const AssetList: React.FC<Props> = ({ openPhoto, assetList }) => {
     return (
       <Thumbnail
         asset={row.item}
-        onPress={openPhoto}
+        onPress={onItemPress}
         tapOnStart={() => tapOnStart(row.item.name)}
         longPressOnStart={() => longPressOnStart(row.item.name)}
         simultaneousWithExternalGesture={panGesture}
@@ -391,7 +391,7 @@ export const AssetList: React.FC<Props> = ({ openPhoto, assetList }) => {
           imgWidth - columnSeparatorWidth,
         )}
         ref={flatlist}
-        data={assetList}
+        data={data}
         renderItem={renderItem}
         numColumns={numColumns}
         onScroll={scrollHandler}

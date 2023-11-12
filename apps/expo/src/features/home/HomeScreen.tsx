@@ -1,4 +1,4 @@
-import { Logger } from "@photonic/common"
+import { Logger, getErrorMsg } from "@photonic/common"
 import type { NativeStackScreenProps } from "@react-navigation/native-stack"
 import React from "react"
 import {
@@ -8,6 +8,7 @@ import {
   View,
 } from "react-native"
 import { useDerivedValue, useSharedValue } from "react-native-reanimated"
+import { useAlerts } from "~/expo/design/components/alerts/useAlerts"
 
 import { AssetList } from "~/expo/features/home/components/AssetList"
 import { ControlPanel } from "~/expo/features/home/components/control-panel"
@@ -33,6 +34,8 @@ export const HomeScreen: React.FC<
     assetRecords: null as Nullable<AssetRecordMap>,
     assetList: null as Nullable<Array<GenericAsset>>,
   })
+
+  const { showError } = useAlerts()
 
   const assetRecord = useSharedValue<Record<string, GenericAsset>>({})
 
@@ -108,6 +111,155 @@ export const HomeScreen: React.FC<
     }
   }
 
+  /**
+   * Delete assets locally
+   */
+  async function removeSelectedItemsFromDevice() {
+    let localRemoteAssets: Array<LocalRemoteAsset> = []
+    for (const name in selectedItems.value) {
+      const asset = selectedItems.value[name]
+      if (asset?.type === "LocalRemoteAsset") {
+        localRemoteAssets.push(
+          assetRecord.value[asset.name] as LocalRemoteAsset,
+        )
+      }
+    }
+
+    clearSelection()
+    if (localRemoteAssets.length === 0) return
+
+    try {
+      let newState: Record<string, GenericAsset> = { ...assetRecord.value }
+
+      await mediaManager.deleteAssetsAsync(localRemoteAssets)
+      const assetUrlMap = await mediaManager.getRemoteUrl(localRemoteAssets)
+
+      localRemoteAssets.forEach(item => {
+        const current = newState[item.name] as LocalRemoteAsset
+        const newAsset: RemoteAsset = {
+          type: "RemoteAsset",
+          creationTime: current.creationTime,
+          duration: current.duration,
+          height: current.height,
+          width: current.width,
+          name: current.name,
+          mediaType: current.mediaType,
+          url: assetUrlMap[current.name] ?? "url_not_found",
+        }
+
+        newState[item.name] = newAsset
+      })
+    } catch (err) {
+      logger.log(err)
+    }
+  }
+
+  /**
+   * Delete LocalRemoteAssets from remote filestorage and DB
+   */
+  async function removeSelectedItemsRemotely() {
+    let selectedRemoteAssets: Array<LocalRemoteAsset> = []
+    for (const name in selectedItems.value) {
+      const asset = selectedItems.value[name]
+      if (asset?.type === "LocalRemoteAsset") {
+        selectedRemoteAssets.push(
+          assetRecord.value[asset.name] as LocalRemoteAsset,
+        )
+      }
+    }
+
+    clearSelection()
+    if (selectedRemoteAssets.length === 0) return
+
+    try {
+      await mediaManager.deleteRemoteAssets(selectedRemoteAssets)
+
+      let newState: Record<string, GenericAsset> = { ...assetRecord.value }
+      selectedRemoteAssets.forEach(item => {
+        const current = newState[item.name] as LocalRemoteAsset
+        const localAsset: LocalAsset = {
+          ...current,
+          type: "LocalAsset",
+          uploadProgressPct: "0",
+        }
+        newState[item.name] = localAsset
+      })
+
+      // TODO: list data is out of sync with record
+      assetRecord.value = newState
+    } catch (err) {
+      logger.log(err)
+    }
+  }
+
+  async function saveRemoteAsset(
+    selectedRemoteAsset: RemoteAsset,
+  ): Promise<LocalRemoteAsset> {
+    const savedAsset = await mediaManager.createAssetAsync(selectedRemoteAsset)
+
+    const creationTime = selectedRemoteAsset.creationTime
+    await mediaManager.modifyAssetAsync(savedAsset, {
+      creationTime,
+    })
+
+    await mediaManager.renameRemoteAsset(
+      selectedRemoteAsset,
+      savedAsset.filename,
+    )
+
+    return {
+      ...selectedRemoteAsset,
+      name: savedAsset.filename,
+      type: "LocalRemoteAsset",
+      localUri: savedAsset.uri,
+      localId: savedAsset.id,
+    }
+  }
+
+  /**
+   * Download selected assets to device
+   */
+  async function saveSelectedItemsToDevice() {
+    let newState = { ...assetRecord.value }
+    let shouldUpdate = false
+
+    for (const name in selectedItems.value) {
+      const asset = selectedItems.value[name]
+      if (asset?.type !== "RemoteAsset") continue
+      shouldUpdate = true
+
+      const remoteAsset = assetRecord.value[asset.name] as RemoteAsset
+      try {
+        const savedAsset = await saveRemoteAsset(remoteAsset)
+        newState[asset.name] = savedAsset
+      } catch (err) {
+        showError(getErrorMsg(err))
+      }
+    }
+
+    if (shouldUpdate) {
+      // TODO: manual refetch
+      // setState(newState)
+    }
+  }
+
+  /**
+   * Share selected asset
+   * TODO: investigate sharing multiple assets e.g. to WhatsApp
+   * TODO: some photos fail to share to messenger
+   */
+  async function shareSelectedItems() {
+    const firstItemName = selectedItemsKeys.value[0] ?? ""
+    const selectedAsset = assetRecord.value[firstItemName]
+    clearSelection()
+    if (!selectedAsset) return
+    try {
+      await mediaManager.share(selectedAsset)
+    } catch (err) {
+      logger.log(err)
+    }
+  }
+
   const noop = () => {
     console.log("not implemented")
   }
@@ -122,7 +274,7 @@ export const HomeScreen: React.FC<
       showGradientOverlay={showGradientOverlay}>
       <View style={styles.root}>
         {assetList ? (
-          <AssetList assetList={assetList} openPhoto={openPhoto} />
+          <AssetList data={assetList} onItemPress={openPhoto} />
         ) : (
           <Loading />
         )}
@@ -135,12 +287,12 @@ export const HomeScreen: React.FC<
           </ControlPanel.TopPanel>
           <ControlPanel.BottomPanel
             deleteSelectedItems={deleteSelectedItems}
-            shareSelectedItems={noop}
+            shareSelectedItems={shareSelectedItems}
             uploadSelectedItems={noop}>
             <ControlPanel.BottomPanelMenu
-              removeSelectedItemsFromDevice={noop}
-              saveSelectedItemsToDevice={noop}
-              removeSelectedItemsRemotely={noop}
+              removeSelectedItemsFromDevice={removeSelectedItemsFromDevice}
+              saveSelectedItemsToDevice={saveSelectedItemsToDevice}
+              removeSelectedItemsRemotely={removeSelectedItemsRemotely}
             />
           </ControlPanel.BottomPanel>
         </ControlPanel.Container>
