@@ -9,15 +9,14 @@ import { Text } from "~/expo/design/components/Text"
 import { palette } from "~/expo/design/palette"
 import { theme } from "~/expo/design/theme"
 import type { AppParams } from "~/expo/navigation/params"
+import { useAuth } from "~/expo/stores/auth-store"
 
 export const OnboardingStorageScreen: React.FC<
   NativeStackScreenProps<AppParams, "onboarding-storage">
 > = props => {
-  const handleAWSAuth = () => {
-    props.navigation.navigate("onboarding-permissions")
-  }
+  const finishOnboarding = useAuth(s => s.actions.finishOnboarding)
 
-  const handleSkip = () => {
+  const handleAWSAuth = () => {
     props.navigation.navigate("onboarding-permissions")
   }
 
@@ -42,7 +41,7 @@ export const OnboardingStorageScreen: React.FC<
           text="Skip"
           size="small"
           variant="secondary"
-          onPress={handleSkip}
+          onPress={finishOnboarding}
         />
         <Button text="Connect to AWS" size="wide" onPress={handleAWSAuth} />
       </ScrollView.StickyView>

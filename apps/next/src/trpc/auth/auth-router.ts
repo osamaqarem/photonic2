@@ -68,6 +68,7 @@ export const authRouter = router({
       return {
         accessToken: jwt.accessToken.sign(user),
         refreshToken: jwt.refreshToken.sign(user),
+        onboardingDone: Boolean(user.awsAccount),
       }
     }),
   refresh: publicProcedure

@@ -12,6 +12,7 @@ export type OnboardingStackParams = {
 
 export type MainStackParams = {
   home: undefined
+  settings: undefined
   photo: {
     asset: GenericAsset
   }

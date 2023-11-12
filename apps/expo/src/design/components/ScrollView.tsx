@@ -34,7 +34,6 @@ const ScrollViewExotic = React.forwardRef<
       ref={ref}
       style={[styles.scrollView, props.style]}
       contentContainerStyle={[
-        styles.scrollViewContent,
         {
           paddingBottom:
             getBottomPadding(bottomInset) +
@@ -77,8 +76,6 @@ export const ScrollView = Object.assign(ScrollViewExotic, {
 const styles = StyleSheet.create({
   scrollView: {
     paddingHorizontal: theme.space.contentPadding,
-  },
-  scrollViewContent: {
     backgroundColor: theme.colors.background,
   },
   stickyContainer: {

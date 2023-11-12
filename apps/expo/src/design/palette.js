@@ -3,8 +3,8 @@
 const colors = require("@radix-ui/colors")
 
 const palette = {
-  white: colors.whiteA,
-  black: colors.blackA,
+  whiteA: colors.whiteA,
+  blackA: colors.blackA,
   light: {
     blue: colors.blue,
     slate: colors.slate,

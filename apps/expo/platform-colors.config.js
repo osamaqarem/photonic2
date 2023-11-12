@@ -1,7 +1,7 @@
 // @ts-check
 const { palette } = require("./src/design/palette")
 
-const { light: l, dark: d, black } = palette
+const { light: l, dark: d } = palette
 
 module.exports = {
   colors: {
@@ -11,7 +11,7 @@ module.exports = {
     },
     background: {
       light: l.slate.slate1,
-      dark: black.blackA12,
+      dark: d.slate.slate1,
     },
     elementBg: {
       light: l.blue.blue4,

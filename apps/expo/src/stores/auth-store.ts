@@ -9,10 +9,12 @@ import { SecureStorage, SecureStorageKey } from "~/expo/lib/secure-storage"
 import { ZustandLogMiddleware } from "~/expo/lib/zustand-middleware"
 
 interface AuthStoreActions {
+  finishOnboarding: () => void
   setSignedOut: () => Promise<void>
   setSignedIn: (data: {
     accessToken: string
     refreshToken: string
+    onboardingDone?: boolean
   }) => Promise<void>
   setOnline: (online: boolean) => void
   hydrate: () => void
@@ -23,6 +25,7 @@ interface AuthStoreActions {
 
 export interface AuthStore {
   accessToken: Nullable<string>
+  onboardingDone: boolean
   online: boolean
   hydrated: boolean
   actions: AuthStoreActions
@@ -34,10 +37,15 @@ const logMiddleware = new ZustandLogMiddleware<AuthStore>(logger)
 export const useAuth = create<AuthStore>(
   logMiddleware.connect((set, get) => ({
     accessToken: null,
+    onboardingDone: false,
     online: false,
     hydrated: false,
     actions: {
-      async setSignedIn({ accessToken, refreshToken }) {
+      finishOnboarding() {
+        return set({ onboardingDone: true })
+      },
+
+      async setSignedIn({ accessToken, refreshToken, onboardingDone = true }) {
         await Promise.all([
           SecureStorage.setItemAsync(
             SecureStorageKey.RefreshToken,
@@ -45,8 +53,9 @@ export const useAuth = create<AuthStore>(
           ),
           SecureStorage.setItemAsync(SecureStorageKey.AccessToken, accessToken),
         ])
-        return set({ accessToken, hydrated: true })
+        return set({ accessToken, hydrated: true, onboardingDone })
       },
+
       async setSignedOut() {
         await Promise.all([
           SecureStorage.deleteItemAsync(SecureStorageKey.RefreshToken),
@@ -57,6 +66,7 @@ export const useAuth = create<AuthStore>(
       setOnline(online) {
         set({ online })
       },
+
       async hydrate() {
         const [refreshToken, accessToken] = await Promise.all([
           SecureStorage.getItemAsync(SecureStorageKey.RefreshToken),
@@ -69,6 +79,7 @@ export const useAuth = create<AuthStore>(
           setSignedOut()
         }
       },
+
       async maybeRefresh(refresh) {
         const Alerts = useAlerts.get()
         const { setSignedIn, setSignedOut, maybeRefresh, setOnline } =

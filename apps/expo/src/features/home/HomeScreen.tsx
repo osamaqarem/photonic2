@@ -260,6 +260,8 @@ export const HomeScreen: React.FC<
     }
   }
 
+  const goToSettings = () => props.navigation.navigate("settings")
+
   const noop = () => {
     console.log("not implemented")
   }
@@ -281,7 +283,7 @@ export const HomeScreen: React.FC<
         <ControlPanel.Container>
           <ControlPanel.TopPanel clearSelection={clearSelection}>
             <ControlPanel.TopPanelBtn
-              onPress={noop}
+              onPress={goToSettings}
               totalProgress={totalUploadProgress}
             />
           </ControlPanel.TopPanel>

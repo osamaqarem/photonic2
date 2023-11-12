@@ -16,14 +16,14 @@ const navTheme = {
     primary: theme.colors.accent,
     text: theme.colors.text,
     background: theme.colors.background,
-    card: theme.colors.elementBg,
+    card: theme.colors.elementSecondaryBg,
   },
 }
 
 const RootStackNavigator = createNativeStackNavigator<RootStackParams>()
 
 export function Navigation() {
-  const { hydrated, accessToken } = useAuth()
+  const { hydrated, accessToken, onboardingDone } = useAuth()
 
   const onNavigationReady = () => SplashScreen.hideAsync()
 
@@ -33,7 +33,7 @@ export function Navigation() {
     // @ts-expect-error theme does not accept platform colors
     <NavigationContainer theme={navTheme} onReady={onNavigationReady}>
       <RootStackNavigator.Navigator screenOptions={{ headerShown: false }}>
-        {accessToken ? (
+        {accessToken && onboardingDone ? (
           <RootStackNavigator.Screen name="main" component={MainStack} />
         ) : (
           <RootStackNavigator.Screen

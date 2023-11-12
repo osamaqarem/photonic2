@@ -1,3 +1,4 @@
+import { getErrorMsg } from "@photonic/common"
 import type { NativeStackScreenProps } from "@react-navigation/native-stack"
 import React from "react"
 import { StyleSheet } from "react-native"
@@ -8,6 +9,7 @@ import { ScrollView } from "~/expo/design/components/ScrollView"
 import { Space } from "~/expo/design/components/Space"
 import { Text } from "~/expo/design/components/Text"
 import { TextInput } from "~/expo/design/components/TextInput"
+import { useAlerts } from "~/expo/design/components/alerts/useAlerts"
 import { theme } from "~/expo/design/theme"
 import type { AppParams } from "~/expo/navigation/params"
 import { trpc } from "~/expo/stores/TrpcProvider"
@@ -22,15 +24,22 @@ export const OnboardingCodeVerificationScreen: React.FC<
 
   const [code, setCode] = React.useState("")
 
+  const { showError } = useAlerts()
+
   const handleVerify = async () => {
     try {
-      const { accessToken, refreshToken } = await mutateAsync({ code, email })
+      const { accessToken, refreshToken, onboardingDone } = await mutateAsync({
+        code,
+        email,
+      })
       await useAuth
         .getState()
-        .actions.setSignedIn({ accessToken, refreshToken })
-      props.navigation.navigate("onboarding-storage")
+        .actions.setSignedIn({ accessToken, refreshToken, onboardingDone })
+      if (!onboardingDone) {
+        props.navigation.navigate("onboarding-storage")
+      }
     } catch (err) {
-      // TODO:
+      showError(getErrorMsg(err))
     }
   }
 

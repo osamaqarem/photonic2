@@ -1,4 +1,5 @@
 import { SystemUI } from "@photonic/system-ui"
+import * as ExpoStatusBar from "expo-status-bar"
 import * as React from "react"
 import type { ColorSchemeName } from "react-native"
 import { Appearance } from "react-native"
@@ -42,6 +43,7 @@ export const useDarkMode = create<DarkModeStore>((set, get) => ({
       set({ colorScheme, source: "user" })
       sharedColorScheme.value = colorScheme
       SystemUI.setMode(colorScheme)
+      ExpoStatusBar.setStatusBarStyle(colorScheme === "dark" ? "light" : "dark")
       ColorSchemeStorage.save(colorScheme)
     },
     setSystem: colorScheme => {
@@ -50,6 +52,7 @@ export const useDarkMode = create<DarkModeStore>((set, get) => ({
       set({ colorScheme, source: "system" })
       sharedColorScheme.value = colorScheme
       SystemUI.setMode("system")
+      ExpoStatusBar.setStatusBarStyle(colorScheme === "dark" ? "light" : "dark")
       ColorSchemeStorage.delete()
     },
     setSharedValue: sharedValue => {

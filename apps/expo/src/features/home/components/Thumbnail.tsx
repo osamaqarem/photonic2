@@ -50,8 +50,8 @@ export const Thumbnail: React.FC<Props> & {
   const containerStyle = useAnimatedStyle(() => {
     const [normal, selected] =
       sharedColorScheme.value === "dark"
-        ? [palette.black.blackA12, palette.dark.blue.blue6]
-        : [palette.white.whiteA12, palette.light.blue.blue5]
+        ? [palette.blackA.blackA12, palette.dark.blue.blue6]
+        : [palette.whiteA.whiteA12, palette.light.blue.blue5]
     return {
       borderColor: isSelected.value ? selected : normal,
       padding: withTiming(isSelected.value ? 4 : 0, {
@@ -161,14 +161,14 @@ const styles = StyleSheet.create({
     position: "absolute",
     height: "100%",
     width: "100%",
-    backgroundColor: palette.black.blackA12,
+    backgroundColor: palette.blackA.blackA12,
   },
   cloudIconContainer: {
     position: "absolute",
     bottom: 4,
     left: 4,
     borderRadius: 100,
-    backgroundColor: palette.black.blackA9,
+    backgroundColor: palette.blackA.blackA9,
     padding: 4,
   },
   cloudIcon: {
