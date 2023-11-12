@@ -1,9 +1,5 @@
 import * as React from "react"
-import {
-  useSharedValue,
-  type SharedValue,
-  useDerivedValue,
-} from "react-native-reanimated"
+import { type SharedValue } from "react-native-reanimated"
 
 import type { GenericAsset } from "~/expo/features/home/types/asset"
 
@@ -18,44 +14,11 @@ interface DragSelectContext {
 
 const dragSelectContext = React.createContext<Nullable<DragSelectContext>>(null)
 
-export const DragSelectContextProvider: React.FC<React.PropsWithChildren> = ({
-  children,
-}) => {
-  const assetRecord = useSharedValue<Record<string, GenericAsset>>({})
-
-  const selectedItems = useSharedValue<Record<string, GenericAsset>>({})
-  const selectedItemsKeys = useDerivedValue(() =>
-    Object.keys(selectedItems.value),
-  )
-  const selectModeActive = useDerivedValue(
-    () => selectedItemsKeys.value.length > 0,
-  )
-  const selectedItemsCountText = useDerivedValue(() =>
-    selectedItemsKeys.value.length.toString(),
-  )
-
-  const showGradientOverlay = useSharedValue(false)
-
+export const DragSelectContextProvider: React.FC<
+  React.PropsWithChildren<DragSelectContext>
+> = ({ children, ...rest }) => {
   return (
-    <dragSelectContext.Provider
-      value={React.useMemo(
-        () => ({
-          assetRecord,
-          selectedItems,
-          selectedItemsKeys,
-          selectModeActive,
-          selectedItemsCountText,
-          showGradientOverlay,
-        }),
-        [
-          assetRecord,
-          selectModeActive,
-          selectedItems,
-          selectedItemsCountText,
-          selectedItemsKeys,
-          showGradientOverlay,
-        ],
-      )}>
+    <dragSelectContext.Provider value={rest}>
       {children}
     </dragSelectContext.Provider>
   )
