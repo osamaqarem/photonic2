@@ -59,22 +59,18 @@ class Font {
     color: theme.colors.text,
   }
 
-  private merge(style: TextStyle) {
-    this.style = { ...this.style, ...style }
-  }
-
   size(s: keyof AppTheme["font"]["size"]) {
-    this.merge({ fontSize: theme.font.size[s] })
+    this.style.fontSize = theme.font.size[s]
     return this
   }
 
   weight(w: keyof AppTheme["font"]["weight"]) {
-    this.merge({ fontWeight: theme.font.weight[w] })
+    this.style.fontWeight = theme.font.weight[w]
     return this
   }
 
   color(c: keyof AppTheme["colors"]) {
-    this.merge({ color: theme.colors[c] })
+    this.style.color = theme.colors[c]
     return this
   }
 }

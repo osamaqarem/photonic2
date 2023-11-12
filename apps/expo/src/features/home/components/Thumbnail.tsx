@@ -43,7 +43,7 @@ export const Thumbnail: React.FC<Props> & {
 
   const { assetRecord, selectedItems } = useDragSelectContext()
 
-  const { sharedColorScheme } = useDarkMode()
+  const sharedColorScheme = useDarkMode(s => s.sharedColorScheme)
 
   const isSelected = useDerivedValue(() => !!selectedItems.value[asset.name])
 
@@ -187,6 +187,6 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.background,
   },
   checkIcon: {
-    color: palette.light.blue.blue10,
+    color: palette.light.blue.blue8,
   },
 })

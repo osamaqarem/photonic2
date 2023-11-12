@@ -12,7 +12,7 @@ import Animated, {
 } from "react-native-reanimated"
 import { Circle as SVGCircle } from "react-native-svg"
 
-import { BlurButton } from "./BlurButton"
+import { BlurPressable } from "./BlurPressable"
 import { Icon } from "~/expo/design/components/icons/Icons"
 import { Svg } from "~/expo/design/components/Svg"
 import { theme } from "~/expo/design/theme"
@@ -46,12 +46,9 @@ export const SettingsBtn: React.FC<SettingsBtnProps> = ({
           size={settingsBtnSize + 10}
         />
       </Animated.View>
-      <BlurButton
-        style={styles.cogBtn}
-        // className="h-full w-10 items-center justify-center rounded-full"
-        onPress={onPress}>
+      <BlurPressable style={styles.cogBtn} onPress={onPress}>
         <Icon name="Cog" style={styles.cog} />
-      </BlurButton>
+      </BlurPressable>
     </>
   )
 }
@@ -138,18 +135,21 @@ const CircularProgress: React.FC<PropsCircleProps> = ({
 const Circle = Animated.createAnimatedComponent(SVGCircle)
 
 const styles = StyleSheet.create({
-  progressContainer: { position: "absolute" },
+  progressContainer: {
+    position: "absolute",
+  },
   cogBtn: {
     height: settingsBtnSize,
     width: settingsBtnSize,
     justifyContent: "center",
     alignItems: "center",
-    borderRadius: 999,
+    borderRadius: 100,
+    overflow: "hidden",
   },
   cog: {
     height: 24,
     width: 24,
-    backgroundColor: theme.colors.text,
+    color: theme.colors.text,
   },
   svg: {
     position: "absolute",

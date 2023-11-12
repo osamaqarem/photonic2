@@ -27,6 +27,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context"
 
 import { Text } from "~/expo/design/components/Text"
 import { Thumbnail } from "~/expo/features/home/components/Thumbnail"
+import { BottomPanel } from "~/expo/features/home/components/control-panel/Bottom"
 import { useDragSelectContext } from "~/expo/features/home/context/DragSelectContextProvider"
 import { useAssets } from "~/expo/features/home/hooks/useAssets"
 import type {
@@ -158,8 +159,9 @@ export const AssetList: React.FC<Props> = ({ openPhoto }) => {
       return
     }
     const windowHeight = flatlistLayout.value.height
-    const bottomThreshold = windowHeight * 0.85
-    // const bottomThreshold = windowHeight * 0.85 - BottomPanel.bottomPanelHeight
+    // 120 = BottomPanel.bottomPanelHeight
+    // But this callback sees it as `undefined`
+    const bottomThreshold = windowHeight * 0.85 - 120
     const topThreshold = windowHeight * 0.15
     if (panY.value > bottomThreshold) {
       const inputRange = [bottomThreshold, windowHeight]
@@ -424,8 +426,7 @@ export const AssetList: React.FC<Props> = ({ openPhoto }) => {
           flatlistLayout.value = e.nativeEvent.layout
         }}
         contentContainerStyle={{
-          // paddingBottom: bottomInset + BottomPanel.bottomPanelHeight,
-          paddingBottom: bottomInset,
+          paddingBottom: bottomInset + BottomPanel.bottomPanelHeight,
         }}
         ItemSeparatorComponent={RowSeparatorComponent}
         ListHeaderComponent={

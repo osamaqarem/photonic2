@@ -10,7 +10,7 @@ import Animated, {
 } from "react-native-reanimated"
 import { useSafeAreaInsets } from "react-native-safe-area-context"
 
-import { BlurButton } from "./BlurButton"
+import { BlurPressable } from "./BlurPressable"
 import { useDragSelectContext } from "~/expo/features/home/context/DragSelectContextProvider"
 import { Icon } from "~/expo/design/components/icons/Icons"
 import { font, theme } from "~/expo/design/theme"
@@ -70,16 +70,13 @@ export const TopPanel: React.FC<React.PropsWithChildren<Props>> = props => {
         <Animated.View
           animatedProps={animatedProps}
           style={[styles.deselectBtn, deselectBtnStyle]}>
-          <BlurButton
-            // className="h-full flex-row items-center justify-between rounded-full px-5"
-            style={styles.blurBtn}
-            onPress={clearSelection}>
+          <BlurPressable style={styles.blurBtn} onPress={clearSelection}>
             <Icon name="Xmark" style={styles.xMark} />
             <View style={styles.space} />
             <View pointerEvents="none" style={styles.textContainer}>
               <ReText style={styles.text} text={selectedItemsCountText} />
             </View>
-          </BlurButton>
+          </BlurPressable>
         </Animated.View>
         <View style={styles.container}>{children}</View>
       </View>
@@ -111,13 +108,14 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    borderRadius: 999,
+    borderRadius: 100,
+    overflow: "hidden",
     paddingHorizontal: 20,
   },
   xMark: {
     height: 20,
     width: 20,
-    backgroundColor: theme.colors.text,
+    color: theme.colors.text,
   },
   space: {
     width: 12,
@@ -127,7 +125,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   text: {
-    bottom: 5,
+    height: 20,
     ...font().weight("medium").color("text").size("s").style,
   },
   container: {

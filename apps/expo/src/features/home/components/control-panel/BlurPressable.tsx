@@ -4,7 +4,7 @@ import * as React from "react"
 import type { PressableProps } from "react-native"
 import { Pressable } from "react-native"
 import type { AnimatedProps } from "react-native-reanimated"
-import Animated from "react-native-reanimated"
+import Animated, { useAnimatedProps } from "react-native-reanimated"
 
 import { useDarkMode } from "~/expo/stores/DarkModeProvider"
 
@@ -12,8 +12,19 @@ const AnimatedExpoBlurView = Animated.createAnimatedComponent(ExpoBlurView)
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable)
 
 export const BlurView: React.FC<AnimatedProps<ExpoBlurViewProps>> = props => {
-  const colorScheme = useDarkMode(s => s.colorScheme)
-  return <AnimatedExpoBlurView tint={colorScheme} intensity={100} {...props} />
+  const sharedColorScheme = useDarkMode(s => s.sharedColorScheme)
+
+  const animatedProps = useAnimatedProps(() => ({
+    tint: sharedColorScheme.value,
+  }))
+
+  return (
+    <AnimatedExpoBlurView
+      intensity={100}
+      {...props}
+      animatedProps={{ ...props.animatedProps, ...animatedProps }}
+    />
+  )
 }
 
 const defaultHitSlop: PressableProps["hitSlop"] = {
@@ -25,7 +36,7 @@ const defaultHitSlop: PressableProps["hitSlop"] = {
 interface Props extends ExpoBlurViewProps {
   onPress?: PressableProps["onPress"]
 }
-export const BlurButton: React.FC<Props> = props => {
+export const BlurPressable: React.FC<Props> = props => {
   const { onPress } = props
   return (
     <AnimatedPressable onPress={onPress} hitSlop={defaultHitSlop}>

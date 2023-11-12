@@ -10,10 +10,10 @@ import { useSafeAreaInsets } from "react-native-safe-area-context"
 import { StyleSheet, View, type ViewProps } from "react-native"
 import { Icon } from "~/expo/design/components/icons/Icons"
 import { palette } from "~/expo/design/palette"
-import { theme } from "~/expo/design/theme"
-import { BlurView } from "~/expo/features/home/components/control-panel/BlurButton"
+import { BlurView } from "~/expo/features/home/components/control-panel/BlurPressable"
 import { useDragSelectContext } from "~/expo/features/home/context/DragSelectContextProvider"
 import { Option } from "./Option"
+import { useDarkMode } from "~/expo/stores/DarkModeProvider"
 
 const bottomPanelHeight = 120
 // TODO:
@@ -43,6 +43,8 @@ export const BottomPanel: BottomPanelType = props => {
 
   const { bottom: bottomInset } = useSafeAreaInsets()
 
+  const sharedColorScheme = useDarkMode(s => s.sharedColorScheme)
+
   const animatedProps = useAnimatedProps<{
     pointerEvents: ViewProps["pointerEvents"]
   }>(() => ({
@@ -54,6 +56,10 @@ export const BottomPanel: BottomPanelType = props => {
       duration: 200,
       easing: Easing.bezier(0.16, 1, 0.3, 1),
     }),
+    backgroundColor:
+      sharedColorScheme.value === "dark"
+        ? "rgba(0,0,0,.6)"
+        : "rgba(255,255,255,.5)",
   }))
 
   return (
@@ -108,7 +114,6 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
-    backgroundColor: theme.colors.elementSecondaryBg,
   },
   items: {
     flex: 1,
