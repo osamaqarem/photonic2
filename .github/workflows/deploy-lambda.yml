@@ -20,9 +20,6 @@ jobs:
     runs-on: ubuntu-latest
     # only build/deploy branch on pushes
     if: ${{ (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev') && github.event_name == 'push' }}
-    defaults:
-      run:
-        working-directory: apps/lambda/terraform/
 
     steps:
       - name: Add aws profile credentials to ~/.aws/credentials
@@ -56,14 +53,17 @@ jobs:
         run: yarn install --immutable --prefer-offline
 
       - name: Init Terraform
+        working-directory: ./apps/lambda/terraform
         run: terraform init
 
       - name: Deploy Staging
         if: ${{ github.ref == 'refs/heads/dev' }}
+        working-directory: ./apps/lambda/terraform
         run: |
           terraform apply --var-file=staging.tfvars -auto-approve
 
       - name: Deploy Production
         if: ${{ github.ref == 'refs/heads/main' }}
+        working-directory: ./apps/lambda/terraform
         run: |
           terraform apply --var-file=production.tfvars -auto-approve
