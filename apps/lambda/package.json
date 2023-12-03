@@ -1,7 +1,7 @@
 {
   "name": "@photonic/lambda",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "connectToPhotonic.js",
   "dependencies": {
     "node-fetch": "2.6.1"
   },
@@ -10,11 +10,7 @@
   },
   "scripts": {
     "ts": "tsc",
-    "compress": "cp dist/index.js ./index.js && zip -r9 dist/connectToPhotonic.zip index.js node_modules package.json; rm index.js",
-    "update-code": "aws lambda update-function-code --function-name connectToPhotonic --zip-file fileb://dist/connectToPhotonic.zip --profile photonic-staging",
-    "update-env": "aws lambda update-function-configuration --function-name connectToPhotonic --environment Variables={DOMAIN=https://photonic-next-git-main-osamaqarem.vercel.app} --query 'Environment' --profile photonic-staging",
-    "build": "yarn tsc && yarn compress",
-    "deploy": "yarn tsc && yarn compress && yarn update-code && yarn update-env",
+    "build": "yarn zx ./scripts/build.mjs",
     "postinstall": "cd ../.. && yarn postinstall"
   }
 }

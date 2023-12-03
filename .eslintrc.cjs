@@ -9,6 +9,7 @@ module.exports = {
     "turbo",
     "prettier",
   ],
+  ignorePatterns: ["*.mjs"],
   parser: "@typescript-eslint/parser",
   plugins: ["@typescript-eslint"],
   root: true,
