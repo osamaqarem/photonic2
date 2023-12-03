@@ -3,8 +3,7 @@ name: Lambda
 on:
   push:
     branches:
-      # prod env not created
-      # - main
+      - main
       - dev
 
 concurrency:
@@ -23,7 +22,7 @@ jobs:
     if: ${{ (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev') && github.event_name == 'push' }}
     defaults:
       run:
-        working-directory: apps/lambda/terraform
+        working-directory: apps/lambda/terraform/
 
     steps:
       - name: Add aws profile credentials to ~/.aws/credentials
