@@ -1,9 +1,22 @@
 import type { NextApiRequest, NextApiResponse } from "next"
+import { config } from "~/next/config"
 
 export default async function handler(
   _: NextApiRequest,
   res: NextApiResponse<unknown>,
 ) {
+  const lambdaSuffix = (() => {
+    switch (config.STAGE) {
+      case "development":
+      case "staging":
+        return "staging"
+      case "production":
+        return "production"
+      default:
+        throw new Error("Unhandled environment")
+    }
+  })()
+
   res.json({
     AWSTemplateFormatVersion: "2010-09-09",
     Description:
@@ -108,8 +121,7 @@ export default async function handler(
       ConnectToPhotonic: {
         Type: "Custom::ConnectToPhotonic",
         Properties: {
-          ServiceToken:
-            "arn:aws:lambda:eu-central-1:012467934926:function:connect_to_photonic",
+          ServiceToken: `arn:aws:lambda:eu-central-1:012467934926:function:connect_to_photonic_${lambdaSuffix}`,
           AwsAccountId: {
             Ref: "AWS::AccountId",
           },

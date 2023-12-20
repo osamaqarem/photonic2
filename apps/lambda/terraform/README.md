@@ -68,12 +68,15 @@ aws_secret_access_key=
 ## Usage
 
 ```shell
+# Workspace
+terraform select workspace staging
+
 # Download providers
 terraform init
 
-# Create/update Lambda
-terraform plan
-terraform apply
+# Create/update Lambda (staging)
+terraform plan --var-file=staging.tfvars
+terraform apply --var-file=staging.tfvars
 
 # Get Lambda ARN
 terraform output
