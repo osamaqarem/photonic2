@@ -50,8 +50,9 @@ class CacheManager<KeyHolder, Payload> {
     )
   }
 
-  async delete(key: string) {
-    await connection.del(key).catch(CacheManager.logger.error)
+  async delete(key: KeyHolder) {
+    const k = this.config.extractKey(key)
+    await connection.del(k).catch(CacheManager.logger.error)
     return
   }
 }

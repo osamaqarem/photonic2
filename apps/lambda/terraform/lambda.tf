@@ -29,7 +29,7 @@ resource "aws_lambda_function" "connect_to_photonic" {
 
   environment {
     variables = {
-      "DOMAIN" = "TODO"
+      "DOMAIN" = "https://photonic-next.fly.dev/api/template/cfn"
     }
   }
 

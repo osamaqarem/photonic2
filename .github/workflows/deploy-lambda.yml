@@ -51,5 +51,4 @@ jobs:
         id: deploy
         working-directory: ./apps/lambda/terraform
         run: |
-          terraform workspace select production
           terraform apply --var-file=staging.tfvars -auto-approve
