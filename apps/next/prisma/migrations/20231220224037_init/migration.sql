@@ -24,10 +24,11 @@ CREATE TABLE "AwsAccount" (
 
 -- CreateTable
 CREATE TABLE "Album" (
+    "id" TEXT NOT NULL,
     "title" TEXT NOT NULL,
     "userId" TEXT NOT NULL,
 
-    CONSTRAINT "Album_pkey" PRIMARY KEY ("title")
+    CONSTRAINT "Album_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
