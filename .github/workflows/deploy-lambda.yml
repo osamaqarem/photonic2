@@ -56,16 +56,10 @@ jobs:
         working-directory: ./apps/lambda/terraform
         run: terraform init
 
-      - name: Deploy Staging
+      - name: Deploy
         if: ${{ github.ref == 'refs/heads/dev' }}
-        working-directory: ./apps/lambda/terraform
-        run: |
-          terraform workspace select staging
-          terraform apply --var-file=staging.tfvars -auto-approve
-
-      - name: Deploy Production
-        if: ${{ github.ref == 'refs/heads/main' }}
+        id: deploy
         working-directory: ./apps/lambda/terraform
         run: |
           terraform workspace select production
-          terraform apply --var-file=production.tfvars -auto-approve
+          terraform apply --var-file=staging.tfvars -auto-approve

@@ -109,7 +109,7 @@ export default async function handler(
         Type: "Custom::ConnectToPhotonic",
         Properties: {
           ServiceToken:
-            "arn:aws:lambda:eu-central-1:012467934926:function:connectToPhotonic",
+            "arn:aws:lambda:eu-central-1:012467934926:function:connect_to_photonic",
           AwsAccountId: {
             Ref: "AWS::AccountId",
           },

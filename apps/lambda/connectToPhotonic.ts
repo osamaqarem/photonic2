@@ -11,7 +11,7 @@ export const handler = async (event: unknown, context: unknown) => {
     }
   }
 
-  await fetch(`${process.env.DOMAIN}/api/auth/callbacks/aws-connect`, {
+  await fetch(`${process.env.DOMAIN}/api/connect/aws`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
