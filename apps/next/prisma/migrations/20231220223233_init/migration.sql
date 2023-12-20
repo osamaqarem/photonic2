@@ -32,6 +32,7 @@ CREATE TABLE "Album" (
 
 -- CreateTable
 CREATE TABLE "Photo" (
+    "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "mediaType" "MediaType" NOT NULL,
     "width" INTEGER NOT NULL,
@@ -40,7 +41,7 @@ CREATE TABLE "Photo" (
     "creationTime" INTEGER NOT NULL,
     "userId" TEXT NOT NULL,
 
-    CONSTRAINT "Photo_pkey" PRIMARY KEY ("name")
+    CONSTRAINT "Photo_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -57,6 +58,9 @@ CREATE UNIQUE INDEX "AwsAccount_userId_key" ON "AwsAccount"("userId");
 
 -- CreateIndex
 CREATE INDEX "Album_userId_idx" ON "Album"("userId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Photo_name_key" ON "Photo"("name");
 
 -- CreateIndex
 CREATE INDEX "Photo_userId_idx" ON "Photo"("userId");
