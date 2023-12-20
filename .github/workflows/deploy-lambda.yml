@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - dev
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -18,8 +17,6 @@ jobs:
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
-    # only build/deploy branch on pushes
-    if: ${{ (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev') && github.event_name == 'push' }}
 
     steps:
       - name: Add aws profile credentials to ~/.aws/credentials
@@ -42,13 +39,8 @@ jobs:
       - name: Install dependencies
         run: yarn install --immutable --prefer-offline
 
-      - name: Init Terraform
-        working-directory: ./apps/lambda/terraform
-        run: terraform init
-
       - name: Deploy
-        if: ${{ github.ref == 'refs/heads/dev' }}
-        id: deploy
         working-directory: ./apps/lambda/terraform
         run: |
-          terraform apply --var-file=staging.tfvars -auto-approve
+          terraform init
+          terraform apply -auto-approve
