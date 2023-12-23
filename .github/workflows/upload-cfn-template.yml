@@ -8,6 +8,7 @@ on:
     paths:
       - apps/next/terraform/template_staging.json
       - apps/next/terraform/template_production.json
+  workflow_dispatch:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
