@@ -1,7 +1,6 @@
 {
   "name": "@photonic/lambda",
   "version": "1.0.0",
-  "main": "connectToPhotonic.js",
   "dependencies": {
     "node-fetch": "2.6.1"
   },

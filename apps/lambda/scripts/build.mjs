@@ -2,11 +2,13 @@
 import "zx/globals"
 
 const compiledCode = "connectToPhotonic.js"
-const requiredFiles = ["node_modules", "package.json"]
+const compiledCodeRename = "index.js"
+const requiredFiles = ["node_modules"]
 const output = "connectToPhotonic.zip"
 
+await $`rm -rf dist`
 await $`yarn tsc`
-await $`cp dist/${compiledCode} ./${compiledCode} && zip -r9 dist/${output} ${compiledCode} ${requiredFiles}; rm ${compiledCode}`
+await $`cp dist/${compiledCode} ./${compiledCodeRename} && zip -r9 dist/${output} ${compiledCodeRename} ${requiredFiles}; rm ${compiledCodeRename}`
 
 echo(
   JSON.stringify({

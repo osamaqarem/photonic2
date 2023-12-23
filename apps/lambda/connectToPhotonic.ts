@@ -1,6 +1,8 @@
 import fetch from "node-fetch"
 
 export const handler = async (event: unknown, context: unknown) => {
+  console.log("REQUEST RECEIVED:\n" + JSON.stringify(event))
+
   if (!event || !context) {
     return {
       statusCode: 400,

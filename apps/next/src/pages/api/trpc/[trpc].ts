@@ -10,19 +10,17 @@ export default createNextApiHandler({
   router: appRouter,
   createContext,
   onError({ error, path }) {
+    logger.error({
+      message: error.message,
+      code: error.code,
+      path: path,
+    })
     if (error.code === "INTERNAL_SERVER_ERROR") {
       // TODO: send to bug reporting
-      logger.error(
-        "path: " + path,
-        "message: " + error.message,
-        error.cause ?? "",
-      )
+      error.message =
+        "Our server faced an unexpected error. We've been informed."
     } else {
-      logger.log(
-        "path: " + path,
-        "message: " + error.message,
-        error.cause ?? "",
-      )
+      //
     }
   },
 })

@@ -5,6 +5,8 @@ on:
     branches:
       - main
       - dev
+    paths:
+      - apps/lambda/**
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}

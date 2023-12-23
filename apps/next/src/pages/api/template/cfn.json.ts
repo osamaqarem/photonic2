@@ -1,21 +1,21 @@
 import type { NextApiRequest, NextApiResponse } from "next"
 import { config } from "~/next/config"
 
+/**
+ * Template must live in S3.
+ * Uploading the files is not automated.
+ *
+ * Create 2 json files:
+ * 1. template_production
+ * 2. template_staging
+ * Replace with below JSON and upload to S3.
+ * Set the base URL to object in .env (excluding file name path)
+ */
 export default async function handler(
   _: NextApiRequest,
   res: NextApiResponse<unknown>,
 ) {
-  const lambdaSuffix = (() => {
-    switch (config.STAGE) {
-      case "development":
-      case "staging":
-        return "staging"
-      case "production":
-        return "production"
-      default:
-        throw new Error("Unhandled environment")
-    }
-  })()
+  const lambdaSuffix = config.STAGE === "production" ? "production" : "staging"
 
   res.json({
     AWSTemplateFormatVersion: "2010-09-09",
@@ -75,7 +75,17 @@ export default async function handler(
               [
                 "photonicbucket",
                 {
-                  Ref: "PhotonicId",
+                  "Fn::Select": [
+                    1,
+                    {
+                      "Fn::Split": [
+                        "_",
+                        {
+                          Ref: "PhotonicId",
+                        },
+                      ],
+                    },
+                  ],
                 },
               ],
             ],

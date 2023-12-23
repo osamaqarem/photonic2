@@ -39,7 +39,7 @@ export default async function handler(
 ) {
   const { context, event } = bodySchema.parse(req.body)
   logger.log("received cfn request:", req.body)
-  // const s: string = 123
+
   let body: CustomProviderResponse = {
     Status: "SUCCESS",
     Reason: "success",

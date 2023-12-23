@@ -8,6 +8,7 @@
 The AWS user must have the following permissions:
 
 - `AWSLambda_FullAccess`
+- `iam:AttachRolePolicy`
 - Inline policy:
 
 ```json
@@ -20,12 +21,22 @@ The AWS user must have the following permissions:
         "iam:CreateRole",
         "iam:ListInstanceProfilesForRole",
         "iam:PutRolePolicy",
-        "iam:DeleteRole"
+        "iam:DeleteRole",
+        "iam:AttachRolePolicy"
       ],
       // Replace '123' with the actual ARN of the user
       "Resource": "arn:aws:iam::123:role/*"
     },
-    		{
+    {
+		    "Effect": "Allow",
+		    "Action": [
+          "logs:CreateLogGroup"
+          "logs:ListTagsLogGroup"
+          "logs:DeleteLogGroup"
+          ],
+        "Resource": "arn:aws:logs:eu-central-1:123:*"
+		},
+    {
 			"Effect": "Allow",
 			"Action": "s3:ListBucket",
 			"Resource": "arn:aws:s3:::photonic-tfstate"
@@ -81,3 +92,7 @@ terraform apply --var-file=staging.tfvars
 # Get Lambda ARN
 terraform output
 ```
+
+## Notes
+
+The Lambda name and user ARN are considered in the CFN template. If the patterns change, the template will need a manual patch.

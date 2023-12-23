@@ -1,7 +1,3 @@
-data "external" "build" {
-  program = ["npx", "zx", "./scripts/build.mjs"]
-}
-
 data "aws_iam_policy_document" "assume_role" {
   statement {
     effect        = "Allow"
@@ -16,6 +12,11 @@ data "aws_iam_policy_document" "assume_role" {
 resource "aws_iam_role" "photonic_lambda_iam_role" {
   name               = "photonic_lambda_iam_role_${var.env}"
   assume_role_policy = data.aws_iam_policy_document.assume_role.json
+  managed_policy_arns = ["arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"]
+}
+
+data "external" "build" {
+  program = ["npx", "zx", "./scripts/build.mjs"]
 }
 
 resource "aws_lambda_function" "connect_to_photonic" {
