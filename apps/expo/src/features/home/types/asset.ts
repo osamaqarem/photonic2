@@ -16,11 +16,13 @@ export interface LocalAsset extends BaseAsset {
 
 export interface RemoteAsset extends BaseAsset {
   type: "RemoteAsset"
+  id: string
   url: string
 }
 
 export interface LocalRemoteAsset extends BaseAsset {
   type: "LocalRemoteAsset"
+  id: string
   localId: string
   localUri: string
 }

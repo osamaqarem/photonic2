@@ -441,7 +441,7 @@ const ListHeaderComponent: React.FC<ListHeaderProps> = ({
           marginTop: height / 2,
           paddingLeft: 8,
         }}>
-        <Text variant="h2">photos</Text>
+        <Text variant="h2">photonic</Text>
       </View>
     </Animated.View>
   )

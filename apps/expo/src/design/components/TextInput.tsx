@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
   error: {
     marginTop: 6,
     marginLeft: 6,
-    color: theme.colors.error,
+    color: theme.colors.danger,
   },
   input: {
     width: "100%",

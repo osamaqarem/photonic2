@@ -23,6 +23,7 @@ import { useDarkMode } from "~/expo/stores/DarkModeProvider"
 
 const longPressTiming = 300
 const scaleTiming = 300
+const selectedPadding = 4
 
 interface Props {
   asset: GenericAsset
@@ -50,11 +51,11 @@ export const Thumbnail: React.FC<Props> & {
   const containerStyle = useAnimatedStyle(() => {
     const [normal, selected] =
       sharedColorScheme.value === "dark"
-        ? [palette.blackA.blackA12, palette.dark.blue.blue6]
-        : [palette.whiteA.whiteA12, palette.light.blue.blue5]
+        ? [palette.blackA.blackA12, palette.dark.blue.blue8]
+        : [palette.whiteA.whiteA12, palette.light.blue.blue10]
     return {
       borderColor: isSelected.value ? selected : normal,
-      padding: withTiming(isSelected.value ? 4 : 0, {
+      padding: withTiming(isSelected.value ? selectedPadding : 0, {
         duration: scaleTiming,
         easing: Easing.bezier(0.33, 1, 0.68, 1),
       }),
@@ -119,7 +120,12 @@ export const Thumbnail: React.FC<Props> & {
           {
             height: props.height,
             width: props.width,
+            borderRadius:
+              styles.image.borderRadius +
+              selectedPadding +
+              styles.dottedBorder.borderWidth,
           },
+          styles.dottedBorder,
         ]}>
         <AnimatedFastImage
           resizeMode="cover"
@@ -151,6 +157,10 @@ const AnimatedFastImage = Animated.createAnimatedComponent(
 )
 
 const styles = StyleSheet.create({
+  dottedBorder: {
+    borderStyle: "dotted",
+    borderWidth: 2,
+  },
   image: {
     height: "100%",
     width: "100%",
@@ -187,6 +197,6 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.background,
   },
   checkIcon: {
-    color: palette.light.blue.blue8,
+    color: theme.colors.primary,
   },
 })

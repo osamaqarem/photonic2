@@ -22,6 +22,7 @@ import type {
   RemoteAsset,
 } from "~/expo/features/home/types/asset"
 import { mediaManager } from "~/expo/features/home/utils/media-manager"
+import { Sentry } from "~/expo/lib/sentry"
 import type { AppParams } from "~/expo/navigation/params"
 
 const logger = new Logger("HomeScreen")
@@ -54,14 +55,19 @@ export const HomeScreen: React.FC<
     selectedItemsKeys.value.length.toString(),
   )
 
-  useAssets(({ assetList, assetRecords }) => {
-    LayoutAnimation.configureNext({
-      ...LayoutAnimation.Presets.linear,
-      duration: 150,
-    })
-    setState({ assetList, assetRecords, loading: false })
-    assetRecord.value = assetRecords
-  })
+  useAssets(
+    React.useCallback(
+      ({ assetList, assetRecords }) => {
+        LayoutAnimation.configureNext({
+          ...LayoutAnimation.Presets.linear,
+          duration: 150,
+        })
+        setState({ assetList, assetRecords, loading: false })
+        assetRecord.value = assetRecords
+      },
+      [assetRecord],
+    ),
+  )
 
   const openPhoto = (asset: GenericAsset) => {
     logger.log("openPhoto", asset.name)
@@ -98,14 +104,13 @@ export const HomeScreen: React.FC<
       delete newState[item.name]
     }
 
-    clearSelection()
-
     try {
       logger.log("Deleting assets")
       await Promise.all([
         mediaManager.deleteAssetsAsync(selectedLocalAssets),
         mediaManager.deleteRemoteAssets(selectedRemoteAssets),
       ])
+      clearSelection()
     } catch (err) {
       logger.log(err)
     }
@@ -133,18 +138,30 @@ export const HomeScreen: React.FC<
 
       await mediaManager.deleteAssetsAsync(localRemoteAssets)
       const assetUrlMap = await mediaManager.getRemoteUrl(localRemoteAssets)
+      const withRemoteUrl = localRemoteAssets.filter(item =>
+        Boolean(assetUrlMap[item.name]),
+      )
 
-      localRemoteAssets.forEach(item => {
+      withRemoteUrl.forEach(item => {
         const current = newState[item.name] as LocalRemoteAsset
+        const url = assetUrlMap[current.name]
+        if (!url) {
+          Sentry.captureException(
+            new Error("LocalRemoteAsset without a valid URL"),
+          )
+          return
+        }
+
         const newAsset: RemoteAsset = {
           type: "RemoteAsset",
+          id: current.id,
           creationTime: current.creationTime,
           duration: current.duration,
           height: current.height,
           width: current.width,
           name: current.name,
           mediaType: current.mediaType,
-          url: assetUrlMap[current.name] ?? "url_not_found",
+          url,
         }
 
         newState[item.name] = newAsset

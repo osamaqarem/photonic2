@@ -56,7 +56,7 @@ const styles = StyleSheet.create({
   icon: {
     height: 120,
     width: 120,
-    color: theme.colors.error,
+    color: theme.colors.danger,
   },
   container: {
     flexGrow: 1,

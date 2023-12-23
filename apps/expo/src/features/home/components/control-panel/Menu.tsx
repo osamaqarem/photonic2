@@ -4,7 +4,7 @@ import * as ZeegoDropdownMenu from "zeego/dropdown-menu"
 
 import { StyleSheet } from "react-native"
 import { Icon } from "~/expo/design/components/icons/Icons"
-import { palette } from "~/expo/design/palette"
+import { theme } from "~/expo/design/theme"
 import { Option } from "./Option"
 
 export const DropdownMenu = ZeegoDropdownMenu
@@ -12,7 +12,7 @@ export const DropdownMenu = ZeegoDropdownMenu
 export type DropdownMenuItemIconConfig = ImageSystemSymbolConfiguration
 
 const iconConfig: DropdownMenuItemIconConfig = {
-  pointSize: 5,
+  pointSize: 16,
   weight: "light",
   scale: "large",
 }
@@ -92,6 +92,6 @@ const styles = StyleSheet.create({
   blueIcon: {
     height: 28,
     width: 28,
-    color: palette.light.blue.blue7,
+    color: theme.colors.primary,
   },
 })

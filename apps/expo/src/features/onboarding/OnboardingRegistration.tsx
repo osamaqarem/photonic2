@@ -1,3 +1,4 @@
+import { getErrorMsg } from "@photonic/common"
 import type { NativeStackScreenProps } from "@react-navigation/native-stack"
 import React from "react"
 import { StyleSheet } from "react-native"
@@ -8,6 +9,7 @@ import { ScrollView } from "~/expo/design/components/ScrollView"
 import { Space } from "~/expo/design/components/Space"
 import { Text } from "~/expo/design/components/Text"
 import { TextInput } from "~/expo/design/components/TextInput"
+import { useAlerts } from "~/expo/design/components/alerts/useAlerts"
 import { theme } from "~/expo/design/theme"
 import type { AppParams } from "~/expo/navigation/params"
 import { trpc } from "~/expo/stores/TrpcProvider"
@@ -20,8 +22,12 @@ export const OnboardingRegistrationScreen: React.FC<
   const [email, setEmail] = React.useState("")
 
   const handleLogin = async () => {
-    await mutateAsync({ email })
-    props.navigation.navigate("onboarding-code-verification", { email })
+    try {
+      await mutateAsync({ email })
+      props.navigation.navigate("onboarding-code-verification", { email })
+    } catch (err) {
+      showError(getErrorMsg(err))
+    }
   }
 
   const loginButtonState = () => {
@@ -43,7 +49,14 @@ export const OnboardingRegistrationScreen: React.FC<
             enter it in the next screen.
           </Text>
           <Space t={60} />
-          <TextInput placeholder="E-mail" onChangeText={setEmail} />
+          <TextInput
+            placeholder="E-mail"
+            onChangeText={setEmail}
+            autoCapitalize="none"
+            autoComplete="email"
+            autoCorrect={false}
+            value={email}
+          />
         </SafeAreaView>
       </ScrollView>
       <ScrollView.StickyView style={styles.stickyView}>

@@ -9,11 +9,11 @@ import { useSafeAreaInsets } from "react-native-safe-area-context"
 
 import { StyleSheet, View, type ViewProps } from "react-native"
 import { Icon } from "~/expo/design/components/icons/Icons"
-import { palette } from "~/expo/design/palette"
+import { theme } from "~/expo/design/theme"
 import { BlurView } from "~/expo/features/home/components/control-panel/BlurPressable"
 import { useDragSelectContext } from "~/expo/features/home/context/DragSelectContextProvider"
-import { Option } from "./Option"
 import { useDarkMode } from "~/expo/stores/DarkModeProvider"
+import { Option } from "./Option"
 
 const bottomPanelHeight = 120
 // TODO:
@@ -124,12 +124,12 @@ const styles = StyleSheet.create({
   blueIcon: {
     height: 28,
     width: 28,
-    color: palette.light.blue.blue7,
+    color: theme.colors.primary,
   },
   trash: {
     height: 28,
     width: 28,
-    color: palette.light.tomato.tomato7,
+    color: theme.colors.danger,
   },
   space: {
     width: 28,

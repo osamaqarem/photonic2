@@ -23,7 +23,7 @@ type OnData = (d: {
 }) => void
 
 export const useAssets = (onData: OnData) => {
-  const fetchAllAssets = React.useCallback(async () => {
+  const fetchAllAssets = React.useCallback(() => {
     fetchLocalAssets().then(data => {
       onData({
         assetRecords: mediaManager.exportRecordMap(data),
@@ -46,7 +46,5 @@ export const useAssets = (onData: OnData) => {
       }
     })
     return sub.remove
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [fetchAllAssets])
 }

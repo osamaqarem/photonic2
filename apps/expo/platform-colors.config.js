@@ -5,6 +5,10 @@ const { light: l, dark: d } = palette
 
 module.exports = {
   colors: {
+    primary: {
+      light: l.blue.blue9,
+      dark: d.blue.blue9,
+    },
     accent: {
       light: l.blue.blue6,
       dark: d.blue.blue6,
@@ -53,21 +57,21 @@ module.exports = {
       light: l.blue.blue8,
       dark: d.blue.blue8,
     },
-    error: {
-      light: l.tomato.tomato11,
-      dark: d.tomato.tomato11,
+    danger: {
+      light: l.tomato.tomato9,
+      dark: d.tomato.tomato9,
     },
     success: {
-      light: d.grass.grass11,
-      dark: d.grass.grass11,
+      light: d.grass.grass9,
+      dark: d.grass.grass9,
     },
     warning: {
-      light: d.amber.amber11,
-      dark: d.amber.amber11,
+      light: d.amber.amber9,
+      dark: d.amber.amber9,
     },
     info: {
-      light: d.cyan.cyan11,
-      dark: d.cyan.cyan11,
+      light: d.cyan.cyan9,
+      dark: d.cyan.cyan9,
     },
   },
   javascript: {
