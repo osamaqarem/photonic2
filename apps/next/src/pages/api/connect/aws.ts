@@ -100,7 +100,9 @@ export default async function handler(
       const awsAccount = await db.awsAccount.create({
         data: {
           id: AwsAccountId,
-          userId: user.id,
+          user: {
+            connect: { id: user.id },
+          },
           bucketName: BucketName,
           bucketRegion: Region,
           roleArn: RoleArn,
@@ -110,13 +112,11 @@ export default async function handler(
       // Keep aws account in redis temporarily at least until the user refreshes their token
       // the refreshed token will contain the aws account info.
       cache.awsAccount.set(user, awsAccount)
-    } else if (event.RequestType === "Delete") {
+    } else if (event.RequestType === "Delete" && user.awsAccountId) {
       await Promise.all([
         db.awsAccount
           .delete({
-            where: {
-              userId: user.id,
-            },
+            where: { id: user.awsAccountId },
           })
           .catch(logger.error),
         cache.awsAccount.delete(user),

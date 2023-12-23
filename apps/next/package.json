@@ -8,6 +8,7 @@
     "start": "next start",
     "serve": "yarn build && yarn start",
     "lint": "next lint",
+    "ts": "tsc",
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate dev",
     "db:push": "prisma db push",
