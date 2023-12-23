@@ -112,6 +112,8 @@ const opts: CreateTRPCClientOptions<AppRouter> = {
 export const trpcClient = createTRPCProxyClient<AppRouter>(opts)
 export const trpc = createTRPCReact<AppRouter>()
 
+const logger = new Logger("rquery")
+
 export const TrpcProvider: React.FC<React.PropsWithChildren> = ({
   children,
 }) => {
@@ -120,6 +122,7 @@ export const TrpcProvider: React.FC<React.PropsWithChildren> = ({
   const [queryClient] = React.useState(
     () =>
       new QueryClient({
+        logger,
         defaultOptions: {
           queries: {
             retry: false,

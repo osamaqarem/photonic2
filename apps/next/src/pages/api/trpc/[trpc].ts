@@ -19,8 +19,6 @@ export default createNextApiHandler({
       // TODO: send to bug reporting
       error.message =
         "Our server faced an unexpected error. We've been informed."
-    } else {
-      //
     }
   },
 })

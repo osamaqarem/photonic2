@@ -14,10 +14,10 @@ CREATE TABLE "User" (
 -- CreateTable
 CREATE TABLE "AwsAccount" (
     "id" TEXT NOT NULL,
-    "userId" TEXT NOT NULL,
     "bucketName" TEXT NOT NULL,
     "bucketRegion" TEXT NOT NULL,
     "roleArn" TEXT NOT NULL,
+    "userId" TEXT NOT NULL,
 
     CONSTRAINT "AwsAccount_pkey" PRIMARY KEY ("id")
 );
@@ -61,10 +61,10 @@ CREATE UNIQUE INDEX "AwsAccount_userId_key" ON "AwsAccount"("userId");
 CREATE INDEX "Album_userId_idx" ON "Album"("userId");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Photo_name_key" ON "Photo"("name");
+CREATE INDEX "Photo_userId_idx" ON "Photo"("userId");
 
 -- CreateIndex
-CREATE INDEX "Photo_userId_idx" ON "Photo"("userId");
+CREATE UNIQUE INDEX "Photo_name_userId_key" ON "Photo"("name", "userId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "_AlbumToPhoto_AB_unique" ON "_AlbumToPhoto"("A", "B");

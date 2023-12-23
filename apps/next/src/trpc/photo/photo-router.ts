@@ -11,7 +11,7 @@ export const photoRouter = router({
     .input(
       z.object({
         limit: z.number().min(1).max(100).optional().catch(50),
-        cursor: z.string().optional(), // -> Photo.name
+        cursor: z.string().optional(), // -> Photo.id
       }),
     )
     .query(async ({ ctx, input }) => {
@@ -19,7 +19,7 @@ export const photoRouter = router({
         where: { userId: ctx.user.id },
         take: input.limit,
         skip: input.cursor ? 1 : 0,
-        cursor: input.cursor ? { name: input.cursor } : undefined,
+        cursor: input.cursor ? { id: input.cursor } : undefined,
         orderBy: [{ creationTime: "desc" }, { name: "desc" }],
       })
 
@@ -68,7 +68,7 @@ export const photoRouter = router({
   update: storageProcedure
     .input(
       z.object({
-        name: z.string(),
+        id: z.string(),
         updatedData: z
           .object({
             name: z.string(),
@@ -80,13 +80,13 @@ export const photoRouter = router({
     .mutation(async ({ input, ctx }) => {
       if (input.updatedData.name) {
         await Promise.all([
-          ctx.storage.copyObject(input.name, input.updatedData.name),
-          ctx.storage.deleteObjects([{ Key: input.name }]),
+          ctx.storage.copyObject(input.id, input.updatedData.name),
+          ctx.storage.deleteObjects([{ Key: input.id }]),
         ])
       }
 
       await ctx.db.photo.update({
-        where: { name: input.name },
+        where: { id: input.id },
         data: input.updatedData,
       })
 
