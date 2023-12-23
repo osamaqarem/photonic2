@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev & yarn db:proxy",
+    "dev": "next dev & yarn db:proxy & yarn db:studio",
     "build": "next build",
     "start": "next start",
     "serve": "yarn build && yarn start",

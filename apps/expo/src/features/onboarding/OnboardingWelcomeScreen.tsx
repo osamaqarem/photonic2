@@ -32,7 +32,7 @@ export const OnboardingWelcomeScreen: React.FC<
           </View>
         </SafeAreaView>
       </ScrollView>
-      <ScrollView.StickyView style={styles.btnContainer}>
+      <ScrollView.StickyView>
         <Button text={"Get started"} onPress={goToRegistration} />
       </ScrollView.StickyView>
     </>
@@ -84,5 +84,4 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: "20%",
   },
-  btnContainer: {},
 })

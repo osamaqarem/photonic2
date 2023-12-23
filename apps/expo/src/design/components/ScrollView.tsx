@@ -82,6 +82,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     alignSelf: "center",
     width: "100%",
+    alignItems: "center",
   },
   stickyView: {
     paddingHorizontal: theme.space.contentPadding,
