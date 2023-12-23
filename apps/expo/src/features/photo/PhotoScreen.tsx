@@ -1,11 +1,6 @@
 import type { NativeStackScreenProps } from "@react-navigation/native-stack"
 import * as React from "react"
-import {
-  Platform,
-  StatusBar,
-  StyleSheet,
-  useWindowDimensions,
-} from "react-native"
+import { StatusBar, StyleSheet, useWindowDimensions } from "react-native"
 import type { OnLoadEvent } from "react-native-fast-image"
 import FastImage from "react-native-fast-image"
 import type {
@@ -75,13 +70,7 @@ export const PhotoScreen: React.FC<
     height: hasRawData ? asset.height : 0,
   })
 
-  const uri =
-    asset.type === "RemoteAsset"
-      ? asset.url
-      : Platform.select({
-          ios: "ph://" + asset.localUri,
-          android: asset.localUri,
-        })
+  const uri = asset.type === "RemoteAsset" ? asset.url : asset.localUri
 
   const aspectWidth = screenWidth ?? 0
   const aspectHeight = React.useMemo(() => {
