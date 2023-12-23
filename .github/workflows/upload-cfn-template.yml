@@ -14,8 +14,8 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  deploy:
-    name: Deploy
+  upload:
+    name: Upload
     runs-on: ubuntu-latest
 
     steps:

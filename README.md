@@ -1,6 +1,6 @@
 # Photonic
 
-### DB
+## DB
 
 ```
 fly pg create
@@ -8,7 +8,7 @@ fly pg attach --app [app_name] [database_name]
 # Redploying the app with the updated secret is now required.
 ```
 
-### Bulk setting secrets on app
+## Bulk setting secrets on app
 
 ```
 flyctl --app [app_name] secrets import < ./apps/next/.env
@@ -90,11 +90,11 @@ aws_access_key_id=
 aws_secret_access_key=
 ```
 
-## Usage
+### Usage
 
 ```shell
 # Workspace
-terraform select workspace staging
+terraform workspace select staging
 
 # Download providers
 terraform init
