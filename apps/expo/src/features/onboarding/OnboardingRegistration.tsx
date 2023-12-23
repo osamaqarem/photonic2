@@ -19,7 +19,8 @@ export const OnboardingRegistrationScreen: React.FC<
 > = props => {
   const { isLoading, mutateAsync } = trpc.auth.getLoginCode.useMutation()
 
-  const [email, setEmail] = React.useState("")
+  const { showError } = useAlerts()
+
 
   const handleLogin = async () => {
     try {
