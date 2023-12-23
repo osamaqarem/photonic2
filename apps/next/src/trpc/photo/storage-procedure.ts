@@ -17,6 +17,7 @@ const storageMiddleware = middleware(async ({ ctx, next }) => {
     })
   } else {
     const getRoleCreds = async (
+      userId: string,
       awsAccount: AwsAccount,
     ): Promise<RoleCredentials> => {
       // Get cached credentials
@@ -30,7 +31,10 @@ const storageMiddleware = middleware(async ({ ctx, next }) => {
 
       // Create new credentials
       try {
-        const creds = await assumeRole(awsAccount)
+        const creds = await assumeRole({
+          roleArn: awsAccount.roleArn,
+          externalId: userId,
+        })
         await ctx.cache.awsRoleCred.set(awsAccount, creds)
         return creds
       } catch (err) {
@@ -42,7 +46,7 @@ const storageMiddleware = middleware(async ({ ctx, next }) => {
       }
     }
 
-    let credentials = await getRoleCreds(ctx.user.awsAccount)
+    let credentials = await getRoleCreds(ctx.user.id, ctx.user.awsAccount)
 
     const s3 = new S3({
       dev: false,

@@ -59,7 +59,7 @@ model Photo {
   user          User      @relation(fields: [userId], references: [id])
   userId        String
   @@index([userId])
-  @@unique([name, userId])
+  @@unique(name: "photoId", [name, userId])
 }
 
 enum MediaType {

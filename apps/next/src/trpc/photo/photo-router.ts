@@ -68,7 +68,7 @@ export const photoRouter = router({
   update: storageProcedure
     .input(
       z.object({
-        id: z.string(),
+        name: z.string(),
         updatedData: z
           .object({
             name: z.string(),
@@ -80,13 +80,18 @@ export const photoRouter = router({
     .mutation(async ({ input, ctx }) => {
       if (input.updatedData.name) {
         await Promise.all([
-          ctx.storage.copyObject(input.id, input.updatedData.name),
-          ctx.storage.deleteObjects([{ Key: input.id }]),
+          ctx.storage.copyObject(input.name, input.updatedData.name),
+          ctx.storage.deleteObjects([{ Key: input.name }]),
         ])
       }
 
       await ctx.db.photo.update({
-        where: { id: input.id },
+        where: {
+          photoId: {
+            name: input.name,
+            userId: ctx.user.id,
+          },
+        },
         data: input.updatedData,
       })
 

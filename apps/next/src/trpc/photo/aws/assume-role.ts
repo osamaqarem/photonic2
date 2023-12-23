@@ -1,8 +1,6 @@
 import { AssumeRoleCommand, STSClient } from "@aws-sdk/client-sts"
-import type { AwsAccount } from "@prisma/client"
 
 import { Logger } from "@photonic/common"
-
 import { config } from "~/next/config"
 import type { RoleCredentials } from "~/next/lib/validations/role-cred"
 import { RoleCredentialsSchema } from "~/next/lib/validations/role-cred"
@@ -17,15 +15,19 @@ const client = new STSClient({
   },
 })
 
-export async function assumeRole(
-  awsAccount: AwsAccount,
-): Promise<RoleCredentials> {
+export async function assumeRole({
+  roleArn,
+  externalId,
+}: {
+  roleArn: string
+  externalId: string
+}): Promise<RoleCredentials> {
   try {
     logger.log("Assuming direct control 🤖")
     const data = await client.send(
       new AssumeRoleCommand({
-        RoleArn: awsAccount.roleArn,
-        ExternalId: awsAccount.userId,
+        RoleArn: roleArn,
+        ExternalId: externalId,
         RoleSessionName: "PhotonicAWSSession",
       }),
     )
