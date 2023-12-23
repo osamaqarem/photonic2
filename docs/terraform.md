@@ -1,4 +1,6 @@
-# @photonic/lambda Terraform
+# Terraform
+
+This will cover the requirements for using Terraform across different apps.
 
 ## Setup
 
@@ -17,6 +19,7 @@ The AWS user must have the following permissions:
   "Statement": [
     {
       "Effect": "Allow",
+      // AWS Lambda
       "Action": [
         "iam:CreateRole",
         "iam:ListInstanceProfilesForRole",
@@ -24,41 +27,23 @@ The AWS user must have the following permissions:
         "iam:DeleteRole",
         "iam:AttachRolePolicy"
       ],
-      // Replace '123' with the actual ARN of the user
       "Resource": "arn:aws:iam::123:role/*"
     },
     {
-		    "Effect": "Allow",
-		    "Action": [
-          "logs:CreateLogGroup"
-          "logs:ListTagsLogGroup"
-          "logs:DeleteLogGroup"
-          ],
-        "Resource": "arn:aws:logs:eu-central-1:123:*"
-		},
-    {
-			"Effect": "Allow",
-			"Action": "s3:ListBucket",
-			"Resource": "arn:aws:s3:::photonic-tfstate"
-		},
-		{
-			"Effect": "Allow",
-			"Action": [
-				"s3:GetObject",
-				"s3:PutObject",
-				"s3:DeleteObject"
-			],
-			"Resource": "arn:aws:s3:::photonic-tfstate/*/state/terraform.tfstate"
-		}
-    {
+      // AWS Lambda logging to CloudWatch
       "Effect": "Allow",
-      "Action": "s3:ListBucket",
-      "Resource": "arn:aws:s3:::mybucket"
+      "Action": [
+        "logs:CreateLogGroup",
+        "logs:ListTagsLogGroup",
+        "logs:DeleteLogGroup"
+      ],
+      "Resource": "arn:aws:logs:eu-central-1:123:*"
     },
     {
+      // Cloudformation template bucket & terraform state backend
       "Effect": "Allow",
-      "Action": ["s3:GetObject", "s3:PutObject", "s3:DeleteObject"],
-      "Resource": "arn:aws:s3:::photonic-tfstate/key"
+      "Action": ["s3:*"],
+      "Resource": "*"
     }
   ]
 }
@@ -95,4 +80,4 @@ terraform output
 
 ## Notes
 
-The Lambda name and user ARN are considered in the CFN template. If the patterns change, the template will need a manual patch.
+Several parameters are hardocded in the CFN template such as the user ARN and AWS Lambda name. Could be automated with Terraform outputs and a GitHub action.

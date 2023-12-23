@@ -1,4 +1,4 @@
-name: Deploy Lambda
+name: Upload Cloudformation Template
 
 on:
   push:
@@ -6,15 +6,12 @@ on:
       - main
       - dev
     paths:
-      - apps/lambda/**
+      - apps/next/terraform/template_staging.json
+      - apps/next/terraform/template_production.json
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
-
-permissions:
-  actions: write
-  contents: read
 
 jobs:
   deploy:
@@ -30,31 +27,22 @@ jobs:
 
       - uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
-        with:
-          cache: yarn
-          cache-dependency-path: yarn.lock
-
       - uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: 1.6.2
 
-      - name: Install dependencies
-        run: |
-          yarn install --immutable --prefer-offline
-          cd apps/lambda/terraform
-          terraform init
+      - name: Init
+        working-directory: apps/next/terraform
+        run: terraform init
 
       - name: Deploy Staging
         if: ${{ github.ref == 'refs/heads/dev' }}
-        working-directory: ./apps/lambda/terraform
         run: |
           terraform workspace select staging
           terraform apply --var-file=staging.tfvars -auto-approve
 
       - name: Deploy Production
         if: ${{ github.ref == 'refs/heads/main' }}
-        working-directory: ./apps/lambda/terraform
         run: |
           terraform workspace select production
           terraform apply --var-file=production.tfvars -auto-approve

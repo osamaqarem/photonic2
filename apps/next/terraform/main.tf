@@ -1,7 +1,7 @@
 terraform {
   backend "s3" {
     bucket = "photonic-tfstate"
-    key    = "state/terraform.tfstate"
+    key    = "next/state/terraform.tfstate"
     region = "eu-central-1"
     shared_credentials_files = ["$HOME/.aws/credentials"]
     profile                  = "photonic"

@@ -16,8 +16,13 @@ const schema = z.object({
   PHOTONIC_AWS_SECRET_KEY: nonempty,
   PHOTONIC_AWS_ACCESS_KEY_ID: nonempty,
   PHOTONIC_AWS_REGION: nonempty,
-  AWS_CFN_URL: nonempty,
-  AWS_CFN_TEMPLATE_URL: nonempty,
 })
 
-export const config = schema.parse(process.env)
+const parsedEnv = schema.parse(process.env)
+
+export const config = {
+  ...parsedEnv,
+  AWS_CFN_URL:
+    "https://eu-central-1.console.aws.amazon.com/cloudformation/home",
+  AWS_CFN_TEMPLATE_URL: `https://photonic-cloudformation-templates-${parsedEnv.PHOTONIC_AWS_REGION}.s3.${parsedEnv.PHOTONIC_AWS_REGION}.amazonaws.com`,
+}
