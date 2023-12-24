@@ -9,7 +9,7 @@
     "@photonic/next": "*",
     "@photonic/system-ui": "*",
     "@photonic/upload-service": "*",
-    "@radix-ui/colors": "^0.1.8",
+    "@radix-ui/colors": "^3.0.0",
     "@react-native-menu/menu": "^0.7.2",
     "@react-navigation/native": "^6.1.6",
     "@react-navigation/native-stack": "^6.9.12",

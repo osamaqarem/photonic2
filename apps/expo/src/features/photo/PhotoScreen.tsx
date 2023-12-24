@@ -29,21 +29,21 @@ import * as vec from "~/expo/features/photo/utils/vectors"
 import type { AppParams } from "~/expo/navigation/params"
 
 // TODO: viewpager to swipe between images
-// TODO: use transparent nav bar
-// TODO: zoom out after zoom in continuious gesture should zoom out to original place
-// TODO: try image transform state reset animations for goBack in SET.
-// TODO: vibration at max/min scale
+// use transparent nav bar
+// zoom out after zoom in continuious gesture should zoom out to original place
+// try image transform state reset animations for goBack in SET.
+// vibration at max/min scale
 
-// TODO: Prevent the user from dismissing the modal if they zoom in then zoom out too much by accident - OK
-// TODO: scale down to go back - OK
-// TODO: pan down from base_scale to go back - OK
-// TODO: refactor into vectors - OK
-// TODO: double tap to zoom at point - ok
-// TODO: double tap to zoom out if zoomed in - OK
-// TODO: fix slow zoom - OK
-// TODO: handle focal zoom point - OK
-// TODO: handle device aspect ratio - OK
-// TODO: handle device orientation - OK
+// Prevent the user from dismissing the modal if they zoom in then zoom out too much by accident - OK
+// scale down to go back - OK
+// pan down from base_scale to go back - OK
+// refactor into vectors - OK
+// double tap to zoom at point - ok
+// double tap to zoom out if zoomed in - OK
+// fix slow zoom - OK
+// handle focal zoom point - OK
+// handle device aspect ratio - OK
+// handle device orientation - OK
 
 const BASE_SCALE = 1
 const MIN_SCALE = 0

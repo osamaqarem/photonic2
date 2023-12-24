@@ -164,6 +164,7 @@ export const HomeScreen: React.FC<
           url,
         }
 
+        // TODO: patch remote assets query data vs full rmeote data refetch
         newState[item.name] = newAsset
       })
     } catch (err) {
@@ -203,6 +204,7 @@ export const HomeScreen: React.FC<
       })
 
       // TODO: list data is out of sync with record
+      // refetch remote assets or patch query
       assetRecord.value = newState
     } catch (err) {
       logger.log(err)
@@ -255,7 +257,7 @@ export const HomeScreen: React.FC<
     }
 
     if (shouldUpdate) {
-      // TODO: manual refetch
+      // TODO: test this, should lead to several incremental update. ability to pause subscription to changes
       // setState(newState)
     }
   }
