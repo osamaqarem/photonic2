@@ -1,3 +1,4 @@
+import chunk from "lodash.chunk"
 import { Logger, getErrorMsg } from "@photonic/common"
 import type { NativeStackScreenProps } from "@react-navigation/native-stack"
 import React from "react"
@@ -8,8 +9,9 @@ import {
   View,
 } from "react-native"
 import { useDerivedValue, useSharedValue } from "react-native-reanimated"
-import { useAlerts } from "~/expo/design/components/alerts/useAlerts"
+import { Worker } from "@photonic/worker"
 
+import { useAlerts } from "~/expo/design/components/alerts/useAlerts"
 import { AssetList } from "~/expo/features/home/components/AssetList"
 import { ControlPanel } from "~/expo/features/home/components/control-panel"
 import { DragSelectContextProvider } from "~/expo/features/home/context/DragSelectContextProvider"
@@ -24,6 +26,7 @@ import type {
 import { mediaManager } from "~/expo/features/home/utils/media-manager"
 import { Sentry } from "~/expo/lib/sentry"
 import type { AppParams } from "~/expo/navigation/params"
+import { trpcClient } from "~/expo/stores/TrpcProvider"
 
 const logger = new Logger("HomeScreen")
 
@@ -281,8 +284,32 @@ export const HomeScreen: React.FC<
 
   const goToSettings = () => props.navigation.navigate("settings")
 
-  const noop = () => {
-    console.log("not implemented")
+  const uploadAssets = async (mode: "selected" | "all") => {
+    const collection =
+      mode === "selected" ? selectedItems.value : assetRecord.value
+
+    let data: Array<Pick<LocalAsset, "localId" | "name">> = []
+    for (const name in collection) {
+      const item = collection[name]
+      if (item?.type === "LocalAsset") {
+        data.push({ name: item.name, localId: item.localId })
+      }
+    }
+
+    clearSelection()
+
+    try {
+      for (const group of chunk(data, 10)) {
+        const tasks = await trpcClient.photo.getSignedUploadUrl.query(group)
+        const errors = await Worker.uploadAssets({
+          assets: tasks,
+          concurrency: group.length,
+        })
+        logger.error(errors)
+      }
+    } catch (err) {
+      showError(getErrorMsg(err))
+    }
   }
 
   return (
@@ -309,7 +336,7 @@ export const HomeScreen: React.FC<
           <ControlPanel.BottomPanel
             deleteSelectedItems={deleteSelectedItems}
             shareSelectedItems={shareSelectedItems}
-            uploadSelectedItems={noop}>
+            uploadSelectedItems={() => uploadAssets("selected")}>
             <ControlPanel.BottomPanelMenu
               removeSelectedItemsFromDevice={removeSelectedItemsFromDevice}
               saveSelectedItemsToDevice={saveSelectedItemsToDevice}

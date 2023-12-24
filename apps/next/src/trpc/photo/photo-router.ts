@@ -127,11 +127,20 @@ export const photoRouter = router({
       return
     }),
   getSignedUploadUrl: storageProcedure
-    .input(z.array(z.string()).min(1).max(10))
+    .input(
+      z
+        .array(z.object({ name: z.string(), localId: z.string() }))
+        .min(1)
+        .max(10),
+    )
     .query(async ({ ctx, input }) => {
       return Promise.all(
         input.map(async item => {
-          return ctx.storage.getUploadUrl(item)
+          const url = await ctx.storage.getUploadUrl(item.name)
+          return {
+            ...item,
+            url,
+          }
         }),
       )
     }),

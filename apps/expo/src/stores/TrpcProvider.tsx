@@ -20,7 +20,7 @@ import type { AuthStore } from "~/expo/stores/auth-store"
 import { useAuth } from "~/expo/stores/auth-store"
 
 const loggerLink: TRPCLink<AppRouter> = () => {
-  const logger = new Logger("trpc")
+  const logger = new Logger("@trpc/client")
 
   return ({ next, op }) => {
     return observable(observer => {

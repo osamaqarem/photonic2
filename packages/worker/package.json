@@ -1,9 +1,12 @@
 {
-  "name": "@photonic/upload-service",
+  "name": "@photonic/worker",
   "version": "1.0.0",
-  "description": "Concurrent file uploads",
+  "description": "Background worker",
   "homepage": "https://github.com/osamaqarem/Photonic",
   "author": "Osama Qarem",
+  "dependencies": {
+    "@photonic/common": "*"
+  },
   "scripts": {
     "ts": "tsc",
     "lint": "eslint . --ext .ts",
