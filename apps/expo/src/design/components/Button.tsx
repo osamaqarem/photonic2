@@ -131,7 +131,6 @@ const styles = StyleSheet.create({
     borderRadius: 32,
     justifyContent: "center",
     alignItems: "center",
-    alignSelf: "flex-end",
   },
   text: {
     ...font().size("m").weight("regular").style,
