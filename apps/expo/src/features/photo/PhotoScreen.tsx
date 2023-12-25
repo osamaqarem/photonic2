@@ -1,8 +1,8 @@
 import type { NativeStackScreenProps } from "@react-navigation/native-stack"
 import * as React from "react"
 import { StatusBar, StyleSheet, useWindowDimensions } from "react-native"
-import type { OnLoadEvent } from "react-native-fast-image"
-import FastImage from "react-native-fast-image"
+import type { ImageLoadEventData } from "expo-image"
+import { Image } from "expo-image"
 import type {
   PanGestureHandlerGestureEvent,
   PinchGestureHandlerGestureEvent,
@@ -94,9 +94,10 @@ export const PhotoScreen: React.FC<
 
   const backgroundColorOpacity = useSharedValue(MAX_OPACITY)
 
-  function onImageLoaded(e: OnLoadEvent) {
-    console.log(e.nativeEvent)
-    setImageSize(e.nativeEvent)
+  function onImageLoaded(e: ImageLoadEventData) {
+    const { width, height } = e.source
+    console.log({ width, height })
+    setImageSize({ width, height })
   }
 
   function getCurrentImgViewWidth() {
@@ -512,13 +513,13 @@ export const PhotoScreen: React.FC<
                 maxDelayMs={500}
                 maxDist={50}>
                 <Animated.View style={styles.fullscreen}>
-                  <FastImage
+                  <Image
                     source={{ uri }}
                     style={{
                       height: aspectHeight,
                       width: aspectWidth,
                     }}
-                    resizeMode="contain"
+                    contentFit="cover"
                     // @ts-expect-error missing type
                     ref={imageRef}
                     onLoad={onImageLoaded}

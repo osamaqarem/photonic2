@@ -1,7 +1,6 @@
+import { Image } from "expo-image"
 import * as React from "react"
 import { StyleSheet } from "react-native"
-import type { FastImageProps } from "react-native-fast-image"
-import FastImage from "react-native-fast-image"
 import {
   Gesture,
   GestureDetector,
@@ -127,12 +126,12 @@ export const Thumbnail: React.FC<Props> & {
           },
           styles.dottedBorder,
         ]}>
-        <AnimatedFastImage
-          resizeMode="cover"
+        <AnimatedImage
+          recyclingKey={asset.name}
           source={{ uri }}
           // R1
-          downscaleSize={80}
-          style={styles.image}>
+          style={styles.image}
+          contentFit="cover">
           <Animated.View style={[overlayStyle, styles.overlay]} />
           <Animated.View
             style={[uploadIndicatorStyle, styles.cloudIconContainer]}>
@@ -141,7 +140,7 @@ export const Thumbnail: React.FC<Props> & {
               style={[uploadIndicatorIconStyle, styles.cloudIcon]}
             />
           </Animated.View>
-        </AnimatedFastImage>
+        </AnimatedImage>
         <Animated.View style={[checkIconStyle, styles.checkIconContainer]}>
           <Icon name="Check" style={styles.checkIcon} />
         </Animated.View>
@@ -152,9 +151,7 @@ export const Thumbnail: React.FC<Props> & {
 
 Thumbnail.longPressTiming = longPressTiming
 
-const AnimatedFastImage = Animated.createAnimatedComponent(
-  FastImage as React.FC<FastImageProps>,
-)
+const AnimatedImage = Animated.createAnimatedComponent(Image)
 
 const styles = StyleSheet.create({
   dottedBorder: {
