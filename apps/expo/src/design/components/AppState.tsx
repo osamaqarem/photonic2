@@ -23,7 +23,7 @@ export const AppState = <Data,>({
   loading,
   retry,
 }: Props<Data>) => {
-  if (loading || !data)
+  if (loading)
     return (
       <View style={styles.container}>
         <ActivityIndicator size={"large"} />
@@ -49,7 +49,9 @@ export const AppState = <Data,>({
     )
   }
 
-  return <>{typeof children === "function" ? children(data) : children}</>
+  if (data) {
+    return <>{typeof children === "function" ? children(data) : children}</>
+  }
 }
 
 const styles = StyleSheet.create({
