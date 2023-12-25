@@ -6,19 +6,23 @@ export class Logger {
     this.disabled = disabled
   }
 
-  handleDisabled = (fn: (...args: Array<unknown>) => void) =>
+  private handleDisabled = (fn: (...args: Array<unknown>) => void) =>
     this.disabled ? NOOP : fn
 
+  private format = (p: Array<unknown>) => {
+    return p.map(p => JSON.stringify(p, null, 2))
+  }
+
   log = this.handleDisabled((...args: Array<unknown>) => {
-    console.log(`📬 ${this.prefix}:`, ...args)
+    console.log(`📬 ${this.prefix}:`, ...this.format(args))
   })
 
   warn = this.handleDisabled((...args: Array<unknown>) => {
-    console.log(`🍌 ${this.prefix}:`, ...args)
+    console.log(`🍌 ${this.prefix}:`, ...this.format(args))
   })
 
   error = this.handleDisabled((...args: Array<unknown>) => {
-    console.log(`🥊 ${this.prefix}:`, ...args)
+    console.log(`🥊 ${this.prefix}:`, ...this.format(args))
   })
 }
 

@@ -8,7 +8,11 @@ import {
   StyleSheet,
   View,
 } from "react-native"
-import { useDerivedValue, useSharedValue } from "react-native-reanimated"
+import {
+  runOnUI,
+  useDerivedValue,
+  useSharedValue,
+} from "react-native-reanimated"
 import { Worker } from "@photonic/worker"
 
 import { useAlerts } from "~/expo/design/components/alerts/useAlerts"
@@ -27,6 +31,7 @@ import { mediaManager } from "~/expo/features/home/utils/media-manager"
 import { Sentry } from "~/expo/lib/sentry"
 import type { AppParams } from "~/expo/navigation/params"
 import { trpcClient } from "~/expo/stores/TrpcProvider"
+import { Actor } from "~/expo/features/home/utils/actor"
 
 const logger = new Logger("HomeScreen")
 
@@ -299,14 +304,26 @@ export const HomeScreen: React.FC<
     clearSelection()
 
     try {
-      for (const group of chunk(data, 10)) {
-        const tasks = await trpcClient.photo.getSignedUploadUrl.query(group)
-        const errors = await Worker.uploadAssets({
-          assets: tasks,
-          concurrency: group.length,
-        })
-        logger.error(errors)
+      const lock = new Actor()
+
+      const onProgress = async (percentage: number) => {
+        await lock.acquire()
+        totalUploadProgress.value = percentage
+        lock.release()
       }
+
+      for (const group of chunk(data, 10)) {
+        const assets = await trpcClient.photo.getSignedUploadUrl.query(group)
+        const errors = await Worker.uploadAssets(
+          { assets, concurrency: group.length },
+          onProgress,
+        )
+        if (errors.length) logger.error(errors)
+      }
+
+      setTimeout(() => {
+        totalUploadProgress.value = 0
+      }, 5_000)
     } catch (err) {
       showError(getErrorMsg(err))
     }

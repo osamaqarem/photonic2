@@ -7,26 +7,46 @@ public class Worker: Module {
         var task: UploadTask?
 
         @Field
-        var error: String?
+        var error: String
     }
 
     struct UploadTask: Record {
         @Field
-        var localId: String?
+        var localId: String
 
         @Field
-        var url: String?
+        var url: String
 
         @Field
-        var name: String?
+        var name: String
     }
 
     struct UploadAssetsArg: Record {
         @Field
-        var assets: [UploadTask] = []
+        var assets: [UploadTask]
 
         @Field
-        var concurrency = 10
+        var concurrency: Int
+    }
+
+    actor UploadState {
+        var total: Int
+        var count = 0
+        var fractionCompleted: Double { Double(count) / Double(total) }
+        var errors: [UploadTaskError?] = []
+
+        init(total: Int) {
+            self.total = total
+        }
+
+        func addProgress() -> Double {
+            count += 1
+            return fractionCompleted
+        }
+
+        func addError(e: UploadTaskError?) {
+            errors.append(e)
+        }
     }
 
     func getUploadTaskError(task: UploadTask?, error: String) -> UploadTaskError {
@@ -36,13 +56,12 @@ public class Worker: Module {
         return t
     }
 
-
     public func definition() -> ModuleDefinition {
         Name("Worker")
 
         Events("onComplete", "onProgress")
 
-        AsyncFunction("uploadAssets") { (input: UploadAssetsArg) async -> [UploadTaskError?] in
+        AsyncFunction("uploadAssets") { (input: UploadAssetsArg, onProgress: JavaScriptFunction<Void>) async -> [Record.Dict] in
             let ids = input.assets.compactMap { $0.localId }
 
             let options = PHFetchOptions()
@@ -53,18 +72,18 @@ public class Worker: Module {
                 return []
             }
 
-            var errors: [UploadTaskError?] = []
 
-            return await withTaskGroup(of: UploadTaskError?.self, returning: [UploadTaskError?].self) { group in
+            let uploadState = UploadState(total: fetchedAssets.count)
+
+
+            let groupErrors = await withTaskGroup(of: UploadTaskError?.self, returning: [UploadTaskError?].self) { group in
                 for i in 0...fetchedAssets.count - 1 {
                     if i >= input.concurrency {
-                        while let err = await group.next() {
-                            errors.append(err)
-                        }
+                        _ = await group.next()
                     }
 
                     group.addTask(priority: .background) {
-                        return await withCheckedContinuation { [unowned self] (continuation: CheckedContinuation<UploadTaskError?, Never>) in
+                        let child = await withCheckedContinuation { [unowned self] (continuation: CheckedContinuation<UploadTaskError?, Never>) in
                             let asset = fetchedAssets[i]
                             let task = input.assets.first { $0.localId == asset.localIdentifier }
 
@@ -79,11 +98,25 @@ public class Worker: Module {
                                 return
                             }
                         }
+
+                        let completed = await uploadState.addProgress()
+                        let progress = completed * Double(100)
+                        try? onProgress.call(Int(progress.rounded(.down)))
+                        await uploadState.addError(e: child)
+
+                        return child
                     }
                 }
 
-                return errors
+                var items: [UploadTaskError?] = []
+                for await result in group {
+                    items.append(result)
+                }
+                return items
             }
+
+            return groupErrors.compactMap { $0?.toDictionary() }
+
         }
     }
 
@@ -100,7 +133,7 @@ public class Worker: Module {
         options.version = .current
 
         PHImageManager.default().requestImageDataAndOrientation(for: asset, options: options) { [unowned self] data, _, _, _ in
-            guard let url = URL(string: task.url ?? "") else {
+            guard let url = URL(string: task.url) else {
                 completion(getUploadTaskError(task: task, error: "Could not instantiate URL"))
                 return
             }
@@ -109,13 +142,14 @@ public class Worker: Module {
             request.httpMethod = "PUT"
             request.addValue("application/octet-stream", forHTTPHeaderField: "content-type")
 
-            // TODO: Multipart upload via chunks and file streaming
+            // TODO: Multipart upload via chunks and file streaming for files > 5 MB
             URLSession.shared.uploadTask(with: request, from: data) { [unowned self] data, res, err in
                 if err != nil {
                     let msg = err?.localizedDescription ?? "Upload task resolved with unknown error"
                     completion(getUploadTaskError(task: task, error: msg))
                     return
                 }
+                completion(nil)
             }.resume()
         }
     }
