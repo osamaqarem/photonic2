@@ -11,7 +11,7 @@ const env = z
 
 const ApiConfig: Record<(typeof env)["STAGE"], string> = {
   development: "http://localhost:3000",
-  production: "https://photonic-next-git-main-osamaqarem.vercel.app",
+  production: "https://photonic-next.fly.dev",
   storybook: "Sir, this is a Storybook.",
 }
 
