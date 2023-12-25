@@ -9,15 +9,14 @@ const env = z
   })
   .parse(RNConfig)
 
-const ApiConfig = {
-  development: "http://localhost:3000",
+const ApiConfig: Record<(typeof env)["STAGE"], string> = {
   production: "https://photonic-next-git-main-osamaqarem.vercel.app",
   storybook: "Sir, this is a Storybook.",
 }
 
 export const config = {
   stage: env.STAGE,
-  apiBaseUrl: ApiConfig[env.STAGE] ?? "http://localhost:3000",
+  apiBaseUrl: ApiConfig[env.STAGE],
   sentryDsn:
     "https://b9884c9f02df411987bbebfd332eb35f@o1418518.ingest.sentry.io/6761728",
 }

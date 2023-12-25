@@ -58,9 +58,6 @@ export const authRouter = router({
 
       const user = await ctx.db.user.upsert({
         where: { email },
-        include: {
-          awsAccount: true,
-        },
         create: { email },
         update: {},
       })
@@ -68,7 +65,7 @@ export const authRouter = router({
       return {
         accessToken: jwt.accessToken.sign(user),
         refreshToken: jwt.refreshToken.sign(user),
-        onboardingDone: Boolean(user.awsAccount),
+        onboardingDone: Boolean(user.awsAccountId),
       }
     }),
   refresh: publicProcedure
@@ -98,7 +95,6 @@ export const authRouter = router({
 
       const user = await ctx.db.user.findFirst({
         where: { id: refreshTokenJwt.id },
-        include: { awsAccount: true },
       })
 
       if (!user) {

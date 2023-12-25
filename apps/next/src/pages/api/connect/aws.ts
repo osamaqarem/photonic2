@@ -1,7 +1,6 @@
 import { Logger } from "@photonic/common"
 import type { NextApiRequest, NextApiResponse } from "next"
 import { z } from "zod"
-import { cache } from "~/next/lib/cache"
 import { db } from "~/next/lib/db"
 
 const logger = new Logger("aws-connect")
@@ -97,30 +96,62 @@ export default async function handler(
       event.ResourceProperties
 
     if (event.RequestType === "Create") {
-      const awsAccount = await db.awsAccount.create({
-        data: {
-          id: AwsAccountId,
-          user: {
+      const newBucket = {
+        userId: user.id,
+        name: BucketName,
+        region: Region,
+        roleArn: RoleArn,
+      }
+
+      await db.awsAccount.upsert({
+        where: {
+          externalId: AwsAccountId,
+        },
+        create: {
+          externalId: AwsAccountId,
+          users: {
             connect: { id: user.id },
           },
-          bucketName: BucketName,
-          bucketRegion: Region,
-          roleArn: RoleArn,
+          buckets: {
+            create: newBucket,
+          },
+        },
+        update: {
+          buckets: {
+            create: newBucket,
+          },
+          users: {
+            connect: { id: user.id },
+          },
         },
       })
       logger.log("saved aws account:", AwsAccountId, "for user:", user.id)
-      // Keep aws account in redis temporarily at least until the user refreshes their token
-      // the refreshed token will contain the aws account info.
-      cache.awsAccount.set(user, awsAccount)
     } else if (event.RequestType === "Delete" && user.awsAccountId) {
-      await Promise.all([
-        db.awsAccount
-          .delete({
-            where: { id: user.awsAccountId },
-          })
-          .catch(logger.error),
-        cache.awsAccount.delete(user),
-      ])
+      const awsAccount = await db.awsAccount.findFirstOrThrow({
+        where: { id: user.awsAccountId },
+        include: { buckets: { select: { id: true } } },
+      })
+
+      if (awsAccount.buckets.length > 1) {
+        // delete aws account
+        await db.user.update({
+          where: { id: user.awsAccountId },
+          data: {
+            awsAccount: { delete: true },
+            awsBucket: { delete: true },
+          },
+        })
+      } else {
+        // disconnect aws account relationship
+        // delete bucket
+        await db.user.update({
+          where: { id: user.awsAccountId },
+          data: {
+            awsBucket: { delete: true },
+            awsAccount: { disconnect: true },
+          },
+        })
+      }
       logger.log("deleted aws account:", AwsAccountId, "for user:", user.id)
     }
   } catch (err) {

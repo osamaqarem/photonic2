@@ -8,11 +8,7 @@ import {
   StyleSheet,
   View,
 } from "react-native"
-import {
-  runOnUI,
-  useDerivedValue,
-  useSharedValue,
-} from "react-native-reanimated"
+import { useDerivedValue, useSharedValue } from "react-native-reanimated"
 import { Worker } from "@photonic/worker"
 
 import { useAlerts } from "~/expo/design/components/alerts/useAlerts"

@@ -1,6 +1,6 @@
 import { getErrorMsg } from "@photonic/common"
 import type { NativeStackScreenProps } from "@react-navigation/native-stack"
-import React from "react"
+import React, { useState } from "react"
 import { StyleSheet } from "react-native"
 
 import { Button, ButtonState } from "~/expo/design/components/Button"
@@ -21,6 +21,7 @@ export const OnboardingRegistrationScreen: React.FC<
 
   const { showError } = useAlerts()
 
+  const [email, setEmail] = useState("")
 
   const handleLogin = async () => {
     try {

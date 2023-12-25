@@ -49,10 +49,13 @@ export const SettingsScreen: React.FC<
     onSuccess(res) {
       if (
         (state === "PendingConnect" || state === "Undetermined") &&
-        res.aws.connected
+        res.aws.status === "connected"
       ) {
         setState("Connected")
-      } else if (state === "PendingDisconnect" && !res.aws.connected) {
+      } else if (
+        state === "PendingDisconnect" &&
+        !(res.aws.status === "connected")
+      ) {
         setState("Undetermined")
       }
     },
@@ -83,10 +86,10 @@ export const SettingsScreen: React.FC<
     const url = (() => {
       if (state === "Undetermined") {
         setState("PendingConnect")
-        return data?.aws.connectUrl
+        return data?.aws.toggleUrl
       } else {
         setState("PendingDisconnect")
-        return data?.aws.disconnectUrl
+        return data?.aws.toggleUrl
       }
     })()
 
@@ -100,7 +103,7 @@ export const SettingsScreen: React.FC<
   const renderAwsValue = () => {
     const title = (() => {
       if (pending) return "Pending"
-      if (data?.aws.connected) return "Disconnect"
+      if (data?.aws.status === "connected") return "Disconnect"
       return "Not connected"
     })()
     return (
@@ -112,9 +115,10 @@ export const SettingsScreen: React.FC<
         <Text
           variant="span"
           style={{
-            color: data?.aws.connected
-              ? undefined
-              : palette.light.tomato.tomato3,
+            color:
+              data?.aws.status === "connected"
+                ? undefined
+                : palette.light.tomato.tomato3,
           }}
           numberOfLines={1}>
           {title}

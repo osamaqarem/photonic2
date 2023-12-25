@@ -10,12 +10,20 @@ export const userRouter = router({
 
     const stackName = `photonic-access-${ctx.user.id.replaceAll("_", "-")}`
 
+    const awsAccountState = Boolean(ctx.user.awsAccount)
+      ? ("connected" as const)
+      : ("unavailable" as const)
+
+    const toggleUrl =
+      awsAccountState === "connected"
+        ? config.AWS_CFN_URL
+        : `${config.AWS_CFN_URL}?region=eu-central-1#/stacks/quickcreate?templateURL=${config.AWS_CFN_TEMPLATE_URL}${templatePath}&stackName=${stackName}&param_PhotonicId=${ctx.user.id}`
+
     return {
       email: ctx.user.email,
       aws: {
-        connected: Boolean(ctx.user.awsAccount),
-        disconnectUrl: config.AWS_CFN_URL,
-        connectUrl: `${config.AWS_CFN_URL}?region=eu-central-1#/stacks/quickcreate?templateURL=${config.AWS_CFN_TEMPLATE_URL}${templatePath}&stackName=${stackName}&param_PhotonicId=${ctx.user.id}`,
+        status: awsAccountState,
+        toggleUrl,
       },
     }
   }),

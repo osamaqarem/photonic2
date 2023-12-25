@@ -18,20 +18,32 @@ model User {
   awsAccount    AwsAccount? @relation(fields: [awsAccountId], references: [id])
   awsAccountId  String?
 
+  awsBucket     AwsBucket?
+
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
-
   @@index([awsAccountId])
 }
 
 model AwsAccount {
   id               String    @id @default(dbgenerated("prefix_nanoid('aws_'::text)"))
+  externalId       String    @unique
+  users            User[]
+  buckets          AwsBucket[]
+}
 
-  bucketName       String
-  bucketRegion     String
+model AwsBucket {
+  id               String     @id @default(dbgenerated("prefix_nanoid('buk_'::text)"))
+  name             String     @unique
+  region           String
   roleArn          String
 
-  user             User[]
+  awsAccount       AwsAccount @relation(fields: [awsAccountId], references: [id])
+  awsAccountId     String
+
+  user             User       @relation(fields: [userId], references: [id])
+  userId           String     @unique
+  @@index([awsAccountId, userId])
 }
 
 model Album {

@@ -1,6 +1,7 @@
-import type { AwsAccount } from "@prisma/client"
+import type { AwsBucket } from "@prisma/client"
 import { TRPCError } from "@trpc/server"
 import dayjs from "dayjs"
+import { db } from "~/next/lib/db"
 
 import type { RoleCredentials } from "~/next/lib/validations/role-cred"
 import { ApiError } from "~/next/trpc/api-error"
@@ -10,18 +11,17 @@ import { authedProcedure, middleware } from "~/next/trpc/trpc"
 
 const storageMiddleware = middleware(async ({ ctx, next }) => {
   if (ctx.user === null) throw new TRPCError({ code: "UNAUTHORIZED" })
-  if (!ctx.user.awsAccount) {
+  if (!ctx.user.awsAccountId) {
     throw new TRPCError({
       code: "NOT_FOUND",
       message: ApiError.MissingStorageCreds,
     })
   } else {
     const getRoleCreds = async (
-      userId: string,
-      awsAccount: AwsAccount,
+      bucket: AwsBucket,
     ): Promise<RoleCredentials> => {
       // Get cached credentials
-      const savedCreds = await ctx.cache.awsRoleCred.get(awsAccount)
+      const savedCreds = await ctx.cache.awsRoleCred.get(bucket)
       if (savedCreds) {
         const { Expiration } = savedCreds
         if (Expiration && !dayjs(Expiration).isBefore(Date.now())) {
@@ -32,10 +32,10 @@ const storageMiddleware = middleware(async ({ ctx, next }) => {
       // Create new credentials
       try {
         const creds = await assumeRole({
-          roleArn: awsAccount.roleArn,
-          externalId: userId,
+          roleArn: bucket.roleArn,
+          externalId: bucket.userId,
         })
-        await ctx.cache.awsRoleCred.set(awsAccount, creds)
+        await ctx.cache.awsRoleCred.set(bucket, creds)
         return creds
       } catch (err) {
         throw new TRPCError({
@@ -46,12 +46,15 @@ const storageMiddleware = middleware(async ({ ctx, next }) => {
       }
     }
 
-    let credentials = await getRoleCreds(ctx.user.id, ctx.user.awsAccount)
+    const bucket = await db.awsBucket.findFirstOrThrow({
+      where: { userId: ctx.user.id },
+    })
+    let credentials = await getRoleCreds(bucket)
 
     const s3 = new S3({
       dev: false,
-      bucket: ctx.user.awsAccount.bucketName,
-      region: ctx.user.awsAccount.bucketRegion,
+      bucket: bucket.name,
+      region: bucket.roleArn,
       ...credentials,
     })
 

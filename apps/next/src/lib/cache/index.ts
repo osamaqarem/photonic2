@@ -1,7 +1,7 @@
 import ms from "ms"
 
 import { Logger } from "@photonic/common"
-import type { AwsAccount, User } from "~/next/lib/db"
+import type { AwsBucket } from "~/next/lib/db"
 import type { RoleCredentials } from "~/next/lib/validations/role-cred"
 import { cache as connection } from "./init"
 
@@ -62,12 +62,8 @@ export const cache = {
     expiresIn: "10min",
     extractKey: email => email,
   }),
-  awsAccount: new CacheManager<User, AwsAccount>({
-    expiresIn: "120min",
-    extractKey: user => user.id,
-  }),
-  awsRoleCred: new CacheManager<AwsAccount, RoleCredentials>({
-    expiresIn: awsAcc => (awsAcc.Expiration.getTime() - Date.now()).toString(),
-    extractKey: awsAcc => awsAcc.roleArn,
+  awsRoleCred: new CacheManager<AwsBucket, RoleCredentials>({
+    expiresIn: cred => (cred.Expiration.getTime() - Date.now()).toString(),
+    extractKey: bucket => bucket.roleArn,
   }),
 }

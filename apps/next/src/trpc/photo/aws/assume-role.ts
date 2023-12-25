@@ -28,7 +28,7 @@ export async function assumeRole({
       new AssumeRoleCommand({
         RoleArn: roleArn,
         ExternalId: externalId,
-        RoleSessionName: "PhotonicAWSSession",
+        RoleSessionName: "PhotonicAwsSession",
       }),
     )
     return RoleCredentialsSchema.parse(data.Credentials)

@@ -32,7 +32,7 @@ export const OnboardingWelcomeScreen: React.FC<
           </View>
         </SafeAreaView>
       </ScrollView>
-      <ScrollView.StickyView>
+      <ScrollView.StickyView containerStyle={styles.stickyContainer}>
         <Button text={"Get started"} onPress={goToRegistration} />
       </ScrollView.StickyView>
     </>
@@ -68,6 +68,9 @@ const blobs = [
 ] satisfies Array<ViewStyle>
 
 const styles = StyleSheet.create({
+  stickyContainer: {
+    alignItems: "flex-end",
+  },
   scrollContainer: {
     flexGrow: 1,
   },

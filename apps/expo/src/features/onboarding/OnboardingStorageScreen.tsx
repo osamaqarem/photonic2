@@ -35,7 +35,7 @@ export const OnboardingStorageScreen: React.FC<
       {safeData => (
         <>
           <ScrollView contentContainerStyle={styles.scroll}>
-            <SafeAreaView style={styles.safe}>
+            <SafeAreaView style={styles.safe} top>
               <Text variant="h2">Photonic</Text>
               <Space t={80} />
               <Text variant="h1">Let’s create your storage.</Text>
@@ -58,7 +58,7 @@ export const OnboardingStorageScreen: React.FC<
             <Button
               text="Connect to AWS"
               size="wide"
-              onPress={() => handleAWSAuth(safeData.aws.connectUrl)}
+              onPress={() => handleAWSAuth(safeData.aws.toggleUrl)}
             />
           </ScrollView.StickyView>
         </>

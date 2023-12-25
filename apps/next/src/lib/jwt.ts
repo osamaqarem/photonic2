@@ -1,7 +1,7 @@
+import type { User } from "@prisma/client"
 import type { JwtPayload, SignOptions } from "jsonwebtoken"
 import jsonwebtoken from "jsonwebtoken"
 
-import type { UserJoinAwsAccount } from "~/next/lib/db/types"
 import { config } from "~/next/config"
 
 class JwtManager<Payload extends JwtPayload> {
@@ -60,11 +60,11 @@ export const jwt = {
     secret: config.EMAIL_SECRET,
     expiresIn: "10 min",
   }),
-  refreshToken: new JwtManager<UserJoinAwsAccount>({
+  refreshToken: new JwtManager<User>({
     secret: config.REFRESH_TOKEN_SECRET,
     expiresIn: "30 days",
   }),
-  accessToken: new JwtManager<UserJoinAwsAccount>({
+  accessToken: new JwtManager<User>({
     secret: config.ACCESS_TOKEN_SECRET,
     expiresIn: "60 min",
   }),
