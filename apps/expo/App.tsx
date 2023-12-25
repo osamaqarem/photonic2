@@ -1,5 +1,5 @@
 import * as React from "react"
-import { LogBox } from "react-native"
+import { LogBox, StyleSheet } from "react-native"
 import { SafeAreaProvider } from "react-native-safe-area-context"
 import * as Sentry from "sentry-expo"
 import * as SplashScreen from "expo-splash-screen"
@@ -10,6 +10,7 @@ import { Navigation } from "~/expo/navigation/Navigation"
 import { DarkModeProvider } from "~/expo/stores/DarkModeProvider"
 import { TrpcProvider } from "~/expo/stores/TrpcProvider"
 import { useAuth } from "~/expo/stores/auth-store"
+import { GestureHandlerRootView } from "react-native-gesture-handler"
 
 export default function App() {
   if (config.stage === "storybook") {
@@ -20,17 +21,23 @@ export default function App() {
   prepare()
 
   return (
-    <SafeAreaProvider>
-      <DarkModeProvider>
-        <AlertsProvider>
-          <TrpcProvider>
-            <Navigation />
-          </TrpcProvider>
-        </AlertsProvider>
-      </DarkModeProvider>
-    </SafeAreaProvider>
+    <GestureHandlerRootView style={styles.root}>
+      <SafeAreaProvider>
+        <DarkModeProvider>
+          <AlertsProvider>
+            <TrpcProvider>
+              <Navigation />
+            </TrpcProvider>
+          </AlertsProvider>
+        </DarkModeProvider>
+      </SafeAreaProvider>
+    </GestureHandlerRootView>
   )
 }
+
+const styles = StyleSheet.create({
+  root: { flex: 1 },
+})
 
 function prepare() {
   SplashScreen.preventAutoHideAsync()

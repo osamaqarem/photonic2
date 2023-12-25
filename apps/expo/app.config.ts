@@ -37,7 +37,6 @@ const variants: Variants = {
 
 const stage = process.env.STAGE as "development" | "production" | "storybook"
 if (!stage) throw new Error("Missing STAGE environment variable")
-console.log(`Using ${stage} configuration`)
 
 const expoConfig = ({ config }: ConfigContext): ExpoConfig =>
   merge(config, variants[stage], {

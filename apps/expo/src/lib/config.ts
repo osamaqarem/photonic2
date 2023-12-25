@@ -10,6 +10,7 @@ const env = z
   .parse(RNConfig)
 
 const ApiConfig: Record<(typeof env)["STAGE"], string> = {
+  development: "http://localhost:3000",
   production: "https://photonic-next-git-main-osamaqarem.vercel.app",
   storybook: "Sir, this is a Storybook.",
 }
