@@ -6318,11 +6318,6 @@ expo-haptics@~12.2.1:
   resolved "https://registry.yarnpkg.com/expo-haptics/-/expo-haptics-12.2.1.tgz#9705c245663fcf317ca19adc2e8bbcb5270562e7"
   integrity sha512-XRZtmIQi901Q4+/cZnVrULRFOqShsgCuSP0SCbVEhnq8sK0OA4jgun12O93Pu5aGvTyoqsAcIArE8tX+8AEqRA==
 
-expo-image@^1.5.1:
-  version "1.5.1"
-  resolved "https://registry.yarnpkg.com/expo-image/-/expo-image-1.5.1.tgz#98a306488637a255761e4b79e8bacc8ec8fd9eab"
-  integrity sha512-133chFSiaiZDeHRmABo/D+j/ByhPjhRwa4X2vgok1E6I2BapJ8n6ZiXODbABNH02EDYssV4Ih71tAWpheMzl/g==
-
 expo-json-utils@~0.5.0:
   version "0.5.1"
   resolved "https://registry.yarnpkg.com/expo-json-utils/-/expo-json-utils-0.5.1.tgz#fcb01050b8aa66592eea2024a48979f2d090c6f9"
@@ -9821,6 +9816,11 @@ react-native-config@^1.5.1:
   version "1.5.1"
   resolved "https://registry.yarnpkg.com/react-native-config/-/react-native-config-1.5.1.tgz#73c94f511493e9b7ff9350cdf351d203a1b05acc"
   integrity sha512-g1xNgt1tV95FCX+iWz6YJonxXkQX0GdD3fB8xQtR1GUBEqweB9zMROW77gi2TygmYmUkBI7LU4pES+zcTyK4HA==
+
+react-native-fast-image@8.5.12:
+  version "8.5.12"
+  resolved "https://registry.yarnpkg.com/react-native-fast-image/-/react-native-fast-image-8.5.12.tgz#af22cac1c37b381459cf68ecef4d5e8e10bc812f"
+  integrity sha512-9IzMDUpJJYHcKmR3i5uV45+o+zSLeCYYpoIVQfWoO4bgDv3CM7uGMuK2/eAjrksz0zxFQP79HSZuuC2zArGh4A==
 
 react-native-gesture-handler@~2.9.0:
   version "2.9.0"
