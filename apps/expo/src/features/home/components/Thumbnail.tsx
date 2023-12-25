@@ -128,7 +128,7 @@ export const Thumbnail: React.FC<Props> & {
           styles.dottedBorder,
         ]}>
         <AnimatedImage
-          downscaleSize={1}
+          downscaleSize={80}
           source={{ uri }}
           // R1
           style={styles.image}>

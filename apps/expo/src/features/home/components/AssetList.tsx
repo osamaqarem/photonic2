@@ -8,6 +8,7 @@ import { Gesture, GestureDetector } from "react-native-gesture-handler"
 import Animated, {
   Easing,
   interpolate,
+  scrollTo,
   runOnJS,
   useAnimatedReaction,
   useAnimatedRef,
@@ -122,10 +123,6 @@ export const AssetList: React.FC<Props> = ({ onItemPress, data }) => {
     }
   })
 
-  const scrollToOffset = (offset: number) => {
-    flatlist.current?.scrollToOffset({ offset, animated: false })
-  }
-
   const panScrollFrameCb = useFrameCallback(() => {
     if (
       !selectModeActive.value ||
@@ -141,16 +138,16 @@ export const AssetList: React.FC<Props> = ({ onItemPress, data }) => {
     const topThreshold = windowHeight * 0.15
     if (panY.value > bottomThreshold) {
       const inputRange = [bottomThreshold, windowHeight]
-      const outputRange = [0, 40]
+      const outputRange = [0, 10]
       const result = interpolate(panY.value, inputRange, outputRange)
       const offset = scrollOffset.value + result
-      runOnJS(scrollToOffset)(offset)
+      scrollTo(flatlist, 0, offset, false)
     } else if (scrollOffset.value > 0 && panY.value < topThreshold) {
       const inputRange = [topThreshold, 0]
-      const outputRange = [0, 40]
+      const outputRange = [0, 10]
       const result = interpolate(panY.value, inputRange, outputRange)
       const offset = scrollOffset.value - result
-      runOnJS(scrollToOffset)(offset)
+      scrollTo(flatlist, 0, offset, false)
     }
   }, false)
 
