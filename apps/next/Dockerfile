@@ -1,7 +1,7 @@
 # Based on:
 # https://github.com/vercel/turbo/blob/357cc37c905297e42a703f61228b946a5e9e761b/examples/with-docker/apps/web/Dockerfile
 
-FROM node:16.17.0-alpine AS base
+FROM node:18-alpine AS base
 
 FROM base AS builder
 RUN apk add --no-cache libc6-compat
@@ -27,6 +27,8 @@ COPY --from=builder /app/out/full/ .
 COPY turbo.json turbo.json
 COPY tsconfig.json tsconfig.json
 COPY .eslintrc.cjs .eslintrc.cjs
+COPY ./apps/next/scripts ./apps/next/scripts
+COPY ./apps/next/prisma ./prisma
 RUN yarn db:generate
 RUN yarn turbo build --filter=@photonic/next...
 
@@ -38,6 +40,8 @@ RUN adduser --system --uid 1001 nextjs
 USER nextjs
 COPY --from=installer /app/apps/next/next.config.js .
 COPY --from=installer /app/apps/next/package.json .
+COPY --from=installer /app/apps/next/scripts ./scripts
+COPY --from=installer /app/apps/next/prisma ./prisma
 # Automatically leverage output traces to reduce image size
 # https://nextjs.org/docs/advanced-features/output-file-tracing
 COPY --from=installer --chown=nextjs:nodejs /app/apps/next/.next/standalone ./

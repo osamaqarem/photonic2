@@ -10,7 +10,7 @@ primary_region = "ams"
   PORT = "3000"
 
 [deploy]
-  release_command = "bash ./scripts/migrate.sh"
+  release_command = "sh ./scripts/migrate.sh"
 
 [http_service]
   internal_port = 3000

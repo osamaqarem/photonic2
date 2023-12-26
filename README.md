@@ -2,13 +2,33 @@
 
 ## Server
 
-Import secrets
+Import secrets:
 
 ```
 flyctl --app [app] secrets import < ./apps/next/.env
 ```
 
+To import secrets from a file:
+
+```
+flyctl --app [app_name] secrets import < ./apps/next/.env
+```
+
+To build Docker image locally:
+
+```
+docker build . -o output -f ./apps/next/Dockerfile
+```
+
+Scale memory to 512 MB to survive `prisma migrate deploy`:
+
+```
+fly scale memory 512 -a [app_name]
+```
+
 ## DB
+
+Creation:
 
 ```
 fly pg create
@@ -23,7 +43,9 @@ Proxy connection URL will be in the format `postgres://user_name:password@localh
 Docker image
 https://github.com/osamaqarem/redis
 
-The names of the fly app and volume are what's different between production and staging
+The names of the fly app and volume are what's different between production and staging.
+
+Creation:
 
 ```
 cd /redis
@@ -35,12 +57,6 @@ flyctl ips allocate-v6
 ```
 
 Connection URL will be in the format `redis://default:password=@[ipv6_address]:10000`
-
-## Bulk setting secrets on app
-
-```
-flyctl --app [app_name] secrets import < ./apps/next/.env
-```
 
 ## Terraform
 
