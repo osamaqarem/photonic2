@@ -23,7 +23,7 @@
     "class-variance-authority": "^0.6.0",
     "expo": "49",
     "expo-application": "~5.3.0",
-    "expo-blur": "~12.4.1",
+    "expo-blur": "12.2.2",
     "expo-constants": "~14.4.2",
     "expo-dev-client": "~2.4.12",
     "expo-device": "~5.4.0",
