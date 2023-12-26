@@ -56,6 +56,7 @@ const expoConfig = ({ config }: ConfigContext): ExpoConfig =>
     platforms: ["ios"],
     jsEngine: "hermes",
     userInterfaceStyle: "automatic",
+    icon: "./assets/icon.png",
     splash: {
       image:
         "https://raw.githubusercontent.com/expo/expo/main/templates/expo-template-blank/assets/splash.png",
