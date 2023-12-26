@@ -51,8 +51,8 @@ export const Thumbnail: React.FC<Props> & {
   const containerStyle = useAnimatedStyle(() => {
     const [normal, selected] =
       sharedColorScheme.value === "dark"
-        ? [palette.blackA.blackA12, palette.dark.blue.blue8]
-        : [palette.whiteA.whiteA12, palette.light.blue.blue10]
+        ? [palette.dark.slate.slate1, palette.dark.blue.blue8]
+        : [palette.light.slate.slate1, palette.light.blue.blue10]
     return {
       borderColor: isSelected.value ? selected : normal,
       padding: withTiming(isSelected.value ? selectedPadding : 0, {

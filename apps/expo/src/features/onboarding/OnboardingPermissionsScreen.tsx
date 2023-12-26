@@ -49,8 +49,8 @@ export const OnboardingPermissionsScreen: React.FC<
           <Text variant="h1">Control our access.</Text>
           <Space t={30} />
           <Text variant="p">
-            Select which photos you would like Photonic to be able to see and
-            manage.
+            Grant access to the photos you would like Photonic to be able to see
+            and manage.
           </Text>
         </SafeAreaView>
       </ScrollView>
@@ -61,7 +61,7 @@ export const OnboardingPermissionsScreen: React.FC<
           variant="secondary"
           onPress={finishOnboarding}
         />
-        <Button text="Select" size="wide" onPress={handleSelect} />
+        <Button text="Grant access" size="wide" onPress={handleSelect} />
       </ScrollView.StickyView>
     </>
   )

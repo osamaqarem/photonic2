@@ -1,3 +1,4 @@
+import { PermissionStatus, usePermissions } from "expo-media-library"
 import React from "react"
 
 import type {
@@ -23,6 +24,8 @@ type OnData = (d: {
 }) => void
 
 export const useAssets = (onData: OnData) => {
+  const [permissionResponse, requestPermission] = usePermissions()
+
   const fetchAllAssets = React.useCallback(() => {
     fetchLocalAssets().then(data => {
       onData({
@@ -33,18 +36,22 @@ export const useAssets = (onData: OnData) => {
   }, [onData])
 
   React.useEffect(() => {
-    fetchAllAssets()
+    if (permissionResponse?.status === PermissionStatus.GRANTED) {
+      fetchAllAssets()
 
-    const sub = mediaManager.addListener(({ hasIncrementalChanges }) => {
-      if (!hasIncrementalChanges) {
-        console.log("sub: fetchAllAssets")
-        return fetchAllAssets()
-      } else {
-        console.log("sub: incremental changes, fetchAllAssets")
-        // TODO: incremental changes
-        return fetchAllAssets()
-      }
-    })
-    return sub.remove
-  }, [fetchAllAssets])
+      const sub = mediaManager.addListener(({ hasIncrementalChanges }) => {
+        if (!hasIncrementalChanges) {
+          console.log("sub: fetchAllAssets")
+          return fetchAllAssets()
+        } else {
+          console.log("sub: incremental changes, fetchAllAssets")
+          // TODO: incremental changes
+          return fetchAllAssets()
+        }
+      })
+      return sub.remove
+    } else {
+      requestPermission()
+    }
+  }, [fetchAllAssets, permissionResponse?.status, requestPermission])
 }
