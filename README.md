@@ -1,11 +1,35 @@
 # Photonic
 
+## Server
+
+Import secrets
+
+```
+flyctl --app [app] secrets import < ./apps/next/.env
+```
+
 ## DB
 
 ```
 fly pg create
 fly pg attach --app [app_name] [database_name]
 # Redploying the app with the updated secret is now required.
+```
+
+## Cache
+
+Docker image
+https://github.com/osamaqarem/redis
+
+The names of the fly app and volume are what's different between production and staging
+
+```
+cd /redis
+fly apps create
+fly volumes create [vol_name] --region ams
+fly secrets set REDIS_PASSWORD=****
+fly deploy # don't allocate IP addresses
+flyctl ips allocate-v6
 ```
 
 ## Bulk setting secrets on app
