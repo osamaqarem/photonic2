@@ -12,13 +12,7 @@
       "Type": "AWS::IAM::Role",
       "Properties": {
         "RoleName": {
-          "Fn::Join": [
-            "-",
-            [
-              "PhotonicRole",
-              { "Fn::Replace": [{ "Ref": "PhotonicId" }, "_", "-"] }
-            ]
-          ]
+          "Fn::Join": ["-", ["PhotonicRole", { "Ref": "PhotonicId" }]]
         },
         "AssumeRolePolicyDocument": {
           "Version": "2012-10-17",
