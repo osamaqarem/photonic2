@@ -16,6 +16,8 @@ fly pg attach --app [app_name] [database_name]
 # Redploying the app with the updated secret is now required.
 ```
 
+Proxy connection URL will be in the format `postgres://user_name:password@localhost:5432/user_name`
+
 ## Cache
 
 Docker image
@@ -31,6 +33,8 @@ fly secrets set REDIS_PASSWORD=****
 fly deploy # don't allocate IP addresses
 flyctl ips allocate-v6
 ```
+
+Connection URL will be in the format `redis://default:password=@[ipv6_address]:10000`
 
 ## Bulk setting secrets on app
 
