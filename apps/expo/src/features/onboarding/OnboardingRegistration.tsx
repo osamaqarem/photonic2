@@ -21,9 +21,20 @@ export const OnboardingRegistrationScreen: React.FC<
 
   const { showError } = useAlerts()
 
-  const [email, setEmail] = useState("")
+  const [{ email, error }, setForm] = useState({
+    email: "",
+    error: null as Nullable<string>,
+  })
+
+  const onChangeText = (v: string) =>
+    setForm(s => ({ ...s, email: v, error: null }))
 
   const handleLogin = async () => {
+    if (email.length === 0) {
+      setForm(s => ({ ...s, error: "Please enter your email" }))
+      return
+    }
+
     try {
       await mutateAsync({ email })
       props.navigation.navigate("onboarding-code-verification", { email })
@@ -53,11 +64,13 @@ export const OnboardingRegistrationScreen: React.FC<
           <Space t={60} />
           <TextInput
             placeholder="E-mail"
-            onChangeText={setEmail}
+            onChangeText={onChangeText}
             autoCapitalize="none"
             autoComplete="email"
+            textContentType="emailAddress"
             autoCorrect={false}
             value={email}
+            error={error}
           />
         </SafeAreaView>
       </ScrollView>

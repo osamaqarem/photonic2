@@ -12,9 +12,9 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated"
 
+import { font, theme } from "~/expo/design/theme"
 import type { ComponentVariantMap } from "~/expo/design/variant"
 import { getThemeColorWorklet } from "~/expo/design/variant"
-import { font, theme } from "~/expo/design/theme"
 import { useDarkMode } from "~/expo/stores/DarkModeProvider"
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable)
@@ -36,6 +36,10 @@ interface Props extends Omit<PressableProps, "disabled"> {
   textStyle?: StyleProp<TextStyle>
   size?: Sizes
   variant?: Variants
+  animatedStyle?: {
+    backgroundColor?: string
+    pressedBackgroundColor?: string
+  }
 }
 
 export const Button: React.FC<Props> & { height: number } = ({
@@ -45,23 +49,26 @@ export const Button: React.FC<Props> & { height: number } = ({
   state = ButtonState.Active,
   size = "default",
   variant = "primary",
+  animatedStyle,
   ...props
 }) => {
   const pressed = useSharedValue(false)
 
   const colorScheme = useDarkMode(state => state.sharedColorScheme)
 
-  const animatedStyle = useAnimatedStyle(() => {
+  const btnAnimatedStyle = useAnimatedStyle(() => {
     const config = { duration: 150 }
+
+    const bgColor =
+      animatedStyle?.backgroundColor ??
+      animatedVariantStyle[variant].default.backgroundColor(colorScheme.value)
+    const pressedBgColor =
+      animatedStyle?.pressedBackgroundColor ??
+      animatedVariantStyle[variant].pressed.backgroundColor(colorScheme.value)
+
     return {
       backgroundColor: withTiming(
-        pressed.value
-          ? animatedVariantStyle[variant].pressed.backgroundColor(
-              colorScheme.value,
-            )
-          : animatedVariantStyle[variant].default.backgroundColor(
-              colorScheme.value,
-            ),
+        pressed.value ? pressedBgColor : bgColor,
         config,
       ),
       transform: [{ scale: withTiming(pressed.value ? 0.95 : 1, config) }],
@@ -89,7 +96,7 @@ export const Button: React.FC<Props> & { height: number } = ({
   }
 
   const onPress: Props["onPress"] = e => {
-    if (state === ButtonState.Disabled || state === ButtonState.Loading) {
+    if (state === ButtonState.Loading) {
       return
     }
     props.onPress?.(e)
@@ -109,7 +116,7 @@ export const Button: React.FC<Props> & { height: number } = ({
     <AnimatedPressable
       {...props}
       style={[
-        animatedStyle,
+        btnAnimatedStyle,
         styles.btn,
         sizeStyles[size],
         variantStyles[variant],

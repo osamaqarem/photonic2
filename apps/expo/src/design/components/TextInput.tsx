@@ -14,7 +14,7 @@ import { useDarkMode } from "~/expo/stores/DarkModeProvider"
 const AnimatedTextInput = Animated.createAnimatedComponent(RNTextInput)
 
 interface Props extends TextInputProps {
-  error?: string
+  error?: Nullable<string>
 }
 
 export const TextInput: React.FC<Props> = props => {

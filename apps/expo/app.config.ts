@@ -47,7 +47,7 @@ const expoConfig = ({ config }: ConfigContext): ExpoConfig =>
       },
       // Update this to real domain
       associatedDomains: [
-        `webcredentials:https://photonic-remix${
+        `webcredentials:https://photonic-next${
           stage === "development" ? "-staging" : ""
         }.fly.dev`,
       ],
