@@ -86,28 +86,24 @@ The AWS user must have the following permissions:
       "Resource": "arn:aws:iam::123:role/*"
     },
     {
-		    "Effect": "Allow",
-		    "Action": [
-          "logs:CreateLogGroup"
-          "logs:ListTagsLogGroup"
-          "logs:DeleteLogGroup"
-          ],
-        "Resource": "arn:aws:logs:eu-central-1:123:*"
-		},
+      "Effect": "Allow",
+      "Action": [
+        "logs:CreateLogGroup",
+        "logs:ListTagsLogGroup",
+        "logs:DeleteLogGroup"
+      ],
+      "Resource": "arn:aws:logs:eu-central-1:123:*"
+    },
     {
-			"Effect": "Allow",
-			"Action": "s3:ListBucket",
-			"Resource": "arn:aws:s3:::photonic-tfstate"
-		},
-		{
-			"Effect": "Allow",
-			"Action": [
-				"s3:GetObject",
-				"s3:PutObject",
-				"s3:DeleteObject"
-			],
-			"Resource": "arn:aws:s3:::photonic-tfstate/*/state/terraform.tfstate"
-		}
+      "Effect": "Allow",
+      "Action": "s3:ListBucket",
+      "Resource": "arn:aws:s3:::photonic-tfstate"
+    },
+    {
+      "Effect": "Allow",
+      "Action": ["s3:GetObject", "s3:PutObject", "s3:DeleteObject"],
+      "Resource": "arn:aws:s3:::photonic-tfstate/*/state/terraform.tfstate"
+    },
     {
       "Effect": "Allow",
       "Action": "s3:ListBucket",
@@ -156,3 +152,4 @@ terraform output
 - CFN template
   - Several parameters are hardcoded e.g. AWS user ARN, Lambda name
   - The template URL has to be set as a secret for the Next app.
+  - Should update S3 access policy to match bucket name
