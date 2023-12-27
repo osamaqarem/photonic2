@@ -123,7 +123,8 @@ export const AssetList: React.FC<Props> = ({ onItemPress, data }) => {
     }
   })
 
-  const panScrollFrameCb = useFrameCallback(() => {
+  // destructuring the callback fixes a bug where invoking `setActive` doesn't do anything.
+  const { setActive: setFrameCbActive } = useFrameCallback(() => {
     if (
       !selectModeActive.value ||
       typeof panY.value !== "number" ||
@@ -138,13 +139,13 @@ export const AssetList: React.FC<Props> = ({ onItemPress, data }) => {
     const topThreshold = windowHeight * 0.15
     if (panY.value > bottomThreshold) {
       const inputRange = [bottomThreshold, windowHeight]
-      const outputRange = [0, 10]
+      const outputRange = [0, 8]
       const result = interpolate(panY.value, inputRange, outputRange)
       const offset = scrollOffset.value + result
       scrollTo(flatlist, 0, offset, false)
     } else if (scrollOffset.value > 0 && panY.value < topThreshold) {
       const inputRange = [topThreshold, 0]
-      const outputRange = [0, 10]
+      const outputRange = [0, 8]
       const result = interpolate(panY.value, inputRange, outputRange)
       const offset = scrollOffset.value - result
       scrollTo(flatlist, 0, offset, false)
@@ -154,7 +155,7 @@ export const AssetList: React.FC<Props> = ({ onItemPress, data }) => {
   const panGesture = Gesture.Pan()
     .activateAfterLongPress(Thumbnail.longPressTiming)
     .onStart(() => {
-      runOnJS(panScrollFrameCb.setActive)(true)
+      runOnJS(setFrameCbActive)(true)
     })
     .onUpdate(e => {
       if (!selectModeActive.value || !flatlistLayout.value || !data) return
@@ -355,7 +356,7 @@ export const AssetList: React.FC<Props> = ({ onItemPress, data }) => {
     .onEnd(() => {
       panTransitionFromIndex.value = null
       panY.value = null
-      runOnJS(panScrollFrameCb.setActive)(false)
+      runOnJS(setFrameCbActive)(false)
     })
   //#endregion gestures
 
