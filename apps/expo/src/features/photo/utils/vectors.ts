@@ -1,4 +1,4 @@
-import type Animated from "react-native-reanimated"
+import type { SharedValue } from "react-native-reanimated"
 import { useSharedValue } from "react-native-reanimated"
 
 interface Vector<T = number> {
@@ -9,7 +9,7 @@ interface Vector<T = number> {
 export const useVector = (
   x1: number,
   y1?: number,
-): Vector<Animated.SharedValue<number>> => {
+): Vector<SharedValue<number>> => {
   const x = useSharedValue(x1)
   const y = useSharedValue(y1 ?? x1)
   return { x, y }
@@ -17,7 +17,7 @@ export const useVector = (
 
 export const isSharedVector = (
   vector: Vector<unknown>,
-): vector is Vector<Animated.SharedValue<unknown>> => {
+): vector is Vector<SharedValue<unknown>> => {
   "worklet"
   return typeof vector.x === "object" && typeof vector.y === "object"
 }
@@ -37,8 +37,8 @@ export const isVector = (v: unknown): v is Vector<number> => {
 }
 
 export const set = (
-  v: Vector<Animated.SharedValue<number>>,
-  v1: number | Vector<number> | Vector<Animated.SharedValue<number>>,
+  v: Vector<SharedValue<number>>,
+  v1: number | Vector<number> | Vector<SharedValue<number>>,
 ): void => {
   "worklet"
 
