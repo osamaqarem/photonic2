@@ -9,8 +9,8 @@ concurrency:
 
 jobs:
   deploy:
-    name: Fastlane
-    if: ${{ github.ref == 'refs/heads/main' }}
+    name: Deploy
+    # if: ${{ github.ref == 'refs/heads/main' }}
     runs-on: macos-latest
 
     steps:
@@ -35,5 +35,16 @@ jobs:
 
       - name: Fastlane
         working-directory: apps/expo
-        run: |
-          bundle exec fastlane ios prod
+        env:
+          GITHUB_TOKEN: ${{ secrets.FASTLANE_GITHUB_TOKEN }}
+          MATCH_GIT_URL: ${{ secrets.MATCH_GIT_URL }}
+          MATCH_APP_IDENTIFIER: ${{ secrets.MATCH_APP_IDENTIFIER }}
+          MATCH_TYPE: ${{ secrets.MATCH_TYPE }}
+          MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+          FASTLANE_APP_IDENTIFIER: ${{ secrets.FASTLANE_APP_IDENTIFIER }}
+          SPACESHIP_CONNECT_API_IN_HOUSE: ${{ secrets.SPACESHIP_CONNECT_API_IN_HOUSE }}
+          FL_PROJECT_TEAM_ID: ${{ secrets.FL_PROJECT_TEAM_ID }}
+          APP_STORE_CONNECT_API_KEY_KEY_ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_KEY_ID }}
+          APP_STORE_CONNECT_API_KEY_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_ISSUER_ID }}
+          APP_STORE_CONNECT_API_KEY_KEY: ${{ secrets.APP_STORE_CONNECT_API_KEY_KEY }}
+        run: bundle exec fastlane ios prod
