@@ -25,6 +25,8 @@ jobs:
         run: yarn install --immutable --prefer-offline
 
       - name: Prepare iOS
+        env:
+          STAGE: production
         run: |
           yarn app:prebuild
           cd apps/expo
