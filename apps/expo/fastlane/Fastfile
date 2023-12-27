@@ -4,7 +4,11 @@ platform :ios do
 
         setup_ci
         app_store_connect_api_key
-        match(type: 'appstore', readonly: is_ci)
+        match(
+            type: 'appstore',
+            readonly: is_ci,
+            git_basic_authorization: Base64.strict_encode64("osamaqarem:#{ENV["GITHUB_TOKEN"]}")
+        )
         increment_build_number(
             xcodeproj: xcodeproj,
             build_number: latest_testflight_build_number(initial_build_number: 1) + 1

@@ -10,7 +10,7 @@ concurrency:
 jobs:
   deploy:
     name: Deploy
-    # if: ${{ github.ref == 'refs/heads/main' }}
+    if: ${{ github.ref == 'refs/heads/main' }}
     runs-on: macos-latest
 
     steps:
