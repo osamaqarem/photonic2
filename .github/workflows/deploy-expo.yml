@@ -43,11 +43,14 @@ jobs:
 
       - name: Install Pods
         working-directory: apps/expo
+        env:
+          STAGE: "production"
         run: bundle exec pod install --project-directory=ios
 
       - name: Fastlane
         working-directory: apps/expo
         env:
+          STAGE: "production"
           GITHUB_TOKEN: ${{ secrets.FASTLANE_GITHUB_TOKEN }}
           MATCH_GIT_URL: ${{ secrets.MATCH_GIT_URL }}
           MATCH_APP_IDENTIFIER: ${{ secrets.MATCH_APP_IDENTIFIER }}
