@@ -24,14 +24,17 @@ jobs:
       - name: Install JS dependencies
         run: yarn install --immutable --prefer-offline
 
+      - uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+          working-directory: apps/expo
+
       - name: Prepare iOS
         env:
           STAGE: production
         run: |
           yarn app:prebuild
-          cd apps/expo
-          bundle install
-          bundle exec pod install --project-directory=ios
+          bundle exec pod install --project-directory=apps/expo/ios
 
       - name: Fastlane
         working-directory: apps/expo

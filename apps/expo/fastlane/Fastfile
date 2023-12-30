@@ -16,10 +16,9 @@ platform :ios do
         update_code_signing_settings(
             use_automatic_signing: false,
             path: xcodeproj,
-            team_id: "4J69C875C4",
-            bundle_identifier: "com.osamaqarem.photonic",
-            code_sign_identity: "Apple Distribution",
-            profile_name: ENV['sigh_com.osamaqarem.photonic_appstore_profile-name'],build_configurations: "Release"
+            code_sign_identity: ENV['sigh_com.osamaqarem.photonic_appstore_certificate-name'],
+            profile_name: ENV['sigh_com.osamaqarem.photonic_appstore_profile-name'],
+            build_configurations: "Release"
         )
         build_app(
             workspace: "./ios/Photonic.xcworkspace",
