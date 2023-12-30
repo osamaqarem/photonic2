@@ -29,12 +29,21 @@ jobs:
           bundler-cache: true
           working-directory: apps/expo
 
-      - name: Prepare iOS
+      - name: Prebuild
         env:
           STAGE: production
-        run: |
-          yarn app:prebuild
-          bundle exec pod install --project-directory=apps/expo/ios
+        run: yarn app:prebuild
+
+      - name: Restore Pods
+        id: cache-pods
+        uses: actions/cache@v3
+        with:
+          path: apps/expo/ios/Pods
+          key: ${{ runner.os }}-pods
+
+      - name: Install Pods
+        working-directory: apps/expo
+        run: bundle exec pod install --project-directory=ios
 
       - name: Fastlane
         working-directory: apps/expo
