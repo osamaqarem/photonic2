@@ -11,12 +11,20 @@ export const photoRouter = router({
     .input(
       z.object({
         limit: z.number().min(1).max(100).optional().catch(50),
-        cursor: z.string().optional(), // -> Photo.id
+        cursor: z.string().optional().describe("Asset ID"),
+        createdAfterMs: z.number().optional(),
+        createdBeforeMs: z.number().optional(),
       }),
     )
     .query(async ({ ctx, input }) => {
       const items = await ctx.db.photo.findMany({
-        where: { userId: ctx.user.id },
+        where: {
+          userId: ctx.user.id,
+          creationTime: {
+            gte: input.createdAfterMs,
+            lt: input.createdBeforeMs,
+          },
+        },
         take: input.limit,
         skip: input.cursor ? 1 : 0,
         cursor: input.cursor ? { id: input.cursor } : undefined,
@@ -27,7 +35,7 @@ export const photoRouter = router({
       let nextCursor: Maybe<typeof input.cursor> = undefined
       if (items.length === input.limit) {
         const lastItem = items[input.limit - 1]
-        nextCursor = lastItem ? lastItem.name : undefined
+        nextCursor = lastItem ? lastItem.id : undefined
       }
 
       // set url for each item
