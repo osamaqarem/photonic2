@@ -37,7 +37,18 @@
       "Properties": {
         "AccessControl": "Private",
         "BucketName": {
-          "Fn::Join": ["-", ["photonicbucket", { "Ref": "AWS::StackId" }]]
+          "Fn::Join": [
+            "-",
+            [
+              "photonicbucket",
+              {
+                "Fn::Select": [
+                  1,
+                  { "Fn::Split": ["_", { "Ref": "PhotonicId" }] }
+                ]
+              }
+            ]
+          ]
         },
         "PublicAccessBlockConfiguration": {
           "BlockPublicAcls": true,

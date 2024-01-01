@@ -86,8 +86,8 @@ export const Thumbnail: React.FC<Props> & {
 
   const uploadIndicatorStyle = useAnimatedStyle(() => {
     const type = assetRecord.value[asset.name]?.type
-    const localOrRemote = type === "LocalAsset" || type === "RemoteAsset"
-    return { opacity: localOrRemote ? 1 : 0 }
+    const local = type === "LocalAsset"
+    return { opacity: local ? 1 : 0 }
   })
 
   const uploadIndicatorIconStyle = useAnimatedStyle(() => {

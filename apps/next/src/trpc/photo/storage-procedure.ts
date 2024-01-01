@@ -11,12 +11,7 @@ import { authedProcedure, middleware } from "~/next/trpc/trpc"
 
 const storageMiddleware = middleware(async ({ ctx, next }) => {
   if (ctx.user === null) throw new TRPCError({ code: "UNAUTHORIZED" })
-  if (!ctx.user.awsAccountId) {
-    throw new TRPCError({
-      code: "NOT_FOUND",
-      message: ApiError.MissingStorageCreds,
-    })
-  } else {
+  else {
     const getRoleCreds = async (
       bucket: AwsBucket,
     ): Promise<RoleCredentials> => {
@@ -54,7 +49,7 @@ const storageMiddleware = middleware(async ({ ctx, next }) => {
     const s3 = new S3({
       dev: false,
       bucket: bucket.name,
-      region: bucket.roleArn,
+      region: bucket.region,
       ...credentials,
     })
 

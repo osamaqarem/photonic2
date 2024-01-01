@@ -21,6 +21,7 @@
     "@trpc/server": "^10.38.4",
     "@types/lodash.merge": "^4.6.7",
     "class-variance-authority": "^0.6.0",
+    "dayjs": "^1.11.0",
     "expo": "49",
     "expo-application": "~5.3.0",
     "expo-blur": "12.2.2",

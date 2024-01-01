@@ -18,6 +18,10 @@ import { config } from "~/expo/lib/config"
 import { Network } from "~/expo/lib/network"
 import type { AuthStore } from "~/expo/stores/auth-store"
 import { useAuth } from "~/expo/stores/auth-store"
+import type { inferRouterInputs, inferRouterOutputs } from "@trpc/server"
+
+export type RouterInput = inferRouterInputs<AppRouter>
+export type RouterOutput = inferRouterOutputs<AppRouter>
 
 const loggerLink: TRPCLink<AppRouter> = () => {
   const logger = new Logger("@trpc/client")

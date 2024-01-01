@@ -1,6 +1,5 @@
 import { Logger } from "@photonic/common"
 import * as FileSystem from "expo-file-system"
-import type { AssetsOptions, PagedInfo } from "expo-media-library"
 import * as ExpoMedia from "expo-media-library"
 import Share from "react-native-share"
 
@@ -13,9 +12,7 @@ import type {
 } from "~/expo/features/home/types/asset"
 import { trpcClient } from "~/expo/stores/TrpcProvider"
 
-export type LocalMediaAsset = Omit<ExpoMedia.Asset, "mediaType"> & {
-  mediaType: "photo" | "video"
-}
+export type LocalMediaAsset = ExpoMedia.Asset
 
 class MediaManager {
   private logger = new Logger("MediaManager")
@@ -30,9 +27,7 @@ class MediaManager {
 
   modifyAssetAsync = ExpoMedia.modifyAssetAsync
 
-  getAssetsAsync = ExpoMedia.getAssetsAsync as (
-    assetsOptions: AssetsOptions,
-  ) => Promise<PagedInfo<LocalMediaAsset>>
+  getAssetsAsync = ExpoMedia.getAssetsAsync
 
   addListener = ExpoMedia.addListener
 
@@ -109,7 +104,7 @@ class MediaManager {
       uploadProgressPct: "0",
       width: asset.width,
       name: asset.filename,
-      mediaType: asset.mediaType,
+      mediaType: asset.mediaType as "photo" | "video",
       localUri: asset.uri,
       localId: asset.id,
       height: asset.height,
@@ -127,18 +122,6 @@ class MediaManager {
       }
     }
     return record
-  }
-
-  sortByDate(assets: Array<GenericAsset>) {
-    return assets.sort((a, b) => {
-      if (a.creationTime < b.creationTime) {
-        return 1
-      } else if (a.creationTime > b.creationTime) {
-        return -1
-      } else {
-        return 0
-      }
-    })
   }
 }
 

@@ -36,8 +36,7 @@ export const HomeScreen: React.FC<
 > = props => {
   const [{ assetList }, setState] = React.useState({
     loading: true,
-    assetRecords: null as Nullable<AssetRecordMap>,
-    assetList: null as Nullable<Array<GenericAsset>>,
+    assetList: [] as Array<GenericAsset>,
   })
 
   const { showError } = useAlerts()
@@ -66,8 +65,8 @@ export const HomeScreen: React.FC<
           ...LayoutAnimation.Presets.linear,
           duration: 150,
         })
-        setState({ assetList, assetRecords, loading: false })
-        assetRecord.value = assetRecords
+        setState({ assetList, loading: false })
+        assetRecord.value = { ...assetRecords }
       },
       [assetRecord],
     ),
@@ -289,11 +288,11 @@ export const HomeScreen: React.FC<
     const collection =
       mode === "selected" ? selectedItems.value : assetRecord.value
 
-    let data: Array<Pick<LocalAsset, "localId" | "name">> = []
+    let data: Array<LocalAsset> = []
     for (const name in collection) {
       const item = collection[name]
       if (item?.type === "LocalAsset") {
-        data.push({ name: item.name, localId: item.localId })
+        data.push(item)
       }
     }
 
@@ -314,6 +313,7 @@ export const HomeScreen: React.FC<
           { assets, concurrency: group.length },
           onProgress,
         )
+        await trpcClient.photo.put.mutate({ photos: group })
         if (errors.length) logger.error(errors)
       }
 
