@@ -65,12 +65,12 @@ model Photo {
   width         Int
   height        Int
   duration      Int
-  creationTime  Int
+  creationTime  BigInt
   album         Album[]
 
   user          User      @relation(fields: [userId], references: [id])
   userId        String
-  @@index([userId])
+  @@index([userId, creationTime])
   @@unique(name: "photoId", [name, userId])
 }
 
