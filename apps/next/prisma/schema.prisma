@@ -9,69 +9,73 @@ datasource db {
 }
 
 model User {
-  id            String      @id @default(dbgenerated("prefix_nanoid('usr_'::text)"))
+  id String @id @default(dbgenerated("prefix_nanoid('usr_'::text)"))
 
-  email         String      @unique
-  photos        Photo[]
-  albums        Album[]
+  email  String  @unique
+  photos Photo[]
+  albums Album[]
 
-  awsAccount    AwsAccount? @relation(fields: [awsAccountId], references: [id])
-  awsAccountId  String?
+  awsAccount   AwsAccount? @relation(fields: [awsAccountId], references: [id])
+  awsAccountId String?
 
-  awsBucket     AwsBucket?
+  awsBucket AwsBucket?
 
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
   @@index([awsAccountId])
 }
 
 model AwsAccount {
-  id               String    @id @default(dbgenerated("prefix_nanoid('aws_'::text)"))
-  externalId       String    @unique
-  users            User[]
-  buckets          AwsBucket[]
+  id         String      @id @default(dbgenerated("prefix_nanoid('aws_'::text)"))
+  externalId String      @unique
+  users      User[]
+  buckets    AwsBucket[]
 }
 
 model AwsBucket {
-  id               String     @id @default(dbgenerated("prefix_nanoid('buk_'::text)"))
-  name             String     @unique
-  region           String
-  roleArn          String
+  id      String @id @default(dbgenerated("prefix_nanoid('buk_'::text)"))
+  name    String @unique
+  region  String
+  roleArn String
 
-  awsAccount       AwsAccount @relation(fields: [awsAccountId], references: [id])
-  awsAccountId     String
+  awsAccount   AwsAccount @relation(fields: [awsAccountId], references: [id])
+  awsAccountId String
 
-  user             User       @relation(fields: [userId], references: [id])
-  userId           String     @unique
+  user   User   @relation(fields: [userId], references: [id])
+  userId String @unique
+
   @@index([awsAccountId, userId])
 }
 
 model Album {
-  id               String    @id @default(dbgenerated("prefix_nanoid('alb_'::text)"))
+  id String @id @default(dbgenerated("prefix_nanoid('alb_'::text)"))
 
-  title            String
-  photos           Photo[]
+  title  String
+  photos Photo[]
 
-  user             User      @relation(fields: [userId], references: [id])
-  userId           String
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+
   @@index([userId])
 }
 
 model Photo {
-  id            String    @id @default(dbgenerated("prefix_nanoid('pho_'::text)"))
+  id String @id @default(dbgenerated("prefix_nanoid('pho_'::text)"))
 
-  name          String
-  mediaType     MediaType
-  width         Int
-  height        Int
-  duration      Int
-  creationTime  BigInt
-  album         Album[]
+  name         String
+  mediaType    MediaType
+  width        Int
+  height       Int
+  duration     Int
+  creationTime BigInt
+  album        Album[]
 
-  user          User      @relation(fields: [userId], references: [id])
-  userId        String
-  @@index([userId, creationTime])
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+
   @@unique(name: "photoId", [name, userId])
+  @@index([userId, creationTime])
 }
 
 enum MediaType {
