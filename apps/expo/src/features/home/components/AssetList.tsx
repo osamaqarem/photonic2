@@ -26,6 +26,7 @@ import { BottomPanel } from "~/expo/features/home/components/control-panel/Botto
 import { useDragSelectContext } from "~/expo/features/home/context/DragSelectContextProvider"
 import type { GenericAsset } from "@photonic/common/asset"
 import { useDarkMode } from "~/expo/stores/DarkModeProvider"
+import { paginator } from "~/expo/features/home/hooks/useAssets"
 
 interface Props {
   onItemPress: (asset: GenericAsset) => void
@@ -399,6 +400,12 @@ export const AssetList: React.FC<Props> = ({ onItemPress, data }) => {
           imgHeight - rowSeparatorHeight,
           imgWidth - columnSeparatorWidth,
         )}
+        onEndReachedThreshold={1}
+        onEndReached={() => {
+          if (data.length > 0) {
+            paginator.getNextPage()
+          }
+        }}
         ref={flatlist}
         data={data}
         renderItem={renderItem}

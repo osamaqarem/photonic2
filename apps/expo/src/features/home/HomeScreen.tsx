@@ -15,7 +15,7 @@ import { useAlerts } from "~/expo/design/components/alerts/useAlerts"
 import { AssetList } from "~/expo/features/home/components/AssetList"
 import { ControlPanel } from "~/expo/features/home/components/control-panel"
 import { DragSelectContextProvider } from "~/expo/features/home/context/DragSelectContextProvider"
-import { useAssets } from "~/expo/features/home/hooks/useAssets"
+import { paginator, useAssets } from "~/expo/features/home/hooks/useAssets"
 import type {
   AssetRecordMap,
   GenericAsset,
@@ -317,6 +317,7 @@ export const HomeScreen: React.FC<
         if (errors.length) logger.error(errors)
       }
 
+      await paginator.refetchPageFor(data)
       setTimeout(() => {
         totalUploadProgress.value = 0
       }, 5_000)

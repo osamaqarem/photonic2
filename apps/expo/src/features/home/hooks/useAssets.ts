@@ -1,5 +1,6 @@
 import { PermissionStatus, usePermissions } from "expo-media-library"
 import React from "react"
+import mitt from "mitt"
 
 import type {
   AssetRecordMap,
@@ -12,8 +13,11 @@ import type { LocalMediaAsset } from "~/expo/features/home/utils/media-manager"
 import { mediaManager } from "~/expo/features/home/utils/media-manager"
 import type { RouterOutput } from "~/expo/stores/TrpcProvider"
 import { trpcClient } from "~/expo/stores/TrpcProvider"
+import { Logger } from "@photonic/common"
 
 class PaginationMediator {
+  private logger = new Logger("PaginationMediator")
+
   private localCursorId?: LocalAsset["localId"]
   private localHasNextPage = true
 
@@ -31,6 +35,10 @@ class PaginationMediator {
       createdBeforeMs?: number
     }
   }> = []
+
+  public emitter = mitt<{
+    updated: void
+  }>()
 
   private fetchLocalAssets(cursor?: string) {
     return mediaManager.getAssetsAsync({
@@ -88,7 +96,11 @@ class PaginationMediator {
     })
 
     remoteMap.forEach(item =>
-      remoteAssets.push({ ...item, type: "RemoteAsset" }),
+      remoteAssets.push({
+        ...item,
+        type: "RemoteAsset",
+        creationTime: item.creationTime,
+      }),
     )
 
     return [...localAssets, ...remoteAssets, ...localRemoteAssets].sort(
@@ -96,9 +108,11 @@ class PaginationMediator {
     )
   }
 
-  public async refetchPageFor(asset: Array<LocalMediaAsset>): Promise<void> {
-    let unprocessed: Array<LocalMediaAsset> = []
-    let stalePageIndices: Array<number> = []
+  public async refetchPageFor(
+    asset: Array<LocalMediaAsset | GenericAsset>,
+  ): Promise<void> {
+    let unprocessed: Array<LocalMediaAsset | GenericAsset> = []
+    let stalePageIndices = new Set<number>()
 
     asset.forEach(item => {
       const pageIndex = this.pages.findIndex(page => {
@@ -113,18 +127,16 @@ class PaginationMediator {
       })
       if (pageIndex === -1) {
         unprocessed.push(item)
-        return
       } else {
-        stalePageIndices.push(pageIndex)
+        stalePageIndices.add(pageIndex)
       }
     })
 
     for (const index of stalePageIndices) {
-      // refetch page
       await this.refetchPageAtIndex(index)
     }
 
-    return
+    this.emitter.emit("updated")
   }
 
   private async refetchPageAtIndex(index: number): Promise<void> {
@@ -153,6 +165,7 @@ class PaginationMediator {
     })()
 
     page.data = this.getSortedData(local, remote)
+    this.emitter.emit("updated")
   }
 
   public async getNextPage(): Promise<void> {
@@ -211,10 +224,11 @@ class PaginationMediator {
 
     const data = this.getSortedData(local, remote)
     this.pages.push({ data, params })
+    this.emitter.emit("updated")
   }
 }
 
-const paginator = new PaginationMediator()
+export const paginator = new PaginationMediator()
 
 type OnData = (d: {
   assetRecords: AssetRecordMap
@@ -225,18 +239,18 @@ export const useAssets = (onData: OnData) => {
   const [permissionResponse, requestPermission] = usePermissions()
 
   React.useEffect(() => {
+    paginator.emitter.on("updated", () => {
+      const allPages = paginator.pages.flatMap(page => page.data)
+      onData({
+        assetRecords: mediaManager.exportRecordMap(allPages),
+        assetList: allPages,
+      })
+    })
+
     if (permissionResponse?.status !== PermissionStatus.GRANTED) {
       requestPermission()
     } else {
-      const handleOnData = () => {
-        const allPages = paginator.pages.flatMap(page => page.data)
-        onData({
-          assetRecords: mediaManager.exportRecordMap(allPages),
-          assetList: allPages,
-        })
-      }
-
-      paginator.getNextPage().then(handleOnData)
+      paginator.getNextPage()
 
       const sub = mediaManager.addListener(
         async ({
@@ -249,14 +263,11 @@ export const useAssets = (onData: OnData) => {
             console.log("sub: fetchAllAssets")
             // TODO: refetch each existing page sequentially
           } else {
-            const array = (array: Array<LocalMediaAsset> | undefined) =>
-              array ?? []
             await paginator.refetchPageFor([
-              ...array(deletedAssets),
-              ...array(insertedAssets),
-              ...array(updatedAssets),
+              ...(deletedAssets ?? []),
+              ...(insertedAssets ?? []),
+              ...(updatedAssets ?? []),
             ])
-            handleOnData()
           }
         },
       )
