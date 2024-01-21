@@ -1,10 +1,13 @@
 import type { ObjectIdentifier } from "@aws-sdk/client-s3"
 import pMap from "p-map"
 import { z } from "zod"
+import type { RemoteAsset } from "@photonic/common/asset"
 
 import { MediaType, type Photo } from "~/next/lib/db"
 import { router } from "../trpc"
 import { storageProcedure } from "./storage-procedure"
+
+const optionalDate = (v: number | undefined) => (v ? new Date(v) : undefined)
 
 export const photoRouter = router({
   list: storageProcedure
@@ -21,8 +24,8 @@ export const photoRouter = router({
         where: {
           userId: ctx.user.id,
           creationTime: {
-            gte: input.createdAfterMs,
-            lt: input.createdBeforeMs,
+            gte: optionalDate(input.createdAfterMs),
+            lt: optionalDate(input.createdBeforeMs),
           },
         },
         take: input.limit,
@@ -39,10 +42,15 @@ export const photoRouter = router({
       }
 
       // set url for each item
-      let withUrl: Array<Photo & { url: string }> = []
+      let withUrl: Array<RemoteAsset> = []
       const mapper = async (item: Photo) => {
         const url = await ctx.storage.getObjectUrl(item.name)
-        withUrl.push({ ...item, url })
+        withUrl.push({
+          ...item,
+          url,
+          type: "RemoteAsset",
+          creationTime: item.creationTime.getTime(),
+        })
       }
       await pMap(items, mapper, { concurrency: 10 })
 
@@ -80,7 +88,6 @@ export const photoRouter = router({
         updatedData: z
           .object({
             name: z.string(),
-            creationTime: z.number(),
           })
           .partial(),
       }),
@@ -105,28 +112,36 @@ export const photoRouter = router({
 
       return
     }),
+  // TODO: remove this endpoint, have the storage provider call the server with the data instead
   put: storageProcedure
     .input(
       z.object({
-        photos: z.array(
-          z.object({
-            name: z.string(),
-            mediaType: z.enum([MediaType.photo, MediaType.video]),
-            width: z.number(),
-            height: z.number(),
-            duration: z.number(),
-            creationTime: z.number(),
-          }),
-        ),
+        photos: z
+          .array(
+            z.object({
+              name: z.string(),
+              mediaType: z.enum([MediaType.photo, MediaType.video]),
+              width: z.number(),
+              height: z.number(),
+              duration: z.number(),
+              creationTime: z.number(),
+            }),
+          )
+          .min(1)
+          .max(10),
       }),
     )
     .mutation(async ({ ctx, input }) => {
+      const data = input.photos.map(item => ({
+        ...item,
+        creationTime: new Date(item.creationTime),
+      }))
       await ctx.db.user.update({
         where: { id: ctx.user.id },
         data: {
           photos: {
             createMany: {
-              data: input.photos,
+              data,
               skipDuplicates: true,
             },
           },

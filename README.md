@@ -38,6 +38,23 @@ fly pg attach --app [app_name] [database_name]
 
 Proxy connection URL will be in the format `postgres://user_name:password@localhost:5432/user_name`
 
+### Modifying Tables
+
+1. Make a change to the schema [file](apps/next/prisma/schema.prisma)
+2. Apply the change to DB:
+
+#### Experimentation
+
+3. Apply the change `yarn next db:push`
+4. When finished, revert the schema change and run `yarn next db:push`
+
+#### Permanent
+
+4. Generate and apply migration `yarn next db:migrate`
+
+> [!TIP]
+> Deployments run `prisma migrate deploy`.
+
 ## Cache
 
 Docker image

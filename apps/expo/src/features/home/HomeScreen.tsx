@@ -22,7 +22,7 @@ import type {
   LocalAsset,
   LocalRemoteAsset,
   RemoteAsset,
-} from "~/expo/features/home/types/asset"
+} from "@photonic/common/asset"
 import { mediaManager } from "~/expo/features/home/utils/media-manager"
 import { Sentry } from "~/expo/lib/sentry"
 import type { AppParams } from "~/expo/navigation/params"

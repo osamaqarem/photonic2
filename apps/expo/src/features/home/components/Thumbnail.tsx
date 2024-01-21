@@ -18,7 +18,7 @@ import { Icon } from "~/expo/design/components/icons/Icons"
 import { palette } from "~/expo/design/palette"
 import { theme } from "~/expo/design/theme"
 import { useDragSelectContext } from "~/expo/features/home/context/DragSelectContextProvider"
-import type { GenericAsset } from "~/expo/features/home/types/asset"
+import type { GenericAsset } from "@photonic/common/asset"
 import { useDarkMode } from "~/expo/stores/DarkModeProvider"
 
 const longPressTiming = 300

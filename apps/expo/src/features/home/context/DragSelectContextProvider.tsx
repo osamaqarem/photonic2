@@ -1,7 +1,7 @@
 import * as React from "react"
 import { type SharedValue } from "react-native-reanimated"
 
-import type { GenericAsset } from "~/expo/features/home/types/asset"
+import type { GenericAsset } from "@photonic/common/asset"
 
 interface DragSelectContext {
   assetRecord: SharedValue<Record<string, GenericAsset>>

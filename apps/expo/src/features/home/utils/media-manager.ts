@@ -9,7 +9,7 @@ import type {
   LocalAsset,
   LocalRemoteAsset,
   RemoteAsset,
-} from "~/expo/features/home/types/asset"
+} from "@photonic/common/asset"
 import { trpcClient } from "~/expo/stores/TrpcProvider"
 
 export type LocalMediaAsset = ExpoMedia.Asset

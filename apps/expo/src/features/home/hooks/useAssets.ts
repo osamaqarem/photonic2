@@ -7,7 +7,7 @@ import type {
   LocalAsset,
   LocalRemoteAsset,
   RemoteAsset,
-} from "~/expo/features/home/types/asset"
+} from "@photonic/common/asset"
 import type { LocalMediaAsset } from "~/expo/features/home/utils/media-manager"
 import { mediaManager } from "~/expo/features/home/utils/media-manager"
 import type { RouterOutput } from "~/expo/stores/TrpcProvider"

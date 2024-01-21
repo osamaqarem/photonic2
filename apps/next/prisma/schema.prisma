@@ -68,7 +68,7 @@ model Photo {
   width        Int
   height       Int
   duration     Int
-  creationTime BigInt
+  creationTime DateTime
   album        Album[]
 
   user   User   @relation(fields: [userId], references: [id])
