@@ -47,8 +47,8 @@ jobs:
           STAGE: "production"
         run: bundle exec pod install --project-directory=ios
 
-      - name: node postinstall
-        run: yarn postinstall
+      - name: Run JS dependencies scripts
+        run: yarn
 
       - name: Fastlane
         working-directory: apps/expo
