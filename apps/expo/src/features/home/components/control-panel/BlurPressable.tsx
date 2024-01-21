@@ -4,7 +4,7 @@ import * as React from "react"
 import type { PressableProps } from "react-native"
 import { Pressable } from "react-native"
 import type { AnimatedProps } from "react-native-reanimated"
-import Animated, { useAnimatedProps } from "react-native-reanimated"
+import Animated from "react-native-reanimated"
 
 import { useDarkMode } from "~/expo/stores/DarkModeProvider"
 
@@ -12,17 +12,14 @@ const AnimatedExpoBlurView = Animated.createAnimatedComponent(ExpoBlurView)
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable)
 
 export const BlurView: React.FC<AnimatedProps<ExpoBlurViewProps>> = props => {
-  const sharedColorScheme = useDarkMode(s => s.sharedColorScheme)
-
-  const animatedProps = useAnimatedProps(() => ({
-    tint: sharedColorScheme.value,
-  }))
+  const colorScheme = useDarkMode(s => s.colorScheme)
 
   return (
     <AnimatedExpoBlurView
       intensity={100}
+      tint={colorScheme}
       {...props}
-      animatedProps={{ ...props.animatedProps, ...animatedProps }}
+      // if wanting to add dark mode handling via `sharedColorScheme` in this component, note it's not possible to merge `animatedProps`.
     />
   )
 }
