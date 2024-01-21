@@ -20,19 +20,23 @@ export const photoRouter = router({
       }),
     )
     .query(async ({ ctx, input }) => {
-      const items = await ctx.db.photo.findMany({
-        where: {
-          userId: ctx.user.id,
-          creationTime: {
-            gte: optionalDate(input.createdAfterMs),
-            lt: optionalDate(input.createdBeforeMs),
+      console.log("photoRouter.list", "cursor:" + input.cursor)
+      const [count, items] = await ctx.db.$transaction([
+        ctx.db.photo.count(),
+        ctx.db.photo.findMany({
+          where: {
+            userId: ctx.user.id,
+            creationTime: {
+              gte: optionalDate(input.createdAfterMs),
+              lt: optionalDate(input.createdBeforeMs),
+            },
           },
-        },
-        take: input.limit,
-        skip: input.cursor ? 1 : 0,
-        cursor: input.cursor ? { id: input.cursor } : undefined,
-        orderBy: [{ creationTime: "desc" }, { name: "desc" }],
-      })
+          take: input.limit,
+          skip: input.cursor ? 1 : 0,
+          cursor: input.cursor ? { id: input.cursor } : undefined,
+          orderBy: [{ creationTime: "desc" }],
+        }),
+      ])
 
       // set next cursor
       let nextCursor: Maybe<typeof input.cursor> = undefined
@@ -57,6 +61,7 @@ export const photoRouter = router({
       return {
         assets: withUrl,
         nextCursor,
+        count,
       }
     }),
   delete: storageProcedure

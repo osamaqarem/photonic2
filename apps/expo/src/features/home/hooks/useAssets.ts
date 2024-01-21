@@ -23,6 +23,7 @@ class PaginationMediator {
 
   private remoteCursorId?: RemoteAsset["id"]
   private remoteHasNextPage = true
+  private remoteCount = 0
 
   public pages: Array<{
     data: Array<GenericAsset>
@@ -178,10 +179,16 @@ class PaginationMediator {
       createdBeforeMs: undefined,
     }
 
+    this.logger.log(`getNextPage: ${this.pages.length + 1}`, params)
+
+    if (!this.localHasNextPage && !this.remoteHasNextPage) {
+      return
+    }
+
     const local = await (async () => {
       if (this.localHasNextPage) {
         const data = await this.fetchLocalAssets(this.localCursorId)
-        this.localHasNextPage = data.hasNextPage ? true : false
+        this.localHasNextPage = data.hasNextPage
         this.localCursorId = data.endCursor
         return data.assets
       }
@@ -211,9 +218,14 @@ class PaginationMediator {
           createdAfterMs,
           createdBeforeMs,
         )
-        if (res.nextCursor) {
+
+        this.remoteCount += res.assets.length
+        if (this.remoteCount !== res.count) {
           this.remoteHasNextPage = true
-          this.remoteCursorId = res.nextCursor
+          this.remoteCursorId =
+            res.assets.length > 0
+              ? res.assets[res.assets.length - 1]?.id
+              : this.remoteCursorId
         } else {
           this.remoteHasNextPage = false
         }
