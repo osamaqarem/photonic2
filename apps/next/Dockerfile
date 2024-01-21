@@ -29,7 +29,7 @@ COPY tsconfig.json tsconfig.json
 COPY .eslintrc.cjs .eslintrc.cjs
 COPY ./apps/next/scripts ./apps/next/scripts
 COPY ./apps/next/prisma ./prisma
-RUN yarn db:generate
+RUN yarn next db:generate
 RUN yarn turbo build --filter=@photonic/next...
 
 FROM base AS runner

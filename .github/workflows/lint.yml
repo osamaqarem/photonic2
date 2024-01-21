@@ -24,12 +24,12 @@ jobs:
         run: yarn install --immutable --prefer-offline
 
       - name: Staging Generate platform colors
-        run: yarn app:platform-colors
+        run: yarn expo platform-colors
         env:
           STAGE: development
 
       - name: Generate Production platform colors
-        run: yarn app:platform-colors
+        run: yarn expo platform-colors
         env:
           STAGE: production
 
