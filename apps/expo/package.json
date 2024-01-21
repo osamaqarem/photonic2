@@ -87,6 +87,7 @@
     "prebuild-ios": "yarn prebuild && yarn ios",
     "compile-plugins": "tsc ./plugins/*.ts --skipLibCheck --esModuleInterop true --outDir ./plugins/build",
     "watch-plugins": "yarn compile-plugins --watch",
+    "colors": "turbo platform-colors",
     "platform-colors": "npx @klarna/platform-colors",
     "start": "expo start --dev-client",
     "postinstall": "cd ../.. && yarn postinstall"

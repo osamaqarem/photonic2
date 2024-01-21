@@ -25,7 +25,8 @@
     "zx": "^7.2.3"
   },
   "engines": {
-    "node": "<=18 >=16.17.0"
+    "node": "<=18 >=16.17.0",
+    "yarn": "<2 >=1.22.19"
   },
   "packageManager": "yarn@1.22.19",
   "scripts": {
@@ -34,22 +35,11 @@
     "lint": "turbo lint",
     "prettier": "prettier '**/*.{js,jsx,ts,tsx}' --write --ignore-path .gitignore",
     "dev": "turbo dev",
-    "app:prebuild": "yarn workspace @photonic/expo prebuild",
-    "app:prebuild-ios": "yarn workspace @photonic/expo prebuild-ios",
-    "app:platform-colors": "turbo platform-colors",
-    "app:ios": "yarn workspace @photonic/expo ios",
-    "app:dev": "yarn workspace @photonic/expo dev",
-    "app:xcode": "xed ./apps/expo/ios",
-    "lambda:build": "yarn workspace @photonic/lambda build",
-    "lambda:update-env": "yarn workspace @photonic/lambda update-env",
-    "db:generate": "turbo db:generate",
-    "db:migrate": "yarn workspace @photonic/next db:migrate",
-    "db:push": "yarn workspace @photonic/next db:push",
-    "db:studio": "yarn workspace @photonic/next db:studio",
-    "web:dev": "yarn workspace @photonic/next dev",
-    "web:serve": "yarn workspace @photonic/next serve",
-    "web:docker-build": "docker build -f ./apps/next/Dockerfile -t photonic/next .",
-    "web:docker-run": "docker run -p 3000:3000 --name photonic-next-container photonic/next",
+    "expo": "yarn workspace @photonic/expo",
+    "next": "yarn workspace @photonic/next",
+    "lambda": "yarn workspace @photonic/lambda",
+    "next:docker-build": "docker build -f ./apps/next/Dockerfile -t photonic/next .",
+    "next:docker-run": "docker run -p 3000:3000 --name photonic-next-container photonic/next",
     "p": "yarn lernaupdate --lazy",
     "clean": "rm -rf apps/next/.next",
     "clean-nodemodules": "find . -name 'node_modules' -type d -prune -exec rm -rf '{}' +",

@@ -12,6 +12,7 @@
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate dev",
     "db:push": "prisma db push",
+    "db:reset": "prisma db push",
     "db:studio": "BROWSER=none prisma studio",
     "db:format": "prisma format",
     "db:proxy": "fly proxy 5432:5432 -a photonic-next-staging-postgres"
