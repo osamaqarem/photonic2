@@ -91,6 +91,7 @@
     "colors": "turbo platform-colors",
     "platform-colors": "npx @klarna/platform-colors",
     "start": "expo start --dev-client",
+    "deploy": "gh workflow run deploy-expo.yml --ref main",
     "postinstall": "cd ../.. && yarn postinstall"
   }
 }
