@@ -1,0 +1,13 @@
+{
+  "version": "5",
+  "dialect": "sqlite",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1707263102959,
+      "tag": "0000_chilly_bloodscream",
+      "breakpoints": true
+    }
+  ]
+}
