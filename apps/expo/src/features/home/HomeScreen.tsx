@@ -15,14 +15,14 @@ import { useAlerts } from "~/expo/design/components/alerts/useAlerts"
 import { AssetList } from "~/expo/features/home/components/AssetList"
 import { ControlPanel } from "~/expo/features/home/components/control-panel"
 import { DragSelectContextProvider } from "~/expo/features/home/context/DragSelectContextProvider"
-import { paginator, useAssets } from "~/expo/features/home/hooks/useAssets"
+import { useAssets } from "~/expo/features/home/hooks/useAssets"
 import type {
   AssetRecordMap,
   GenericAsset,
   LocalAsset,
   LocalRemoteAsset,
   RemoteAsset,
-} from "@photonic/common/asset"
+} from "~/expo/lib/db/schema.ts"
 import { mediaManager } from "~/expo/features/home/utils/media-manager"
 import { Sentry } from "~/expo/lib/sentry"
 import type { AppParams } from "~/expo/navigation/params"
@@ -94,12 +94,12 @@ export const HomeScreen: React.FC<
     for (const name in selectedItems.value) {
       const item = selectedItems.value[name]
       if (!item) continue
-      if (item.type === "RemoteAsset" || item.type === "LocalRemoteAsset") {
+      if (item.type === "remote" || item.type === "localRemote") {
         selectedRemoteAssets.push(
           assetRecord.value[item.name] as RemoteAsset | LocalRemoteAsset,
         )
       }
-      if (item.type === "LocalAsset" || item.type === "LocalRemoteAsset") {
+      if (item.type === "local" || item.type === "localRemote") {
         selectedLocalAssets.push(
           assetRecord.value[item.name] as LocalAsset | LocalRemoteAsset,
         )
@@ -126,7 +126,7 @@ export const HomeScreen: React.FC<
     let localRemoteAssets: Array<LocalRemoteAsset> = []
     for (const name in selectedItems.value) {
       const asset = selectedItems.value[name]
-      if (asset?.type === "LocalRemoteAsset") {
+      if (asset?.type === "localRemote") {
         localRemoteAssets.push(
           assetRecord.value[asset.name] as LocalRemoteAsset,
         )
@@ -137,7 +137,7 @@ export const HomeScreen: React.FC<
     if (localRemoteAssets.length === 0) return
 
     try {
-      let newState: Record<string, GenericAsset> = { ...assetRecord.value }
+      let newState: AssetRecordMap = { ...assetRecord.value }
 
       await mediaManager.deleteAssetsAsync(localRemoteAssets)
       const assetUrlMap = await mediaManager.getRemoteUrl(localRemoteAssets)
@@ -156,7 +156,7 @@ export const HomeScreen: React.FC<
         }
 
         const newAsset: RemoteAsset = {
-          type: "RemoteAsset",
+          type: "remote",
           id: current.id,
           creationTime: current.creationTime,
           duration: current.duration,
@@ -167,7 +167,6 @@ export const HomeScreen: React.FC<
           url,
         }
 
-        // TODO: patch remote assets query data vs full rmeote data refetch
         newState[item.name] = newAsset
       })
     } catch (err) {
@@ -182,7 +181,7 @@ export const HomeScreen: React.FC<
     let selectedRemoteAssets: Array<LocalRemoteAsset> = []
     for (const name in selectedItems.value) {
       const asset = selectedItems.value[name]
-      if (asset?.type === "LocalRemoteAsset") {
+      if (asset?.type === "localRemote") {
         selectedRemoteAssets.push(
           assetRecord.value[asset.name] as LocalRemoteAsset,
         )
@@ -200,7 +199,7 @@ export const HomeScreen: React.FC<
         const current = newState[item.name] as LocalRemoteAsset
         const localAsset: LocalAsset = {
           ...current,
-          type: "LocalAsset",
+          type: "local",
           uploadProgressPct: "0",
         }
         newState[item.name] = localAsset
@@ -219,7 +218,7 @@ export const HomeScreen: React.FC<
   ): Promise<LocalRemoteAsset> {
     const savedAsset = await mediaManager.createAssetAsync(selectedRemoteAsset)
 
-    const creationTime = selectedRemoteAsset.creationTime
+    const creationTime = selectedRemoteAsset.creationTime.getTime()
     await mediaManager.modifyAssetAsync(savedAsset, {
       creationTime,
     })
@@ -232,8 +231,8 @@ export const HomeScreen: React.FC<
     return {
       ...selectedRemoteAsset,
       name: savedAsset.filename,
-      type: "LocalRemoteAsset",
-      localUri: savedAsset.uri,
+      type: "localRemote",
+      uri: savedAsset.uri,
       localId: savedAsset.id,
     }
   }
@@ -247,7 +246,7 @@ export const HomeScreen: React.FC<
 
     for (const name in selectedItems.value) {
       const asset = selectedItems.value[name]
-      if (asset?.type !== "RemoteAsset") continue
+      if (asset?.type !== "remote") continue
       shouldUpdate = true
 
       const remoteAsset = assetRecord.value[asset.name] as RemoteAsset
@@ -291,7 +290,7 @@ export const HomeScreen: React.FC<
     let data: Array<LocalAsset> = []
     for (const name in collection) {
       const item = collection[name]
-      if (item?.type === "LocalAsset") {
+      if (item?.type === "local") {
         data.push(item)
       }
     }
@@ -317,7 +316,7 @@ export const HomeScreen: React.FC<
         if (errors.length) logger.error(errors)
       }
 
-      await paginator.refetchPageFor(data)
+      // await paginator.refetchPageFor(data)
       setTimeout(() => {
         totalUploadProgress.value = 0
       }, 5_000)

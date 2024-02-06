@@ -1,7 +1,6 @@
 import type { ObjectIdentifier } from "@aws-sdk/client-s3"
 import pMap from "p-map"
 import { z } from "zod"
-import type { RemoteAsset } from "@photonic/common/asset"
 
 import { MediaType, type Photo } from "~/next/lib/db"
 import { router } from "../trpc"
@@ -46,14 +45,16 @@ export const photoRouter = router({
       }
 
       // set url for each item
-      let withUrl: Array<RemoteAsset> = []
+      let withUrl: Array<
+        Photo & { url: string; type: "remote"; creationTime: Date }
+      > = []
       const mapper = async (item: Photo) => {
         const url = await ctx.storage.getObjectUrl(item.name)
         withUrl.push({
           ...item,
           url,
-          type: "RemoteAsset",
-          creationTime: item.creationTime.getTime(),
+          type: "remote",
+          creationTime: item.creationTime,
         })
       }
       await pMap(items, mapper, { concurrency: 10 })
@@ -129,7 +130,7 @@ export const photoRouter = router({
               width: z.number(),
               height: z.number(),
               duration: z.number(),
-              creationTime: z.number(),
+              creationTime: z.date(),
             }),
           )
           .min(1)

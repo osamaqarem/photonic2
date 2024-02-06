@@ -63,14 +63,13 @@ export const PhotoScreen: React.FC<
 
   const { width: screenWidth, height: screenHeight } = useWindowDimensions()
 
-  const hasRawData =
-    asset.type === "LocalRemoteAsset" || asset.type === "LocalAsset"
+  const hasRawData = asset.type === "localRemote" || asset.type === "local"
   const [image, setImageSize] = React.useState({
     width: hasRawData ? asset.width : 0,
     height: hasRawData ? asset.height : 0,
   })
 
-  const uri = asset.type === "RemoteAsset" ? asset.url : asset.localUri
+  const uri = asset.type === "remote" ? asset.url : asset.uri
 
   const aspectWidth = screenWidth ?? 0
   const aspectHeight = React.useMemo(() => {

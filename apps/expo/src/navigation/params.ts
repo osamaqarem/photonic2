@@ -1,4 +1,4 @@
-import type { GenericAsset } from "@photonic/common/asset"
+import type { GenericAsset } from "~/expo/lib/db/schema"
 
 export type OnboardingStackParams = {
   "onboarding-welcome": undefined

@@ -24,9 +24,8 @@ import { Text } from "~/expo/design/components/Text"
 import { Thumbnail } from "~/expo/features/home/components/Thumbnail"
 import { BottomPanel } from "~/expo/features/home/components/control-panel/Bottom"
 import { useDragSelectContext } from "~/expo/features/home/context/DragSelectContextProvider"
-import type { GenericAsset } from "@photonic/common/asset"
+import type { GenericAsset } from "~/expo/lib/db/schema"
 import { useDarkMode } from "~/expo/stores/DarkModeProvider"
-import { paginator } from "~/expo/features/home/hooks/useAssets"
 
 interface Props {
   onItemPress: (asset: GenericAsset) => void
@@ -403,7 +402,7 @@ export const AssetList: React.FC<Props> = ({ onItemPress, data }) => {
         onEndReachedThreshold={1}
         onEndReached={() => {
           if (data.length > 0) {
-            paginator.getNextPage()
+            // paginator.getNextPage()
           }
         }}
         ref={flatlist}

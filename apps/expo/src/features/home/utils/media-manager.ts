@@ -9,7 +9,7 @@ import type {
   LocalAsset,
   LocalRemoteAsset,
   RemoteAsset,
-} from "@photonic/common/asset"
+} from "~/expo/lib/db/schema"
 import { trpcClient } from "~/expo/stores/TrpcProvider"
 
 export type LocalMediaAsset = ExpoMedia.Asset
@@ -38,7 +38,7 @@ class MediaManager {
   }
 
   async share(asset: GenericAsset) {
-    if (asset.type === "LocalAsset" || asset.type === "LocalRemoteAsset") {
+    if (asset.type === "local" || asset.type === "localRemote") {
       const fullInfo = await this.getAssetInfoAsync(asset)
       return Share.open({ url: fullInfo.localUri })
     } else {
@@ -96,21 +96,6 @@ class MediaManager {
 
   getRemoteUrl(assets: Array<RemoteAsset | LocalRemoteAsset>) {
     return trpcClient.photo.getSignedUrl.query(assets.map(item => item.name))
-  }
-
-  exportLocalAsset(asset: LocalMediaAsset): LocalAsset {
-    return {
-      type: "LocalAsset",
-      uploadProgressPct: "0",
-      width: asset.width,
-      name: asset.filename,
-      mediaType: asset.mediaType as "photo" | "video",
-      localUri: asset.uri,
-      localId: asset.id,
-      height: asset.height,
-      duration: asset.duration,
-      creationTime: asset.creationTime,
-    }
   }
 
   exportRecordMap(assets: Array<GenericAsset>): AssetRecordMap {

@@ -96,6 +96,7 @@
     "platform-colors": "npx @klarna/platform-colors",
     "start": "expo start --dev-client",
     "deploy": "gh workflow run deploy-expo.yml --ref main",
+    "db:migrate": "drizzle-kit generate:sqlite",
     "postinstall": "cd ../.. && yarn postinstall"
   }
 }

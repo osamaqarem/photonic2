@@ -18,7 +18,7 @@ import { Icon } from "~/expo/design/components/icons/Icons"
 import { palette } from "~/expo/design/palette"
 import { theme } from "~/expo/design/theme"
 import { useDragSelectContext } from "~/expo/features/home/context/DragSelectContextProvider"
-import type { GenericAsset } from "@photonic/common/asset"
+import type { GenericAsset } from "~/expo/lib/db/schema"
 import { useDarkMode } from "~/expo/stores/DarkModeProvider"
 
 const longPressTiming = 300
@@ -40,7 +40,7 @@ export const Thumbnail: React.FC<Props> & {
 } = props => {
   const { asset } = props
 
-  const uri = asset.type === "RemoteAsset" ? asset.url : asset.localUri
+  const uri = asset.type === "remote" ? asset.url : asset.uri
 
   const { assetRecord, selectedItems } = useDragSelectContext()
 
@@ -86,7 +86,7 @@ export const Thumbnail: React.FC<Props> & {
 
   const uploadIndicatorStyle = useAnimatedStyle(() => {
     const type = assetRecord.value[asset.name]?.type
-    const local = type === "LocalAsset"
+    const local = type === "local"
     return { opacity: local ? 1 : 0 }
   })
 
@@ -94,7 +94,7 @@ export const Thumbnail: React.FC<Props> & {
     const type = assetRecord.value[asset.name]?.type
     return {
       color:
-        type === "LocalAsset"
+        type === "local"
           ? palette.light.slate.slate3
           : palette.light.blue.blue3,
     }
