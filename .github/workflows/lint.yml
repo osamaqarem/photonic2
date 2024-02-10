@@ -21,10 +21,7 @@ jobs:
           cache-dependency-path: yarn.lock
 
       - name: Install dependencies
-        run: |
-          yarn install --immutable --prefer-offline --ignore-scripts
-          yarn patch-package --partial
-          yarn postinstall
+        run: yarn install --immutable --prefer-offline
 
       - name: Staging Generate platform colors
         run: yarn expo platform-colors
