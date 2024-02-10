@@ -1,74 +1,74 @@
-import { PermissionStatus, usePermissions } from "expo-media-library"
+import { Logger } from "@photonic/common"
+import * as ExpoMedia from "expo-media-library"
 import React from "react"
-
-import { migrate } from "drizzle-orm/expo-sqlite/migrator"
-import { mediaManager } from "~/expo/features/home/utils/media-manager"
-import { insertPhotosFromDisk } from "~/expo/features/home/utils/sync-manager"
+import type { GenericAsset } from "~/expo/features/home/utils/media-manager"
+import { exportPhotoSchemaObject } from "~/expo/features/home/utils/media-manager"
 import { db } from "~/expo/lib/db"
-import migrations from "~/expo/lib/db/migrations/migrations"
-import type { AssetRecordMap, GenericAsset } from "~/expo/lib/db/schema"
-import { photos } from "~/expo/lib/db/schema"
+import { assets } from "~/expo/lib/db/schema"
+import { storage } from "~/expo/lib/storage"
 
-type OnData = (d: {
-  assetRecords: AssetRecordMap
-  assetList: Array<GenericAsset>
-}) => void
+const logger = new Logger("useAssets")
 
-export const useAssets = (onData: OnData) => {
-  const [permissionResponse, requestPermission] = usePermissions()
+const DatabasePopulatedKey = "DatabasePopulatedKey"
+const databasePopulatedStorage = {
+  get: () => storage.getBoolean(DatabasePopulatedKey),
+  save: () => storage.set(DatabasePopulatedKey, true),
+}
+
+export const useAssets = () => {
+  const [photoDbState, setPhotoDbState] = React.useState<
+    "building" | "permissionNeeded" | "ready"
+  >()
+  const [data, setData] = React.useState<Array<GenericAsset>>()
 
   React.useEffect(() => {
-    const run = async () => {
-      // paginator.emitter.on("updated", () => {
-      //   const allPages = paginator.pages.flatMap(page => page.data)
-      //   onData({
-      //     assetRecords: mediaManager.exportRecordMap(allPages),
-      //     assetList: allPages,
-      //   })
-      // })
+    const init = async () => {
+      const fetchAssets = async () => {
+        const data = await db.select().from(assets)
+        setPhotoDbState("ready")
+        setData(data as Array<GenericAsset>)
+        logger.log("assets length: " + data.length)
+      }
 
-      if (permissionResponse?.status !== PermissionStatus.GRANTED) {
-        requestPermission()
-      } else {
-        await db.delete(photos)
-        await migrate(db, migrations)
-
-        const data = (await db.select().from(photos)) as Array<GenericAsset>
-
-        if (data.length === 0) {
-          await insertPhotosFromDisk()
-          console.log(data)
+      if (!photoDbState || photoDbState === "permissionNeeded") {
+        const res = await ExpoMedia.getPermissionsAsync()
+        if (res.granted) {
+          const databasePopulated = databasePopulatedStorage.get()
+          if (!databasePopulated) {
+            setPhotoDbState("building")
+            populateDB()
+          }
+          fetchAssets()
+        } else {
+          setPhotoDbState("permissionNeeded")
         }
-        console.log(data.length)
-
-        onData({
-          assetRecords: mediaManager.exportRecordMap(data),
-          assetList: data,
-        })
-
-        // paginator.getNextPage()
-        // const sub = mediaManager.addListener(
-        //   async ({
-        //     hasIncrementalChanges,
-        //     deletedAssets,
-        //     insertedAssets,
-        //     updatedAssets,
-        //   }) => {
-        //     if (!hasIncrementalChanges) {
-        //       console.log("sub: fetchAllAssets")
-        //       // TODO: refetch each existing page sequentially
-        //     } else {
-        //       await paginator.refetchPageFor([
-        //         ...(deletedAssets ?? []),
-        //         ...(insertedAssets ?? []),
-        //         ...(updatedAssets ?? []),
-        //       ])
-        //     }
-        //   },
-        // )
-        // return sub.remove
       }
     }
-    run()
-  }, [onData, permissionResponse?.status, requestPermission])
+    init()
+  }, [photoDbState])
+
+  return { assets: data, photoDbState }
+}
+
+function fetchMediaLibraryPage(after?: string) {
+  return ExpoMedia.getAssetsAsync({
+    after,
+    first: 2000,
+    mediaType: [
+      ExpoMedia.MediaType.photo,
+      // TODO: ExpoMedia.MediaType.video
+    ],
+  })
+}
+
+async function populateDB() {
+  logger.log("Populating DB")
+  let data = await fetchMediaLibraryPage()
+  await db.insert(assets).values(data.assets.map(exportPhotoSchemaObject))
+  while (data.hasNextPage) {
+    data = await fetchMediaLibraryPage(data.endCursor)
+    await db.insert(assets).values(data.assets.map(exportPhotoSchemaObject))
+  }
+  databasePopulatedStorage.save()
+  logger.log("Populating DB done")
 }

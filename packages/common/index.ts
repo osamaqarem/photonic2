@@ -1,10 +1,9 @@
 export const NOOP = () => {}
 
 export class Logger {
-  constructor(public prefix: string, public disabled?: boolean) {
-    this.prefix = prefix
-    this.disabled = disabled
-  }
+  private disabled = process.env.NODE_ENV === "production"
+
+  constructor(public prefix: string) {}
 
   private handleDisabled = (fn: (...args: Array<unknown>) => void) =>
     this.disabled ? NOOP : fn

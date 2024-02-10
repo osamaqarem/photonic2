@@ -26,18 +26,19 @@ export const OnboardingCodeVerificationScreen: React.FC<
 
   const { showError } = useAlerts()
 
-  const handleVerify = async () => {
+  const handleVerify = async (codeVerifier: string) => {
     try {
       const { accessToken, refreshToken, onboardingDone } = await mutateAsync({
-        code,
+        code: codeVerifier,
         email,
       })
       await useAuth
         .getState()
-        .actions.setSignedIn({ accessToken, refreshToken, onboardingDone })
+        .actions.setSignedIn({ accessToken, refreshToken })
       if (!onboardingDone) {
-        props.navigation.navigate("onboarding-storage")
+        return props.navigation.navigate("onboarding-storage")
       }
+      return props.navigation.navigate("onboarding-permissions")
     } catch (err) {
       showError(getErrorMsg(err))
     }
@@ -61,14 +62,22 @@ export const OnboardingCodeVerificationScreen: React.FC<
             Enter the verification code we sent to your e-mail.
           </Text>
           <Space t={60} />
-          <TextInput placeholder="Code" onChangeText={setCode} />
+          <TextInput
+            placeholder="Code"
+            onChangeText={(text: string) => {
+              setCode(text)
+              if (text.length === 5) {
+                handleVerify(text)
+              }
+            }}
+          />
         </SafeAreaView>
       </ScrollView>
       <ScrollView.StickyView style={styles.stickyView}>
         <Button
           text="Verify"
           size="widest"
-          onPress={handleVerify}
+          onPress={() => handleVerify(code)}
           state={loginButtonState()}
         />
       </ScrollView.StickyView>

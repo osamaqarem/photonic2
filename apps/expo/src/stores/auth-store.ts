@@ -45,7 +45,7 @@ export const useAuth = create<AuthStore>(
         return set({ onboardingDone: true })
       },
 
-      async setSignedIn({ accessToken, refreshToken, onboardingDone = true }) {
+      async setSignedIn({ accessToken, refreshToken, onboardingDone = false }) {
         await Promise.all([
           SecureStorage.setItemAsync(
             SecureStorageKey.RefreshToken,
@@ -74,7 +74,7 @@ export const useAuth = create<AuthStore>(
         ])
         const { setSignedIn, setSignedOut } = get().actions
         if (accessToken && refreshToken) {
-          setSignedIn({ accessToken, refreshToken })
+          setSignedIn({ accessToken, refreshToken, onboardingDone: true })
         } else {
           setSignedOut()
         }

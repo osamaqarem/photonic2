@@ -12,13 +12,18 @@ import { TrpcProvider } from "~/expo/stores/TrpcProvider"
 import { useAuth } from "~/expo/stores/auth-store"
 import { GestureHandlerRootView } from "react-native-gesture-handler"
 
+let didInit = false
+
 export default function App() {
   if (config.stage === "storybook") {
     const { Storybook } = require("~/expo/design/components/Storybook")
     return <Storybook />
   }
 
-  prepare()
+  if (!didInit) {
+    prepare()
+    didInit = true
+  }
 
   return (
     <GestureHandlerRootView style={styles.root}>

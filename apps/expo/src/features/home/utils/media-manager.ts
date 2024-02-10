@@ -3,16 +3,32 @@ import * as FileSystem from "expo-file-system"
 import * as ExpoMedia from "expo-media-library"
 import Share from "react-native-share"
 
-import type {
-  AssetRecordMap,
-  GenericAsset,
-  LocalAsset,
-  LocalRemoteAsset,
-  RemoteAsset,
-} from "~/expo/lib/db/schema"
+import type { Asset, AssetInsert } from "~/expo/lib/db/schema"
 import { trpcClient } from "~/expo/stores/TrpcProvider"
 
 export type LocalMediaAsset = ExpoMedia.Asset
+
+export type LocalAsset = Asset & {
+  type: "local"
+  localId: string
+  uri: string
+}
+
+export type RemoteAsset = Omit<Asset, "localId" | "uri"> & {
+  type: "remote"
+  url: string
+}
+
+export type LocalRemoteAsset = Asset & {
+  type: "localRemote"
+  localId: string
+  uri: string
+}
+
+export type GenericAsset = LocalAsset | RemoteAsset | LocalRemoteAsset
+
+// asset name hashmap
+export type AssetRecordMap = Record<string, GenericAsset>
 
 class MediaManager {
   private logger = new Logger("MediaManager")
@@ -82,7 +98,7 @@ class MediaManager {
       await trpcClient.photo.delete.mutate({ names })
       this.logger.log("Done deleting backed up assets")
     } catch (err) {
-      throw new Error("deleteAssets: " + err)
+      throw new Error("deleteAssets: " + err, { cause: err })
     }
   }
 
@@ -97,17 +113,36 @@ class MediaManager {
   getRemoteUrl(assets: Array<RemoteAsset | LocalRemoteAsset>) {
     return trpcClient.photo.getSignedUrl.query(assets.map(item => item.name))
   }
-
-  exportRecordMap(assets: Array<GenericAsset>): AssetRecordMap {
-    let record: Record<string, GenericAsset> = {}
-    for (let i = 0; i < assets.length; i++) {
-      const item = assets[i]
-      if (item) {
-        record[item.name] = item
-      }
-    }
-    return record
-  }
 }
 
 export const mediaManager = new MediaManager()
+
+export function exportRecordMap(assets?: Array<GenericAsset>): AssetRecordMap {
+  "worklet"
+  if (!assets) return {}
+
+  let record: Record<string, GenericAsset> = {}
+  for (let i = 0; i < assets.length; i++) {
+    const item = assets[i]
+    if (item) {
+      record[item.name] = item
+    }
+  }
+  return record
+}
+
+export function exportPhotoSchemaObject(
+  expoAsset: LocalMediaAsset,
+): AssetInsert {
+  return {
+    localId: expoAsset.id,
+    name: expoAsset.filename,
+    type: "local",
+    mediaType: expoAsset.mediaType as "photo" | "video",
+    width: expoAsset.width,
+    height: expoAsset.height,
+    uri: expoAsset.uri,
+    duration: expoAsset.duration,
+    creationTime: new Date(expoAsset.creationTime),
+  }
+}

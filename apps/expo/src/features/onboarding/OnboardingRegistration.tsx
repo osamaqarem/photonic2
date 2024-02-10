@@ -55,10 +55,10 @@ export const OnboardingRegistrationScreen: React.FC<
         <SafeAreaView style={styles.safe} top>
           <Text variant="h2">Photonic</Text>
           <Space t={80} />
-          <Text variant="h1">Create your account.</Text>
+          <Text variant="h1">Create an account or Sign-in.</Text>
           <Space t={30} />
           <Text variant="p">
-            We only need your e-mail. We'll send you a verification code. Please
+            We only need your E-mail. We'll send you a verification code. Please
             enter it in the next screen.
           </Text>
           <Space t={60} />

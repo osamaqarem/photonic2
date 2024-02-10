@@ -1,7 +1,8 @@
 import * as React from "react"
-import { ActivityIndicator, StyleSheet, View } from "react-native"
+import { StyleSheet } from "react-native"
 
 import { Button } from "~/expo/design/components/Button"
+import { Loading } from "~/expo/design/components/Loading"
 import { ScrollView } from "~/expo/design/components/ScrollView"
 import { Space } from "~/expo/design/components/Space"
 import { Text } from "~/expo/design/components/Text"
@@ -23,12 +24,7 @@ export const AppState = <Data,>({
   loading,
   retry,
 }: Props<Data>) => {
-  if (loading)
-    return (
-      <View style={styles.container}>
-        <ActivityIndicator size={"large"} />
-      </View>
-    )
+  if (loading) return <Loading />
 
   if (error) {
     return (

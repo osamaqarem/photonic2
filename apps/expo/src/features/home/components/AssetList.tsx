@@ -24,7 +24,7 @@ import { Text } from "~/expo/design/components/Text"
 import { Thumbnail } from "~/expo/features/home/components/Thumbnail"
 import { BottomPanel } from "~/expo/features/home/components/control-panel/Bottom"
 import { useDragSelectContext } from "~/expo/features/home/context/DragSelectContextProvider"
-import type { GenericAsset } from "~/expo/lib/db/schema"
+import type { GenericAsset } from "~/expo/features/home/utils/media-manager"
 import { useDarkMode } from "~/expo/stores/DarkModeProvider"
 
 interface Props {

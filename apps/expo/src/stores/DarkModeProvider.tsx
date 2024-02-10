@@ -14,8 +14,7 @@ const ColorSchemeKey =
   config.stage === "storybook" ? "ColorSchemeKeyStorybook" : "ColorSchemeKey"
 
 export type ColorScheme = NonNullable<ColorSchemeName>
-
-const ColorSchemeStorage = {
+const colorSchemeStorage = {
   get: () => storage.getString(ColorSchemeKey) as Maybe<ColorScheme>,
   save: (scheme: ColorScheme) => storage.set(ColorSchemeKey, scheme),
   delete: () => storage.delete(ColorSchemeKey),
@@ -44,7 +43,7 @@ export const useDarkMode = create<DarkModeStore>((set, get) => ({
       sharedColorScheme.value = colorScheme
       SystemUI.setMode(colorScheme)
       ExpoStatusBar.setStatusBarStyle(colorScheme === "dark" ? "light" : "dark")
-      ColorSchemeStorage.save(colorScheme)
+      colorSchemeStorage.save(colorScheme)
     },
     setSystem: colorScheme => {
       const sharedColorScheme = get().sharedColorScheme
@@ -53,7 +52,7 @@ export const useDarkMode = create<DarkModeStore>((set, get) => ({
       sharedColorScheme.value = colorScheme
       SystemUI.setMode("system")
       ExpoStatusBar.setStatusBarStyle(colorScheme === "dark" ? "light" : "dark")
-      ColorSchemeStorage.delete()
+      colorSchemeStorage.delete()
     },
     setSharedValue: sharedValue => {
       set({ sharedColorScheme: sharedValue })
@@ -76,7 +75,7 @@ export const DarkModeProvider: React.FC<React.PropsWithChildren> = ({
     function hydrate() {
       actions.setSharedValue(sharedValue)
 
-      const storedColorScheme = ColorSchemeStorage.get()
+      const storedColorScheme = colorSchemeStorage.get()
       if (storedColorScheme) {
         actions.setMode(storedColorScheme)
       } else {

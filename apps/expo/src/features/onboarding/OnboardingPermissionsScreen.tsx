@@ -30,6 +30,7 @@ export const OnboardingPermissionsScreen: React.FC<
       case PermissionStatus.UNDETERMINED:
         return requestPermission()
       case PermissionStatus.DENIED:
+        // TODO: adjust in app
         return Linking.openSettings()
     }
   }

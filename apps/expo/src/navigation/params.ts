@@ -1,4 +1,4 @@
-import type { GenericAsset } from "~/expo/lib/db/schema"
+import type { GenericAsset } from "~/expo/features/home/utils/media-manager"
 
 export type OnboardingStackParams = {
   "onboarding-welcome": undefined

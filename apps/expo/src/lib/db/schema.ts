@@ -1,6 +1,6 @@
 import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core"
 
-export const photos = sqliteTable("photos", {
+export const assets = sqliteTable("photos", {
   id: integer("id").primaryKey().notNull(),
   localId: text("local_id"),
   name: text("name").notNull().unique(),
@@ -13,27 +13,5 @@ export const photos = sqliteTable("photos", {
   uri: text("string"),
 })
 
-export type BaseAsset = typeof photos.$inferSelect
-
-export type LocalAsset = BaseAsset & {
-  type: "local"
-  localId: string
-  uri: string
-  uploadProgressPct: string
-}
-
-export type RemoteAsset = Omit<BaseAsset, "localId" | "uri"> & {
-  type: "remote"
-  url: string
-}
-
-export type LocalRemoteAsset = BaseAsset & {
-  type: "localRemote"
-  localId: string
-  uri: string
-}
-
-export type GenericAsset = LocalAsset | RemoteAsset | LocalRemoteAsset
-
-// map of asset name to asset
-export type AssetRecordMap = Record<string, GenericAsset>
+export type Asset = typeof assets.$inferSelect
+export type AssetInsert = typeof assets.$inferInsert

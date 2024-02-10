@@ -16,7 +16,7 @@ export const authRouter = router({
     .mutation(async ({ input, ctx }) => {
       const email = input.email.toLowerCase()
 
-      // random six digits
+      // random five digits
       const code = Math.floor(Math.random() * 90_000 + 10_000).toString()
 
       await Promise.all([
@@ -25,7 +25,12 @@ export const authRouter = router({
           to: email,
           from: '"Login" <todo@photonic.com>',
           subject: "Log in to Photonic",
-          html: `<main><h1>Photonic App</h1><div>Here's your <b>Photonic</b> login code:<br/>${code}</div></main>`,
+          html: `
+          <main>
+            <h1>Photonic</h1>
+            <div style="font-size: 1rem;">Here's your <b>Photonic</b> login code:</div>
+            <div style="font-size: 2rem;">${code}</div>
+          </main>`,
         }),
       ])
 
@@ -56,6 +61,7 @@ export const authRouter = router({
         })
       }
 
+      ctx.cache.loginCode.delete(email)
       const user = await ctx.db.user.upsert({
         where: { email },
         create: { email },

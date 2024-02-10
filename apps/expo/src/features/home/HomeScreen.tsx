@@ -1,47 +1,47 @@
-import chunk from "lodash.chunk"
 import { Logger, getErrorMsg } from "@photonic/common"
-import type { NativeStackScreenProps } from "@react-navigation/native-stack"
-import React from "react"
-import {
-  ActivityIndicator,
-  LayoutAnimation,
-  StyleSheet,
-  View,
-} from "react-native"
-import { useDerivedValue, useSharedValue } from "react-native-reanimated"
 import { Worker } from "@photonic/worker"
+import type { NativeStackScreenProps } from "@react-navigation/native-stack"
+import chunk from "lodash.chunk"
+import React from "react"
+import { StyleSheet, View } from "react-native"
+import { useDerivedValue, useSharedValue } from "react-native-reanimated"
+import { Loading } from "~/expo/design/components/Loading"
+import { Text } from "~/expo/design/components/Text"
 
 import { useAlerts } from "~/expo/design/components/alerts/useAlerts"
-import { AssetList } from "~/expo/features/home/components/AssetList"
 import { ControlPanel } from "~/expo/features/home/components/control-panel"
 import { DragSelectContextProvider } from "~/expo/features/home/context/DragSelectContextProvider"
 import { useAssets } from "~/expo/features/home/hooks/useAssets"
+import { Actor } from "~/expo/features/home/utils/actor"
+import {
+  exportRecordMap,
+  mediaManager,
+} from "~/expo/features/home/utils/media-manager"
 import type {
   AssetRecordMap,
   GenericAsset,
   LocalAsset,
   LocalRemoteAsset,
   RemoteAsset,
-} from "~/expo/lib/db/schema.ts"
-import { mediaManager } from "~/expo/features/home/utils/media-manager"
+} from "./utils/media-manager"
 import { Sentry } from "~/expo/lib/sentry"
 import type { AppParams } from "~/expo/navigation/params"
 import { trpcClient } from "~/expo/stores/TrpcProvider"
-import { Actor } from "~/expo/features/home/utils/actor"
+import { AssetList } from "~/expo/features/home/components/AssetList"
 
 const logger = new Logger("HomeScreen")
 
 export const HomeScreen: React.FC<
   NativeStackScreenProps<AppParams, "home">
 > = props => {
-  const [{ assetList }, setState] = React.useState({
-    loading: true,
-    assetList: [] as Array<GenericAsset>,
-  })
-
   const { showError } = useAlerts()
 
-  const assetRecord = useSharedValue<Record<string, GenericAsset>>({})
+  const { assets, photoDbState } = useAssets()
+
+  const assetRecord = useDerivedValue<AssetRecordMap>(
+    () => exportRecordMap(assets),
+    [assets],
+  )
 
   const showGradientOverlay = useSharedValue(false)
 
@@ -56,20 +56,6 @@ export const HomeScreen: React.FC<
   )
   const selectedItemsCountText = useDerivedValue(() =>
     selectedItemsKeys.value.length.toString(),
-  )
-
-  useAssets(
-    React.useCallback(
-      ({ assetList, assetRecords }) => {
-        LayoutAnimation.configureNext({
-          ...LayoutAnimation.Presets.linear,
-          duration: 150,
-        })
-        setState({ assetList, loading: false })
-        assetRecord.value = { ...assetRecords }
-      },
-      [assetRecord],
-    ),
   )
 
   const openPhoto = (asset: GenericAsset) => {
@@ -89,7 +75,6 @@ export const HomeScreen: React.FC<
   async function deleteSelectedItems() {
     let selectedRemoteAssets: Array<RemoteAsset | LocalRemoteAsset> = []
     let selectedLocalAssets: Array<LocalAsset | LocalRemoteAsset> = []
-    let newState: AssetRecordMap = { ...assetRecord.value }
 
     for (const name in selectedItems.value) {
       const item = selectedItems.value[name]
@@ -104,15 +89,11 @@ export const HomeScreen: React.FC<
           assetRecord.value[item.name] as LocalAsset | LocalRemoteAsset,
         )
       }
-      delete newState[item.name]
     }
 
     try {
       logger.log("Deleting assets")
-      await Promise.all([
-        mediaManager.deleteAssetsAsync(selectedLocalAssets),
-        mediaManager.deleteRemoteAssets(selectedRemoteAssets),
-      ])
+      await mediaManager.deleteAssetsAsync(selectedLocalAssets)
       clearSelection()
     } catch (err) {
       logger.log(err)
@@ -193,23 +174,9 @@ export const HomeScreen: React.FC<
 
     try {
       await mediaManager.deleteRemoteAssets(selectedRemoteAssets)
-
-      let newState: Record<string, GenericAsset> = { ...assetRecord.value }
-      selectedRemoteAssets.forEach(item => {
-        const current = newState[item.name] as LocalRemoteAsset
-        const localAsset: LocalAsset = {
-          ...current,
-          type: "local",
-          uploadProgressPct: "0",
-        }
-        newState[item.name] = localAsset
-      })
-
       // TODO: list data is out of sync with record
-      // refetch remote assets or patch query
-      assetRecord.value = newState
     } catch (err) {
-      logger.log(err)
+      showError(getErrorMsg(err))
     }
   }
 
@@ -334,10 +301,12 @@ export const HomeScreen: React.FC<
       selectedItemsCountText={selectedItemsCountText}
       showGradientOverlay={showGradientOverlay}>
       <View style={styles.root}>
-        {assetList ? (
-          <AssetList data={assetList} onItemPress={openPhoto} />
+        {photoDbState !== "ready" || !assets ? (
+          <Loading style={styles.loading}>
+            <Text>{photoDbState?.toLowerCase()}</Text>
+          </Loading>
         ) : (
-          <Loading />
+          <AssetList data={assets} onItemPress={openPhoto} />
         )}
         <ControlPanel.Container>
           <ControlPanel.TopPanel clearSelection={clearSelection}>
@@ -362,19 +331,9 @@ export const HomeScreen: React.FC<
   )
 }
 
-const Loading = () => (
-  <View style={styles.loading}>
-    <ActivityIndicator color={"white"} />
-  </View>
-)
-
 const styles = StyleSheet.create({
+  loading: { rowGap: 20 },
   root: {
     flex: 1,
-  },
-  loading: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
   },
 })
