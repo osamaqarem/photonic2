@@ -93,6 +93,7 @@ export const useAssets = () => {
     }
   }, [showNotification])
 
+  console.log(data?.[0]?.id)
   return { assets: data, photoDbState }
 }
 

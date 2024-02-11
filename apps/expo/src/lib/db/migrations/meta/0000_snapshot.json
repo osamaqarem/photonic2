@@ -1,15 +1,15 @@
 {
   "version": "5",
   "dialect": "sqlite",
-  "id": "b9f58c1c-af77-4491-92d8-61a3871b5f8a",
+  "id": "9526ae3a-243b-48b3-9d69-62ae132b287e",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
-    "photos": {
-      "name": "photos",
+    "assets": {
+      "name": "assets",
       "columns": {
         "id": {
           "name": "id",
-          "type": "integer",
+          "type": "text",
           "primaryKey": true,
           "notNull": true,
           "autoincrement": false
@@ -79,8 +79,8 @@
         }
       },
       "indexes": {
-        "photos_name_unique": {
-          "name": "photos_name_unique",
+        "assets_name_unique": {
+          "name": "assets_name_unique",
           "columns": [
             "name"
           ],

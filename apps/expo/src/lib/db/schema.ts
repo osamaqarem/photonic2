@@ -1,7 +1,10 @@
 import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core"
+import { customAlphabet } from "nanoid"
 
-export const assets = sqliteTable("photos", {
-  id: integer("id").primaryKey().notNull(),
+const nanoid = customAlphabet("0123456789abcdefghijklmnopqrstuvwxyz", 36)
+
+export const assets = sqliteTable("assets", {
+  id: text("id").primaryKey().notNull().$defaultFn(nanoid),
   localId: text("local_id"),
   name: text("name").notNull().unique(),
   type: text("type", { enum: ["local", "remote", "localRemote"] }).notNull(),

@@ -1,5 +1,5 @@
-CREATE TABLE `photos` (
-	`id` integer PRIMARY KEY NOT NULL,
+CREATE TABLE `assets` (
+	`id` text PRIMARY KEY NOT NULL,
 	`local_id` text,
 	`name` text NOT NULL,
 	`type` text NOT NULL,
@@ -11,4 +11,4 @@ CREATE TABLE `photos` (
 	`string` text
 );
 --> statement-breakpoint
-CREATE UNIQUE INDEX `photos_name_unique` ON `photos` (`name`);
+CREATE UNIQUE INDEX `assets_name_unique` ON `assets` (`name`);
