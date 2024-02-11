@@ -13,9 +13,7 @@ class CacheManager<KeyHolder, Payload> {
       expiresIn: string | ((v: Payload) => string)
       extractKey: (k: KeyHolder) => string
     },
-  ) {
-    this.config = config
-  }
+  ) {}
 
   static async getAndParse<T>(key: string): Promise<Nullable<T>> {
     const string = await connection.get(key).catch(CacheManager.logger.error)

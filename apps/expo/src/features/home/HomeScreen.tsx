@@ -136,19 +136,19 @@ export const HomeScreen: React.FC<
           return
         }
 
-        const newAsset: RemoteAsset = {
-          type: "remote",
-          id: current.id,
-          creationTime: current.creationTime,
-          duration: current.duration,
-          height: current.height,
-          width: current.width,
-          name: current.name,
-          mediaType: current.mediaType,
-          url,
-        }
+        // const newAsset: RemoteAsset = {
+        //   type: "remote",
+        //   id: current.id,
+        //   creationTime: current.creationTime,
+        //   duration: current.duration,
+        //   height: current.height,
+        //   width: current.width,
+        //   name: current.name,
+        //   mediaType: current.mediaType,
+        //   url,
+        // }
 
-        newState[item.name] = newAsset
+        // newState[item.name] = newAsset
       })
     } catch (err) {
       logger.log(err)
@@ -279,7 +279,7 @@ export const HomeScreen: React.FC<
           { assets, concurrency: group.length },
           onProgress,
         )
-        await trpcClient.photo.put.mutate({ photos: group })
+        // await trpcClient.photo.put.mutate({ photos: group })
         if (errors.length) logger.error(errors)
       }
 

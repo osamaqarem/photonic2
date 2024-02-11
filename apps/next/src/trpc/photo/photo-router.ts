@@ -2,7 +2,7 @@ import type { ObjectIdentifier } from "@aws-sdk/client-s3"
 import pMap from "p-map"
 import { z } from "zod"
 
-import { MediaType, type Photo } from "~/next/lib/db"
+import { type Asset } from "~/next/lib/db"
 import { router } from "../trpc"
 import { storageProcedure } from "./storage-procedure"
 
@@ -21,8 +21,8 @@ export const photoRouter = router({
     .query(async ({ ctx, input }) => {
       console.log("photoRouter.list", "cursor:" + input.cursor)
       const [count, items] = await ctx.db.$transaction([
-        ctx.db.photo.count(),
-        ctx.db.photo.findMany({
+        ctx.db.asset.count(),
+        ctx.db.asset.findMany({
           where: {
             userId: ctx.user.id,
             creationTime: {
@@ -46,9 +46,9 @@ export const photoRouter = router({
 
       // set url for each item
       let withUrl: Array<
-        Photo & { url: string; type: "remote"; creationTime: Date }
+        Asset & { url: string; type: "remote"; creationTime: Date }
       > = []
-      const mapper = async (item: Photo) => {
+      const mapper = async (item: Asset) => {
         const url = await ctx.storage.getObjectUrl(item.name)
         withUrl.push({
           ...item,
@@ -77,7 +77,7 @@ export const photoRouter = router({
       }))
       await Promise.all([
         ctx.storage.deleteObjects(awsObjects),
-        ctx.db.photo.deleteMany({
+        ctx.db.asset.deleteMany({
           where: {
             name: {
               in: input.names,
@@ -90,6 +90,7 @@ export const photoRouter = router({
   update: storageProcedure
     .input(
       z.object({
+        id: z.string(),
         name: z.string(),
         updatedData: z
           .object({
@@ -106,53 +107,13 @@ export const photoRouter = router({
         ])
       }
 
-      await ctx.db.photo.update({
+      await ctx.db.asset.update({
         where: {
-          photoId: {
-            name: input.name,
-            userId: ctx.user.id,
-          },
+          id: input.id,
         },
         data: input.updatedData,
       })
 
-      return
-    }),
-  // TODO: remove this endpoint, have the storage provider call the server with the data instead
-  put: storageProcedure
-    .input(
-      z.object({
-        photos: z
-          .array(
-            z.object({
-              name: z.string(),
-              mediaType: z.enum([MediaType.photo, MediaType.video]),
-              width: z.number(),
-              height: z.number(),
-              duration: z.number(),
-              creationTime: z.date(),
-            }),
-          )
-          .min(1)
-          .max(10),
-      }),
-    )
-    .mutation(async ({ ctx, input }) => {
-      const data = input.photos.map(item => ({
-        ...item,
-        creationTime: new Date(item.creationTime),
-      }))
-      await ctx.db.user.update({
-        where: { id: ctx.user.id },
-        data: {
-          photos: {
-            createMany: {
-              data,
-              skipDuplicates: true,
-            },
-          },
-        },
-      })
       return
     }),
   getSignedUploadUrl: storageProcedure

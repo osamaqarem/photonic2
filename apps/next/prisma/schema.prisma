@@ -5,23 +5,23 @@ generator client {
 datasource db {
   provider     = "postgresql"
   url          = env("DATABASE_URL")
+  // url          = "postgresql://postgres:proxy_password@localhost:5133/postgres"
   relationMode = "prisma"
 }
 
 model User {
-  id String @id @default(dbgenerated("prefix_nanoid('usr_'::text)"))
+  id            String @id @default(dbgenerated("prefix_nanoid('usr_'::text)"))
 
-  email  String  @unique
-  photos Photo[]
-  albums Album[]
+  email         String  @unique
+  assets        Asset[]
 
-  awsAccount   AwsAccount? @relation(fields: [awsAccountId], references: [id])
-  awsAccountId String?
+  awsAccount    AwsAccount? @relation(fields: [awsAccountId], references: [id])
+  awsAccountId  String?
 
-  awsBucket AwsBucket?
+  awsBucket     AwsBucket?
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
   @@index([awsAccountId])
 }
@@ -48,37 +48,23 @@ model AwsBucket {
   @@index([awsAccountId, userId])
 }
 
-model Album {
-  id String @id @default(dbgenerated("prefix_nanoid('alb_'::text)"))
+model Asset {
+  id            String @id @default(dbgenerated("prefix_nanoid('ass_'::text)"))
 
-  title  String
-  photos Photo[]
+  localId       String?
+  uri           String?
 
-  user   User   @relation(fields: [userId], references: [id])
-  userId String
+  deviceId      String
+  name          String
+  type          String
+  mediaType     String
+  width         Int
+  height        Int
+  duration      Int
+  creationTime  DateTime
 
-  @@index([userId])
-}
+  user         User   @relation(fields: [userId], references: [id])
+  userId       String
 
-model Photo {
-  id String @id @default(dbgenerated("prefix_nanoid('pho_'::text)"))
-
-  name         String
-  mediaType    MediaType
-  width        Int
-  height       Int
-  duration     Int
-  creationTime DateTime
-  album        Album[]
-
-  user   User   @relation(fields: [userId], references: [id])
-  userId String
-
-  @@unique(name: "photoId", [name, userId])
   @@index([userId, creationTime])
-}
-
-enum MediaType {
-  photo
-  video
 }

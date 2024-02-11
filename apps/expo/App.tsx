@@ -11,6 +11,7 @@ import { Navigation } from "~/expo/navigation/Navigation"
 import { DarkModeProvider } from "~/expo/stores/DarkModeProvider"
 import { TrpcProvider } from "~/expo/stores/TrpcProvider"
 import { useAuth } from "~/expo/stores/auth-store"
+import { deviceIdStorage } from "~/expo/lib/device-id"
 
 let didInit = false
 
@@ -64,4 +65,5 @@ function prepare() {
   })
 
   useAuth.getState().actions.hydrate()
+  deviceIdStorage.maybeCreate()
 }

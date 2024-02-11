@@ -4,20 +4,18 @@ import jsonwebtoken from "jsonwebtoken"
 
 import { config } from "~/next/config"
 
+interface Config<Payload> extends Omit<SignOptions, "subject"> {
+  secret: string
+  subject?: (p: Payload) => string
+}
+
 class JwtManager<Payload extends JwtPayload> {
   static Result = {
     ok: <T extends JwtPayload>(payload: T) => [payload, null] as const,
     error: (error: Error) => [null, error] as const,
   }
 
-  constructor(
-    private config: {
-      secret: string
-      expiresIn?: SignOptions["expiresIn"]
-    },
-  ) {
-    this.config = config
-  }
+  constructor(private config: Config<Payload>) {}
 
   static verify<CustomPayload>(
     token: string,
@@ -35,9 +33,11 @@ class JwtManager<Payload extends JwtPayload> {
   }
 
   sign(payload: Payload) {
-    return jsonwebtoken.sign(payload, this.config.secret, {
-      expiresIn: this.config.expiresIn,
-    })
+    const options: SignOptions = {
+      ...this.config,
+      subject: this.config.subject?.(payload),
+    }
+    return jsonwebtoken.sign(payload, this.config.secret, options)
   }
 
   verify(token: string) {
@@ -67,5 +67,6 @@ export const jwt = {
   accessToken: new JwtManager<User>({
     secret: config.ACCESS_TOKEN_SECRET,
     expiresIn: "60 min",
+    subject: payload => payload.id,
   }),
 }

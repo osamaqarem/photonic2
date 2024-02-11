@@ -6,6 +6,7 @@ import {
   useBottomSheetDynamicSnapPoints,
 } from "@gorhom/bottom-sheet"
 import type { BackdropPressBehavior } from "@gorhom/bottom-sheet/lib/typescript/components/bottomSheetBackdrop/types"
+import mitt from "mitt"
 import * as React from "react"
 import { Pressable, StyleSheet } from "react-native"
 import Animated, {
@@ -28,7 +29,11 @@ import type {
 import { theme } from "~/expo/design/theme"
 
 export const alertsContext = React.createContext<AlertsContext | null>(null)
-export let AlertsStatic: AlertsContext
+
+type Events = {
+  [Key in keyof AlertsContext]: Parameters<AlertsContext[Key]>[0]
+}
+export const alertsEmitter = mitt<Events>()
 
 export const AlertsProvider: React.FC<React.PropsWithChildren> = props => {
   //#region Variables
@@ -262,11 +267,26 @@ export const AlertsProvider: React.FC<React.PropsWithChildren> = props => {
     [backdropPressBehavior.value],
   )
 
-  const memoized = React.useMemo(() => {
-    AlertsStatic = { showAlert, showError, showModal, showNotification }
-    return AlertsStatic
-  }, [showAlert, showError, showModal, showNotification])
+  const memoized = React.useMemo(
+    () => ({ showAlert, showError, showModal, showNotification }),
+    [showAlert, showError, showModal, showNotification],
+  )
 
+  React.useEffect(() => {
+    const handler = <Method extends keyof Events>(
+      type: Method,
+      config: Events[Method],
+    ) => {
+      // @ts-expect-error config type is a union of all configs
+      return memoized[type](config)
+    }
+    alertsEmitter.on("*", handler)
+    return () => {
+      alertsEmitter.off("*", handler)
+    }
+  }, [memoized])
+
+  // alertsEmitter.emit('showError', '')
   return (
     <alertsContext.Provider value={memoized}>
       {props.children}

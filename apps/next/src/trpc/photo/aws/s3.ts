@@ -73,13 +73,13 @@ export class S3 {
     }
   }
 
-  async uploadObject(name: string, file: Blob) {
+  async uploadObject(key: string, file: Blob) {
     try {
-      this.logger.log(`Uploading file ${name}`)
+      this.logger.log(`Uploading file ${key}`)
       const data = await this.client.send(
         new PutObjectCommand({
           Bucket: this.bucket,
-          Key: name,
+          Key: key,
           Body: file,
         }),
       )
@@ -122,12 +122,12 @@ export class S3 {
     }
   }
 
-  async getUploadUrl(name: string): Promise<string> {
+  async getUploadUrl(key: string): Promise<string> {
     try {
-      this.logger.log("Generating presigned upload url for:", name)
+      this.logger.log("Generating presigned upload url for:", key)
       const putObject = new PutObjectCommand({
         Bucket: this.bucket,
-        Key: name,
+        Key: key,
       })
       return getSignedUrl(this.client, putObject, { expiresIn: 3600 })
     } catch (err) {
@@ -135,12 +135,12 @@ export class S3 {
     }
   }
 
-  async getObjectUrl(name: string) {
+  async getObjectUrl(key: string) {
     try {
-      this.logger.log("Generating presigned get url for:", name)
+      this.logger.log("Generating presigned get url for:", key)
       const getObject = new GetObjectCommand({
         Bucket: this.bucket,
-        Key: name,
+        Key: key,
       })
       return getSignedUrl(this.client, getObject, { expiresIn: 3600 })
     } catch (err) {

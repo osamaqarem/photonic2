@@ -9,7 +9,7 @@ import type {
 } from "~/expo/features/home/utils/media-manager"
 import { exportPhotoSchemaObject } from "~/expo/features/home/utils/media-manager"
 import { db } from "~/expo/lib/db"
-import { assets } from "~/expo/lib/db/schema"
+import { asset } from "~/expo/lib/db/schema"
 import { storage } from "~/expo/lib/storage"
 
 const logger = new Logger("useAssets")
@@ -42,7 +42,7 @@ export const useAssets = () => {
           setPhotoDbState("building")
           populateDB()
         }
-        const data = await db.select().from(assets)
+        const data = await db.select().from(asset)
         setData(data as Array<GenericAsset>)
         setPhotoDbState("ready")
       }
@@ -51,20 +51,20 @@ export const useAssets = () => {
   }, [photoDbState])
 
   React.useEffect(() => {
-    const updateAsset = async (asset: LocalMediaAsset) => {
-      if (asset.mediaType !== "photo") return
+    const updateAsset = async (item: LocalMediaAsset) => {
+      if (item.mediaType !== "photo") return
       await db
-        .update(assets)
+        .update(asset)
         .set({
-          creationTime: new Date(asset.creationTime),
-          duration: asset.duration,
-          height: asset.height,
-          width: asset.width,
-          localId: asset.id,
-          name: asset.filename,
-          uri: asset.uri,
+          creationTime: new Date(item.creationTime),
+          duration: item.duration,
+          height: item.height,
+          width: item.width,
+          localId: item.id,
+          name: item.filename,
+          uri: item.uri,
         })
-        .where(eq(assets.name, asset.filename))
+        .where(eq(asset.name, item.filename))
     }
 
     const sub = ExpoMedia.addListener(async change => {
@@ -73,11 +73,11 @@ export const useAssets = () => {
           await updateAsset(updated)
         }
         for (const item of change.deletedAssets ?? []) {
-          await db.delete(assets).where(eq(assets.name, item.filename))
+          await db.delete(asset).where(eq(asset.name, item.filename))
         }
         if (change.insertedAssets) {
           await db
-            .insert(assets)
+            .insert(asset)
             .values(change.insertedAssets.map(exportPhotoSchemaObject))
         }
       } else {
@@ -111,10 +111,10 @@ function fetchMediaLibraryPage(after?: string) {
 async function populateDB() {
   logger.log("Populating DB")
   let data = await fetchMediaLibraryPage()
-  await db.insert(assets).values(data.assets.map(exportPhotoSchemaObject))
+  await db.insert(asset).values(data.assets.map(exportPhotoSchemaObject))
   while (data.hasNextPage) {
     data = await fetchMediaLibraryPage(data.endCursor)
-    await db.insert(assets).values(data.assets.map(exportPhotoSchemaObject))
+    await db.insert(asset).values(data.assets.map(exportPhotoSchemaObject))
   }
   databasePopulatedStorage.save()
   logger.log("Populating DB done")

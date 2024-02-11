@@ -105,6 +105,7 @@ class MediaManager {
   renameRemoteAsset(remoteAsset: RemoteAsset, renameTo: string): Promise<void> {
     this.logger.log(`Renaming object ${remoteAsset.name} to ${renameTo}`)
     return trpcClient.photo.update.mutate({
+      id: remoteAsset.id,
       name: remoteAsset.name,
       updatedData: { name: renameTo },
     })

@@ -1,20 +1,31 @@
 import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core"
-import { customAlphabet } from "nanoid"
+import { deviceIdStorage } from "~/expo/lib/device-id"
+import { nanoid } from "~/expo/lib/nanoid"
+import { useAuth } from "~/expo/stores/auth-store"
 
-const nanoid = customAlphabet("0123456789abcdefghijklmnopqrstuvwxyz", 36)
-
-export const assets = sqliteTable("assets", {
-  id: text("id").primaryKey().notNull().$defaultFn(nanoid),
-  localId: text("local_id"),
-  name: text("name").notNull().unique(),
+export const asset = sqliteTable("asset", {
+  id: text("id")
+    .primaryKey()
+    .notNull()
+    .$defaultFn(() => "ass_" + nanoid()),
+  deviceId: text("deviceId").notNull().$defaultFn(deviceIdStorage.get),
+  localId: text("localId"),
+  name: text("name").notNull(),
   type: text("type", { enum: ["local", "remote", "localRemote"] }).notNull(),
   mediaType: text("text", { enum: ["photo", "video"] }).notNull(),
   width: integer("width").notNull(),
   height: integer("height").notNull(),
   duration: integer("duration").notNull(),
-  creationTime: integer("creation_time", { mode: "timestamp_ms" }).notNull(),
+  creationTime: integer("creationTime", { mode: "timestamp_ms" }).notNull(),
   uri: text("string"),
+  userId: text("userId")
+    .notNull()
+    .$defaultFn(() => {
+      const { userId } = useAuth.getState()
+      if (!userId) throw new Error("`userId` is null")
+      return userId
+    }),
 })
 
-export type Asset = typeof assets.$inferSelect
-export type AssetInsert = typeof assets.$inferInsert
+export type Asset = typeof asset.$inferSelect
+export type AssetInsert = typeof asset.$inferInsert

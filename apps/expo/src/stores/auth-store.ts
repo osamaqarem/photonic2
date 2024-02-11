@@ -2,8 +2,9 @@ import { create } from "zustand"
 
 import { Logger, getErrorMsg } from "@photonic/common"
 import { ApiError } from "@photonic/next/src/trpc/api-error"
+import jsonwebtoken from "jsonwebtoken"
 
-import { useAlerts } from "~/expo/design/components/alerts/useAlerts"
+import { alertsEmitter } from "~/expo/design/components/alerts/AlertsContext"
 import { Network } from "~/expo/lib/network"
 import { SecureStorage, SecureStorageKey } from "~/expo/lib/secure-storage"
 import { ZustandLogMiddleware } from "~/expo/lib/zustand-middleware"
@@ -24,6 +25,7 @@ interface AuthStoreActions {
 }
 
 export interface AuthStore {
+  userId: Nullable<string>
   accessToken: Nullable<string>
   onboardingDone: boolean
   online: boolean
@@ -36,6 +38,7 @@ const logMiddleware = new ZustandLogMiddleware<AuthStore>(logger)
 
 export const useAuth = create<AuthStore>(
   logMiddleware.connect((set, get) => ({
+    userId: null,
     accessToken: null,
     onboardingDone: false,
     online: false,
@@ -53,7 +56,16 @@ export const useAuth = create<AuthStore>(
           ),
           SecureStorage.setItemAsync(SecureStorageKey.AccessToken, accessToken),
         ])
-        return set({ accessToken, hydrated: true, onboardingDone })
+        const decoded = jsonwebtoken.decode(accessToken)
+        if (typeof decoded?.sub !== "string") {
+          throw new Error("`accessToken` has no subject claim")
+        }
+        return set({
+          accessToken,
+          userId: decoded.sub,
+          hydrated: true,
+          onboardingDone,
+        })
       },
 
       async setSignedOut() {
@@ -81,7 +93,6 @@ export const useAuth = create<AuthStore>(
       },
 
       async maybeRefresh(refresh) {
-        const Alerts = useAlerts.get()
         const { setSignedIn, setSignedOut, maybeRefresh, setOnline } =
           get().actions
 
@@ -96,7 +107,7 @@ export const useAuth = create<AuthStore>(
         try {
           const accessToken = await refresh(refreshToken)
           setSignedIn({ accessToken, refreshToken })
-          Alerts.showNotification({
+          alertsEmitter.emit("showNotification", {
             message: "Logged in",
             dismissAfterMs: 1000,
           })
@@ -104,7 +115,7 @@ export const useAuth = create<AuthStore>(
         } catch (err) {
           if (!(err instanceof Error)) {
             setSignedOut()
-            Alerts.showError(getErrorMsg(err))
+            alertsEmitter.emit("showError", getErrorMsg(err))
             return "unauthorized"
           }
 
@@ -116,7 +127,10 @@ export const useAuth = create<AuthStore>(
             err.message === "JSON Parse error: Unexpected token: <"
 
           if (expired) {
-            Alerts.showError("Session expired. Please sign-in again.")
+            alertsEmitter.emit(
+              "showError",
+              "Session expired. Please sign-in again.",
+            )
             setSignedOut()
             return "unauthorized"
           } else if (!isInternetReachable || serverDown || userMaybeOffline) {
@@ -131,7 +145,7 @@ export const useAuth = create<AuthStore>(
             return "offline"
           } else {
             setSignedOut()
-            Alerts.showError(getErrorMsg(err))
+            alertsEmitter.emit("showError", getErrorMsg(err))
             return "unauthorized"
           }
         }
