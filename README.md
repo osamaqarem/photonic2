@@ -46,7 +46,7 @@ Proxy connection URL will be in the format `postgres://user_name:password@localh
 #### Experimentation
 
 3. Apply the change `yarn next db:push`
-4. When finished, revert the schema change and run `yarn next db:push`
+4. When finished, revert the schema change and run `yarn next db:migrate`
 
 #### Permanent
 
