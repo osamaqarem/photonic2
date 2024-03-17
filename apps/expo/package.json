@@ -23,6 +23,7 @@
     "class-variance-authority": "^0.6.0",
     "dayjs": "^1.11.0",
     "drizzle-orm": "^0.29.3",
+    "electric-sql": "^0.9.6",
     "expo": "^50.0.6",
     "expo-application": "~5.8.3",
     "expo-blur": "12.2.2",
@@ -100,6 +101,7 @@
     "start": "expo start --dev-client",
     "deploy": "gh workflow run deploy-expo.yml --ref main",
     "db:migrate": "drizzle-kit generate:sqlite",
+    "db:generate": "electric-sql generate",
     "postinstall": "cd ../.. && yarn postinstall"
   }
 }

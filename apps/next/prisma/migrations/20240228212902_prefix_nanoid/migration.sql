@@ -22,13 +22,13 @@ END
 $$ LANGUAGE PLPGSQL VOLATILE;
 
 -- AlterTable
-ALTER TABLE "Album" ALTER COLUMN "id" SET DEFAULT prefix_nanoid('alb_'::text);
+ALTER TABLE "Asset" ALTER COLUMN "id" SET DEFAULT prefix_nanoid('ass_'::text);
 
 -- AlterTable
 ALTER TABLE "AwsAccount" ALTER COLUMN "id" SET DEFAULT prefix_nanoid('aws_'::text);
 
 -- AlterTable
-ALTER TABLE "Photo" ALTER COLUMN "id" SET DEFAULT prefix_nanoid('pho_'::text);
+ALTER TABLE "AwsBucket" ALTER COLUMN "id" SET DEFAULT prefix_nanoid('buk_'::text);
 
 -- AlterTable
 ALTER TABLE "User" ALTER COLUMN "id" SET DEFAULT prefix_nanoid('usr_'::text);

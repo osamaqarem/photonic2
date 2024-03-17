@@ -38,6 +38,14 @@ fly pg attach --app [app_name] [database_name]
 
 Proxy connection URL will be in the format `postgres://user_name:password@localhost:5432/user_name`
 
+### ElectricSQL Setup
+
+Enable `logical` replication:
+
+```
+fly pg config update --wal-level logical --app [app_name]
+```
+
 ### Modifying Tables
 
 1. Make a change to the schema [file](apps/next/prisma/schema.prisma)
