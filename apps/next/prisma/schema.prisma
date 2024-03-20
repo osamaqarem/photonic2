@@ -5,7 +5,6 @@ generator client {
 datasource db {
   provider     = "postgresql"
   url          = env("DATABASE_URL")
-  // url          = "postgresql://postgres:proxy_password@localhost:5133/postgres"
   relationMode = "prisma"
 }
 
