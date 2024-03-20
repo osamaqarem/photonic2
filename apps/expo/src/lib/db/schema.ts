@@ -8,7 +8,13 @@ export const asset = sqliteTable("asset", {
     .primaryKey()
     .notNull()
     .$defaultFn(() => "ass_" + nanoid()),
-  deviceId: text("deviceId").notNull().$defaultFn(deviceIdStorage.get),
+  deviceId: text("deviceId")
+    .notNull()
+    .$defaultFn(() => {
+      const id = deviceIdStorage.get()
+      if (!id) throw new Error("`DeviceIdKey` value was undefined.")
+      return id
+    }),
   localId: text("localId"),
   name: text("name").notNull(),
   type: text("type", { enum: ["local", "remote", "localRemote"] }).notNull(),

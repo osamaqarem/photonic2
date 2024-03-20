@@ -2,7 +2,6 @@ import { create } from "zustand"
 
 import { Logger, getErrorMsg } from "@photonic/common"
 import { ApiError } from "@photonic/next/src/trpc/api-error"
-import jsonwebtoken from "jsonwebtoken"
 
 import { alertsEmitter } from "~/expo/design/components/alerts/AlertsContext"
 import { Network } from "~/expo/lib/network"
@@ -56,9 +55,9 @@ export const useAuth = create<AuthStore>(
           ),
           SecureStorage.setItemAsync(SecureStorageKey.AccessToken, accessToken),
         ])
-        const decoded = jsonwebtoken.decode(accessToken)
+        const decoded = JSON.parse(atob(accessToken.split(".")[1] ?? ""))
         if (typeof decoded?.sub !== "string") {
-          throw new Error("`accessToken` has no subject claim")
+          return get().actions.setSignedOut()
         }
         return set({
           accessToken,

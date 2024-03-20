@@ -9,9 +9,5 @@ export const deviceIdStorage = {
     const id = "dev_" + nanoid()
     storage.set(deviceIdStorage.key, id)
   },
-  get: () => {
-    const id = storage.getString(deviceIdStorage.key)
-    if (!id) throw new Error("`DeviceIdKey` value was undefined.")
-    return id
-  },
+  get: () => storage.getString(deviceIdStorage.key),
 }

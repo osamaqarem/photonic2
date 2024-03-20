@@ -1,5 +1,6 @@
 import "react-native-gesture-handler"
 import "~/expo/lib/nanoid-shim"
+import "~/expo/lib/base64-shim"
 import { registerRootComponent } from "expo"
 
 import App from "./App"
