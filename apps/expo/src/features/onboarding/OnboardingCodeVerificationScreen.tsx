@@ -1,7 +1,12 @@
-import { getErrorMsg } from "@photonic/common"
+import { getErrorMsg, assert } from "@photonic/common"
 import type { NativeStackScreenProps } from "@react-navigation/native-stack"
 import React from "react"
-import { StyleSheet } from "react-native"
+import {
+  ActivityIndicator,
+  LayoutAnimation,
+  StyleSheet,
+  View,
+} from "react-native"
 
 import { Button, ButtonState } from "~/expo/design/components/Button"
 import { SafeAreaView } from "~/expo/design/components/SafeAreaView"
@@ -20,11 +25,39 @@ export const OnboardingCodeVerificationScreen: React.FC<
 > = props => {
   const { email } = props.route.params
 
-  const { isLoading, mutateAsync } = trpc.auth.verifyLoginCode.useMutation()
+  const { showError } = useAlerts()
 
   const [code, setCode] = React.useState("")
+  const [cooldown, setCooldown] = React.useState<number | null>(null)
+  const [showRequestCode, setShowRequestCode] = React.useState(false)
 
-  const { showError } = useAlerts()
+  const cooldownRef = useIntervalRef()
+
+  useTimeoutActionOnce(() => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
+    setShowRequestCode(true)
+  }, 5000)
+
+  const { isLoading, mutateAsync } = trpc.auth.verifyLoginCode.useMutation()
+
+  const issueCode = trpc.auth.issueLoginCode.useMutation({
+    onSuccess: runCooldown,
+  })
+
+  function runCooldown() {
+    setCooldown(60)
+    cooldownRef.current = setInterval(() => {
+      setCooldown(prev => {
+        assert(cooldownRef.current)
+        const done = prev === 0 || prev === null
+        if (done) {
+          clearInterval(cooldownRef.current)
+          return null
+        }
+        return prev - 1
+      })
+    }, 1000)
+  }
 
   const handleVerify = async (codeVerifier: string) => {
     try {
@@ -50,6 +83,30 @@ export const OnboardingCodeVerificationScreen: React.FC<
     else return ButtonState.Active
   }
 
+  const onChangeText = (text: string) => {
+    if (isLoading) return
+    setCode(text)
+    if (text.length === 5) {
+      handleVerify(text)
+    }
+  }
+
+  const renderRequestCode = () => {
+    if (!showRequestCode) return null
+    return (
+      <View style={styles.requestAnother}>
+        <Text
+          disabled={!!cooldown}
+          onPress={() => issueCode.mutate({ email })}
+          variant="span">
+          Request another code{" "}
+        </Text>
+        <Text variant="span">{cooldown ? `(${cooldown})` : " "}</Text>
+        <ActivityIndicator size={"small"} animating={issueCode.isLoading} />
+      </View>
+    )
+  }
+
   return (
     <>
       <ScrollView contentContainerStyle={styles.scroll}>
@@ -64,13 +121,12 @@ export const OnboardingCodeVerificationScreen: React.FC<
           <Space t={60} />
           <TextInput
             placeholder="Code"
-            onChangeText={(text: string) => {
-              setCode(text)
-              if (text.length === 5) {
-                handleVerify(text)
-              }
-            }}
+            onChangeText={onChangeText}
+            maxLength={5}
+            onSubmitEditing={() => handleVerify(code)}
           />
+          <Space t={16} />
+          {renderRequestCode()}
         </SafeAreaView>
       </ScrollView>
       <ScrollView.StickyView style={styles.stickyView}>
@@ -86,6 +142,10 @@ export const OnboardingCodeVerificationScreen: React.FC<
 }
 
 const styles = StyleSheet.create({
+  requestAnother: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
   stickyView: {
     flexDirection: "row",
     justifyContent: "center",
@@ -96,3 +156,28 @@ const styles = StyleSheet.create({
     flex: 1,
   },
 })
+
+const useIntervalRef = () => {
+  const ref = React.useRef<NodeJS.Timeout | null>(null)
+
+  React.useEffect(() => {
+    return () => {
+      if (ref.current) {
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        clearInterval(ref.current)
+      }
+    }
+  }, [])
+
+  return ref
+}
+
+const useTimeoutActionOnce = (action: () => void, ms: number) => {
+  React.useEffect(() => {
+    const timeout = setTimeout(action, ms)
+    return () => {
+      clearTimeout(timeout)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+}

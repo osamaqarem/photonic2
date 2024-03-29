@@ -71,6 +71,7 @@ export const OnboardingRegistrationScreen: React.FC<
             autoCorrect={false}
             value={email}
             error={error}
+            onSubmitEditing={handleLogin}
           />
         </SafeAreaView>
       </ScrollView>
