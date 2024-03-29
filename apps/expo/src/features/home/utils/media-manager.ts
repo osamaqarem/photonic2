@@ -1,10 +1,12 @@
-import { Logger } from "@photonic/common"
+import { Logger, assert } from "@photonic/common"
 import * as FileSystem from "expo-file-system"
 import * as ExpoMedia from "expo-media-library"
 import Share from "react-native-share"
 
 import type { Asset, AssetInsert } from "~/expo/lib/db/schema"
+import { deviceIdStorage } from "~/expo/lib/device-id"
 import { trpcClient } from "~/expo/stores/TrpcProvider"
+import { useAuth } from "~/expo/stores/auth-store"
 
 export type LocalMediaAsset = ExpoMedia.Asset
 
@@ -135,6 +137,11 @@ export function exportRecordMap(assets?: Array<GenericAsset>): AssetRecordMap {
 export function exportPhotoSchemaObject(
   expoAsset: LocalMediaAsset,
 ): AssetInsert {
+  const deviceId = deviceIdStorage.get()
+  const { userId } = useAuth.getState()
+  assert(deviceId)
+  assert(userId)
+
   return {
     localId: expoAsset.id,
     name: expoAsset.filename,
@@ -145,5 +152,7 @@ export function exportPhotoSchemaObject(
     uri: expoAsset.uri,
     duration: expoAsset.duration,
     creationTime: new Date(expoAsset.creationTime),
+    deviceId,
+    userId,
   }
 }
