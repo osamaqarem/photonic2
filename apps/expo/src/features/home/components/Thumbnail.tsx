@@ -18,7 +18,8 @@ import { Icon } from "~/expo/design/components/icons/Icons"
 import { palette } from "~/expo/design/palette"
 import { theme } from "~/expo/design/theme"
 import { useDragSelectContext } from "~/expo/features/home/context/DragSelectContextProvider"
-import type { GenericAsset } from "~/expo/features/home/utils/media-manager"
+import { useAssetUri } from "~/expo/hooks/useAssetUri"
+import type { Asset } from "~/expo/lib/db/schema"
 import { useDarkMode } from "~/expo/stores/DarkModeProvider"
 
 const longPressTiming = 300
@@ -26,8 +27,8 @@ const scaleTiming = 300
 const selectedPadding = 4
 
 interface Props {
-  asset: GenericAsset
-  onPress: (item: GenericAsset) => void
+  asset: Asset
+  onPress: (item: Asset) => void
   tapOnStart: () => void
   longPressOnStart: () => void
   simultaneousWithExternalGesture: PanGesture
@@ -40,7 +41,7 @@ export const Thumbnail: React.FC<Props> & {
 } = props => {
   const { asset } = props
 
-  const uri = asset.type === "remote" ? asset.url : asset.uri
+  const uri = useAssetUri(asset)
 
   const { assetRecord, selectedItems } = useDragSelectContext()
 

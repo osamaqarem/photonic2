@@ -40,3 +40,9 @@ export function assert<T>(value: T): asserts value is NonNullable<T> {
     throw new Error(`Expected value to be defined: ${value}`)
   }
 }
+
+export function invariant(value: boolean, message: string) {
+  if (!value) {
+    throw new Error(`Invariant: ${message}`)
+  }
+}

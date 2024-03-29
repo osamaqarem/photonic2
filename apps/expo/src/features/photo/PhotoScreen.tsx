@@ -26,6 +26,7 @@ import Animated, {
 
 import { clamp, interpolateValue } from "~/expo/features/photo/utils/math"
 import * as vec from "~/expo/features/photo/utils/vectors"
+import { useAssetUri } from "~/expo/hooks/useAssetUri"
 import type { AppParams } from "~/expo/navigation/params"
 
 // TODO: viewpager to swipe between images
@@ -69,7 +70,7 @@ export const PhotoScreen: React.FC<
     height: hasRawData ? asset.height : 0,
   })
 
-  const uri = asset.type === "remote" ? asset.url : asset.uri
+  const uri = useAssetUri(asset)
 
   const aspectWidth = screenWidth ?? 0
   const aspectHeight = React.useMemo(() => {
@@ -179,8 +180,6 @@ export const PhotoScreen: React.FC<
         initialScaleEvent.value ?? fromBaseScale ? "down" : "up"
     },
     onActive: e => {
-      // console.log('pinch onActive')
-
       const prevScaleValue = scale.value
 
       function displacementForOriginCorrection() {

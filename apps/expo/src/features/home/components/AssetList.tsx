@@ -24,12 +24,12 @@ import { Text } from "~/expo/design/components/Text"
 import { Thumbnail } from "~/expo/features/home/components/Thumbnail"
 import { BottomPanel } from "~/expo/features/home/components/control-panel/Bottom"
 import { useDragSelectContext } from "~/expo/features/home/context/DragSelectContextProvider"
-import type { GenericAsset } from "~/expo/features/home/utils/media-manager"
+import type { Asset } from "~/expo/lib/db/schema"
 import { useDarkMode } from "~/expo/stores/DarkModeProvider"
 
 interface Props {
-  onItemPress: (asset: GenericAsset) => void
-  data: Array<GenericAsset>
+  onItemPress: (asset: Asset) => void
+  data: Array<Asset>
 }
 
 export const AssetList: React.FC<Props> = ({ onItemPress, data }) => {
@@ -56,7 +56,7 @@ export const AssetList: React.FC<Props> = ({ onItemPress, data }) => {
   const imgHeight = 100
 
   // Map of asset file names to the asset
-  const flatlist = useAnimatedRef<FlashList<GenericAsset>>()
+  const flatlist = useAnimatedRef<FlashList<Asset>>()
   const flatlistLayout = useSharedValue<Nullable<LayoutRectangle>>(null)
 
   const panTransitionFromIndex = useSharedValue<Nullable<number>>(null)
@@ -252,7 +252,7 @@ export const AssetList: React.FC<Props> = ({ onItemPress, data }) => {
       if (panTransitionFromIndex.value !== toIndex) {
         const selectItemAtIndex = (
           i: number,
-          mutateObj: Record<string, GenericAsset>,
+          mutateObj: Record<string, Asset>,
         ) => {
           const curr = getItemFromState(i)
           if (curr) {
@@ -264,7 +264,7 @@ export const AssetList: React.FC<Props> = ({ onItemPress, data }) => {
         }
         const deselectItemAtIndex = (
           i: number,
-          mutateObj: Record<string, GenericAsset>,
+          mutateObj: Record<string, Asset>,
         ) => {
           const curr = getItemFromState(i)
           if (curr) {
@@ -378,7 +378,7 @@ export const AssetList: React.FC<Props> = ({ onItemPress, data }) => {
     }),
   }))
 
-  const renderItem = (row: { item: GenericAsset; index: number }) => {
+  const renderItem = (row: { item: Asset; index: number }) => {
     return (
       <Thumbnail
         asset={row.item}
@@ -429,11 +429,9 @@ export const AssetList: React.FC<Props> = ({ onItemPress, data }) => {
   )
 }
 
-const AnimatedFlashList = Animated.createAnimatedComponent(
-  FlashList<GenericAsset>,
-)
+const AnimatedFlashList = Animated.createAnimatedComponent(FlashList<Asset>)
 
-const keyExtractor = (item: GenericAsset) => item.name
+const keyExtractor = (item: Asset) => item.name
 
 const rowSeparatorHeight = 4
 const RowSeparatorComponent: React.FC = () => (

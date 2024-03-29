@@ -136,13 +136,14 @@ export const photoRouter = router({
     }),
   getSignedUrl: storageProcedure
     .input(z.array(z.string()).min(1).max(15))
-    .query(async ({ ctx, input }): Promise<Record<string, string>> => {
-      let result: Record<string, string> = {}
+    .query(async ({ ctx, input }): Promise<Array<string>> => {
+      // TODO: cache signed urls
+      let data: Array<string> = []
       const mapper = async (name: string) => {
         const url = await ctx.storage.getObjectUrl(name)
-        result[name] = url
+        data.push(url)
       }
       await pMap(input, mapper, { concurrency: 10 })
-      return result
+      return data
     }),
 })

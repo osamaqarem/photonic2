@@ -1,7 +1,6 @@
-import React from "react"
 import type { NativeStackScreenProps } from "@react-navigation/native-stack"
-import { PermissionStatus, usePermissions } from "expo-media-library"
-import { View, ActivityIndicator, Linking, StyleSheet } from "react-native"
+import React from "react"
+import { ActivityIndicator, Linking, StyleSheet, View } from "react-native"
 
 import { Button } from "~/expo/design/components/Button"
 import { SafeAreaView } from "~/expo/design/components/SafeAreaView"
@@ -9,6 +8,10 @@ import { ScrollView } from "~/expo/design/components/ScrollView"
 import { Space } from "~/expo/design/components/Space"
 import { Text } from "~/expo/design/components/Text"
 import { theme } from "~/expo/design/theme"
+import {
+  PermissionStatus,
+  usePermissions,
+} from "~/expo/features/home/utils/media-manager"
 import type { AppParams } from "~/expo/navigation/params"
 import { useAuth } from "~/expo/stores/auth-store"
 
@@ -19,11 +22,9 @@ export const OnboardingPermissionsScreen: React.FC<
 
   const finishOnboarding = useAuth(s => s.actions.finishOnboarding)
 
-  React.useEffect(() => {
-    if (permissionResponse?.status === PermissionStatus.GRANTED) {
-      finishOnboarding()
-    }
-  }, [finishOnboarding, permissionResponse?.status])
+  if (permissionResponse?.status === PermissionStatus.GRANTED) {
+    finishOnboarding()
+  }
 
   const handleSelect = () => {
     switch (permissionResponse?.status) {
