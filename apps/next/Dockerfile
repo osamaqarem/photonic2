@@ -39,7 +39,6 @@ RUN adduser --system --uid 1001 nextjs
 USER nextjs
 COPY --from=installer /app/apps/next/next.config.js .
 COPY --from=installer /app/apps/next/package.json .
-COPY --from=installer /app/apps/next/scripts ./scripts
 COPY --from=installer /app/apps/next/prisma ./prisma
 # Automatically leverage output traces to reduce image size
 # https://nextjs.org/docs/advanced-features/output-file-tracing
