@@ -48,6 +48,14 @@ export const useAuth = create<AuthStore>(
       },
 
       async setSignedIn({ accessToken, refreshToken, onboardingDone = false }) {
+        const payload = accessToken.split(".")[1]
+        if (!payload) throw new Error("Invalid access token")
+
+        const decoded = JSON.parse(atob(payload))
+        if (typeof decoded?.sub !== "string") {
+          return get().actions.setSignedOut()
+        }
+
         await Promise.all([
           SecureStorage.setItemAsync(
             SecureStorageKey.RefreshToken,
@@ -55,10 +63,7 @@ export const useAuth = create<AuthStore>(
           ),
           SecureStorage.setItemAsync(SecureStorageKey.AccessToken, accessToken),
         ])
-        const decoded = JSON.parse(atob(accessToken.split(".")[1] ?? ""))
-        if (typeof decoded?.sub !== "string") {
-          return get().actions.setSignedOut()
-        }
+
         return set({
           accessToken,
           userId: decoded.sub,

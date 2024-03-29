@@ -7,7 +7,7 @@ import { ApiError } from "~/next/trpc/api-error"
 import { publicProcedure, router } from "../trpc"
 
 export const authRouter = router({
-  getLoginCode: publicProcedure
+  issueLoginCode: publicProcedure
     .input(
       z.object({
         email: z.string().min(1),
@@ -19,7 +19,11 @@ export const authRouter = router({
       // random five digits
       const code = Math.floor(Math.random() * 90_000 + 10_000).toString()
 
+      // TODO: check if code exists in db, if it does, reject for 1 minute since issue date
+      // TODO: rate limit endpoint
+
       await Promise.all([
+        // TODO: save code to db instead
         ctx.cache.loginCode.set(email, { email, code }),
         transporter.sendMail({
           to: email,
@@ -34,6 +38,7 @@ export const authRouter = router({
         }),
       ])
 
+      // TODO: return another random code, codeVerifier.
       return
     }),
   verifyLoginCode: publicProcedure

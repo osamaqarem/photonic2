@@ -1,3 +1,4 @@
-import { shim } from "react-native-quick-base64"
+import { encode, decode } from "base-64"
 
-shim()
+global.btoa = encode
+global.atob = decode

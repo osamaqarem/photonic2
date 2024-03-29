@@ -5,7 +5,6 @@ import jsonwebtoken from "jsonwebtoken"
 import { config } from "~/next/config"
 
 interface Config<Payload> extends Omit<SignOptions, "subject"> {
-  secret: string
   subject?: (p: Payload) => string
 }
 
@@ -15,7 +14,7 @@ class JwtManager<Payload extends JwtPayload> {
     error: (error: Error) => [null, error] as const,
   }
 
-  constructor(private config: Config<Payload>) {}
+  constructor(private config: Config<Payload>, private secret: string) {}
 
   static verify<CustomPayload>(
     token: string,
@@ -33,16 +32,19 @@ class JwtManager<Payload extends JwtPayload> {
   }
 
   sign(payload: Payload) {
+    const subject = this.config.subject?.(payload)
+
+    const { subject: _, ...rest } = this.config
     const options: SignOptions = {
-      ...this.config,
-      subject: this.config.subject?.(payload),
+      ...rest,
+      ...(subject ? { subject } : {}),
     }
-    return jsonwebtoken.sign(payload, this.config.secret, options)
+    return jsonwebtoken.sign(payload, this.secret, options)
   }
 
   verify(token: string) {
     try {
-      const res = JwtManager.verify<Payload>(token, this.config.secret)
+      const res = JwtManager.verify<Payload>(token, this.secret)
       return JwtManager.Result.ok(res)
     } catch (err) {
       return JwtManager.Result.error(
@@ -56,17 +58,23 @@ export const jwt = {
   isExpired(jwt: JwtPayload): boolean {
     return (jwt.exp ?? 0) * 1000 <= Date.now()
   },
-  emailToken: new JwtManager<{ email: string }>({
-    secret: config.EMAIL_SECRET,
-    expiresIn: "10 min",
-  }),
-  refreshToken: new JwtManager<User>({
-    secret: config.REFRESH_TOKEN_SECRET,
-    expiresIn: "30 days",
-  }),
-  accessToken: new JwtManager<User>({
-    secret: config.ACCESS_TOKEN_SECRET,
-    expiresIn: "60 min",
-    subject: payload => payload.id,
-  }),
+  emailToken: new JwtManager<{ email: string }>(
+    {
+      expiresIn: "10 min",
+    },
+    config.EMAIL_SECRET,
+  ),
+  refreshToken: new JwtManager<User>(
+    {
+      expiresIn: "30 days",
+    },
+    config.REFRESH_TOKEN_SECRET,
+  ),
+  accessToken: new JwtManager<User>(
+    {
+      expiresIn: "60 min",
+      subject: payload => payload.id,
+    },
+    config.ACCESS_TOKEN_SECRET,
+  ),
 }

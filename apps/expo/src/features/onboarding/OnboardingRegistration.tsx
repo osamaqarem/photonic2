@@ -17,7 +17,7 @@ import { trpc } from "~/expo/stores/TrpcProvider"
 export const OnboardingRegistrationScreen: React.FC<
   NativeStackScreenProps<AppParams, "onboarding-registration">
 > = props => {
-  const { isLoading, mutateAsync } = trpc.auth.getLoginCode.useMutation()
+  const { isLoading, mutateAsync } = trpc.auth.issueLoginCode.useMutation()
 
   const { showError } = useAlerts()
 
