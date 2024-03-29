@@ -20,10 +20,10 @@ To build Docker image locally:
 docker build . -o output -f ./apps/next/Dockerfile
 ```
 
-Scale memory to 512 MB to survive `prisma migrate deploy`:
+Scale memory to 1024 MB to survive `prisma migrate deploy`:
 
 ```
-fly scale memory 512 -a [app_name]
+fly scale memory 1024 -a [app_name]
 ```
 
 ## DB
