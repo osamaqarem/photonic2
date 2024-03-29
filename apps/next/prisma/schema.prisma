@@ -48,7 +48,7 @@ model AwsBucket {
 }
 
 model Asset {
-  id            String @id @default(dbgenerated("prefix_nanoid('ass_'::text)"))
+  id            String @id @default(dbgenerated("prefix_nanoid('ast_'::text)"))
 
   localId       String?
   uri           String?

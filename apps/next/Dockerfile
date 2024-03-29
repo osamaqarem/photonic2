@@ -27,7 +27,6 @@ RUN yarn install
 COPY --from=builder /app/out/full/ .
 COPY tsconfig.json tsconfig.json
 COPY .eslintrc.cjs .eslintrc.cjs
-COPY ./apps/next/scripts ./apps/next/scripts
 COPY ./apps/next/prisma ./prisma
 RUN yarn next db:generate
 RUN yarn turbo build --filter=@photonic/next...
