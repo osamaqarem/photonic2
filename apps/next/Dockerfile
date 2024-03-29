@@ -21,10 +21,10 @@ WORKDIR /app
 COPY .gitignore .gitignore
 COPY --from=builder /app/out/json/ .
 COPY --from=builder /app/out/yarn.lock ./yarn.lock
+COPY --from=builder /app/out/full/turbo.json ./turbo.json
 RUN yarn install
 # Build the project
 COPY --from=builder /app/out/full/ .
-COPY turbo.json turbo.json
 COPY tsconfig.json tsconfig.json
 COPY .eslintrc.cjs .eslintrc.cjs
 COPY ./apps/next/scripts ./apps/next/scripts
