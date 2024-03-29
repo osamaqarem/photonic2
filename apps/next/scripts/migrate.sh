@@ -1,6 +1,6 @@
 #!/bin/bash
 
-fallocate -l 512M /swapfile
+fallocate -l 1024M /swapfile
 chmod 0600 /swapfile
 mkswap /swapfile
 echo 10 >/proc/sys/vm/swappiness
