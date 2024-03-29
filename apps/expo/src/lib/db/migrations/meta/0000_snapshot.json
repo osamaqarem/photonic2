@@ -1,11 +1,11 @@
 {
   "version": "5",
   "dialect": "sqlite",
-  "id": "9526ae3a-243b-48b3-9d69-62ae132b287e",
+  "id": "a75642a7-fa80-4017-8aed-47a542c2f5b7",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
-    "assets": {
-      "name": "assets",
+    "asset": {
+      "name": "asset",
       "columns": {
         "id": {
           "name": "id",
@@ -14,8 +14,15 @@
           "notNull": true,
           "autoincrement": false
         },
-        "local_id": {
-          "name": "local_id",
+        "deviceId": {
+          "name": "deviceId",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "localId": {
+          "name": "localId",
           "type": "text",
           "primaryKey": false,
           "notNull": false,
@@ -63,8 +70,8 @@
           "notNull": true,
           "autoincrement": false
         },
-        "creation_time": {
-          "name": "creation_time",
+        "creationTime": {
+          "name": "creationTime",
           "type": "integer",
           "primaryKey": false,
           "notNull": true,
@@ -76,17 +83,16 @@
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
+        },
+        "userId": {
+          "name": "userId",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
         }
       },
-      "indexes": {
-        "assets_name_unique": {
-          "name": "assets_name_unique",
-          "columns": [
-            "name"
-          ],
-          "isUnique": true
-        }
-      },
+      "indexes": {},
       "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}

@@ -1,14 +1,14 @@
-CREATE TABLE `assets` (
+CREATE TABLE `asset` (
 	`id` text PRIMARY KEY NOT NULL,
-	`local_id` text,
+	`deviceId` text NOT NULL,
+	`localId` text,
 	`name` text NOT NULL,
 	`type` text NOT NULL,
 	`text` text NOT NULL,
 	`width` integer NOT NULL,
 	`height` integer NOT NULL,
 	`duration` integer NOT NULL,
-	`creation_time` integer NOT NULL,
-	`string` text
+	`creationTime` integer NOT NULL,
+	`string` text,
+	`userId` text NOT NULL
 );
---> statement-breakpoint
-CREATE UNIQUE INDEX `assets_name_unique` ON `assets` (`name`);

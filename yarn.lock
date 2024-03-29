@@ -6268,10 +6268,10 @@ drizzle-kit@^0.20.14:
     semver "^7.5.4"
     zod "^3.20.2"
 
-drizzle-orm@^0.29.3:
-  version "0.29.3"
-  resolved "https://registry.yarnpkg.com/drizzle-orm/-/drizzle-orm-0.29.3.tgz#a9b9beb235bbdf9100e62432390cadbee95345cf"
-  integrity sha512-uSE027csliGSGYD0pqtM+SAQATMREb3eSM/U8s6r+Y0RFwTKwftnwwSkqx3oS65UBgqDOM0gMTl5UGNpt6lW0A==
+drizzle-orm@^0.30.6:
+  version "0.30.6"
+  resolved "https://registry.yarnpkg.com/drizzle-orm/-/drizzle-orm-0.30.6.tgz#c0d3ee85ce3bccdf2e5c1e89b4e5c01cd35a4d36"
+  integrity sha512-8RgNUmY7J03GRuRgBV5SaJNbYgLVPjdSWNS/bRkIMIHt2TFCA439lJsNpqYX8asyKMqkw8ceBiamUnCIXZIt9w==
 
 duplexer@~0.1.1:
   version "0.1.2"
@@ -7130,10 +7130,10 @@ expo-splash-screen@~0.26.4:
   dependencies:
     "@expo/prebuild-config" "6.7.4"
 
-expo-sqlite@^13.2.2:
-  version "13.2.2"
-  resolved "https://registry.yarnpkg.com/expo-sqlite/-/expo-sqlite-13.2.2.tgz#9339fdb80e378588e0d526325f541e6e307c61d5"
-  integrity sha512-aad52QL0Nbe5+KTlwNPEaSro9l39H5dWtGrykwWRvnUbAC9FMP+6ixSKtcNGNTEb7BHKx5AfuFVy+vxKVAOX1Q==
+expo-sqlite@^13.4.0:
+  version "13.4.0"
+  resolved "https://registry.yarnpkg.com/expo-sqlite/-/expo-sqlite-13.4.0.tgz#ae945622662263431aa9daee59b659255cb6a9fd"
+  integrity sha512-5f7d2EDM+pgerM33KndtX4gWw2nuVaXY68nnqx7PhkiYeyEmeNfZ29bIFtpBzNb/L5l0/DTtRxuSqftxbknFtw==
   dependencies:
     "@expo/websql" "^1.0.1"
 
