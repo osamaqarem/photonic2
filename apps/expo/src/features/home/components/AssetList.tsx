@@ -431,7 +431,7 @@ export const AssetList: React.FC<Props> = ({ onItemPress, data }) => {
 
 const AnimatedFlashList = Animated.createAnimatedComponent(FlashList<Asset>)
 
-const keyExtractor = (item: Asset) => item.name
+const keyExtractor = (item: Asset) => item.id
 
 const rowSeparatorHeight = 4
 const RowSeparatorComponent: React.FC = () => (
