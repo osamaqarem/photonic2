@@ -22,9 +22,9 @@ export const OnboardingPermissionsScreen: React.FC<
 
   const finishOnboarding = useAuth(s => s.actions.finishOnboarding)
 
-  if (permissionResponse?.status === PermissionStatus.GRANTED) {
+  React.useEffect(() => {
     finishOnboarding()
-  }
+  }, [finishOnboarding])
 
   const handleSelect = () => {
     switch (permissionResponse?.status) {
