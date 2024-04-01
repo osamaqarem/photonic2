@@ -1,11 +1,9 @@
-import Redis from "ioredis"
-
-import { config } from "~/next/config"
+import Keyv from "@keyvhq/core"
 
 declare const global: {
-  redisClient: Redis | undefined
+  keyvClient: Keyv | undefined
 }
 
-export const cache = global.redisClient || new Redis(config.REDIS_URL)
+export const cache = global.keyvClient || new Keyv()
 
-if (process.env.NODE_ENV !== "production") global.redisClient = cache
+if (process.env.NODE_ENV !== "production") global.keyvClient = cache

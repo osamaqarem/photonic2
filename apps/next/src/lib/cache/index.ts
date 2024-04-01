@@ -26,7 +26,7 @@ class CacheManager<KeyHolder, Payload> {
     value: Payload,
     expiryMs: number,
   ) {
-    return connection.set(key, JSON.stringify(value), "PX", expiryMs)
+    return connection.set(key, JSON.stringify(value), expiryMs)
   }
 
   get(key: KeyHolder) {
@@ -50,7 +50,7 @@ class CacheManager<KeyHolder, Payload> {
 
   async delete(key: KeyHolder) {
     const k = this.config.extractKey(key)
-    await connection.del(k).catch(CacheManager.logger.error)
+    await connection.delete(k).catch(CacheManager.logger.error)
     return
   }
 }

@@ -55,26 +55,6 @@ Proxy connection URL will be in the format `postgres://user_name:password@localh
 > [!TIP]
 > Deployments run `prisma migrate deploy`.
 
-## Cache
-
-Docker image
-https://github.com/osamaqarem/redis
-
-The names of the fly app and volume are what's different between production and staging.
-
-Creation:
-
-```
-cd /redis
-fly apps create
-fly volumes create [vol_name] --region ams
-fly secrets set REDIS_PASSWORD=****
-fly deploy # don't allocate IP addresses
-flyctl ips allocate-v6
-```
-
-Connection URL will be in the format `redis://default:password=@[ipv6_address]:10000`
-
 ## Terraform
 
 - Create a new AWS user (non-root)

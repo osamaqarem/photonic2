@@ -11,7 +11,6 @@ const schema = z.object({
   ACCESS_TOKEN_SECRET: nonempty,
   REFRESH_TOKEN_SECRET: nonempty,
   DATABASE_URL: nonempty,
-  REDIS_URL: nonempty,
   PHOTONIC_AWS_SECRET_KEY: nonempty,
   PHOTONIC_AWS_ACCESS_KEY_ID: nonempty,
   PHOTONIC_AWS_REGION: nonempty,
