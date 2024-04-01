@@ -116,7 +116,7 @@ export const HomeScreen: React.FC<
     )
 
     const savedAsset = await mediaManager.createAssetAsync(selectedRemoteAsset)
-    const creationTime = selectedRemoteAsset.creationTime.getTime()
+    const creationTime = selectedRemoteAsset.creationTime
     await mediaManager.modifyAssetAsync(savedAsset, {
       creationTime,
     })
@@ -204,10 +204,9 @@ export const HomeScreen: React.FC<
           { assets, concurrency: group.length },
           onProgress,
         )
-        // await trpcClient.photo.put.mutate({ photos: group })
+        await trpcClient.photo.put.mutate({ photos: group })
         if (errors.length) logger.error(errors)
       }
-
       // await paginator.refetchPageFor(data)
       setTimeout(() => {
         totalUploadProgress.value = 0

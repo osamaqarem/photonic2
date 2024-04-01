@@ -18,7 +18,7 @@ export const asset = sqliteTable("asset", {
   width: integer("width").notNull(),
   height: integer("height").notNull(),
   duration: integer("duration").notNull(),
-  creationTime: integer("creationTime", { mode: "timestamp_ms" }).notNull(),
+  creationTime: integer("creationTime").notNull(),
   uri: text("string"),
   userId: text("userId").notNull(),
 })

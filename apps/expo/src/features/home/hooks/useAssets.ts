@@ -26,8 +26,8 @@ export const useAssets = () => {
   }, [])
 
   const load = React.useCallback(async () => {
+    await db.delete(asset).execute()
     const data = await db.select().from(asset).orderBy(desc(asset.creationTime))
-
     if (data.length > 0) {
       logger.log("Loading existing assets from DB")
       setAssets(data)
@@ -49,7 +49,7 @@ export const useAssets = () => {
       await db
         .update(asset)
         .set({
-          creationTime: new Date(item.creationTime),
+          creationTime: item.creationTime,
           duration: item.duration,
           height: item.height,
           width: item.width,
@@ -72,11 +72,9 @@ export const useAssets = () => {
         for (const item of change.deletedAssets ?? []) {
           if (item.mediaType !== "photo") continue
           await db.delete(asset).where(eq(asset.localId, item.id))
-          console.log("deleted asset after statement")
         }
 
         if (change.insertedAssets) {
-          console.log("does this run?")
           const insertedPhotos = change.insertedAssets.filter(
             t => t.mediaType === "photo",
           )

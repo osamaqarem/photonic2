@@ -148,7 +148,7 @@ export function exportAssetInsert(expoAsset: LocalMediaAsset): AssetInsert {
     height: expoAsset.height,
     uri: expoAsset.uri,
     duration: expoAsset.duration,
-    creationTime: new Date(expoAsset.creationTime),
+    creationTime: expoAsset.creationTime,
     deviceId,
     userId,
   }

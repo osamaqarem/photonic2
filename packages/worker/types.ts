@@ -1,6 +1,7 @@
 export interface UploadTask {
-  name: string
+  id: string
   localId: string
+  name: string
   url: string
 }
 

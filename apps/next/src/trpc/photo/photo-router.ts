@@ -19,7 +19,6 @@ export const photoRouter = router({
       }),
     )
     .query(async ({ ctx, input }) => {
-      console.log("photoRouter.list", "cursor:" + input.cursor)
       const [count, items] = await ctx.db.$transaction([
         ctx.db.asset.count(),
         ctx.db.asset.findMany({
@@ -116,17 +115,65 @@ export const photoRouter = router({
 
       return
     }),
+  // TODO: remove this endpoint, have the storage provider call the server with the data instead
+  put: storageProcedure
+    .input(
+      z.object({
+        photos: z
+          .array(
+            z.object({
+              id: z.string(),
+              localId: z.string(),
+              uri: z.string().nullable(),
+              deviceId: z.string(),
+              name: z.string(),
+              type: z.union([
+                z.literal("local"),
+                z.literal("remote"),
+                z.literal("localRemote"),
+              ]),
+              mediaType: z.union([z.literal("photo"), z.literal("video")]),
+              width: z.number(),
+              height: z.number(),
+              duration: z.number(),
+              creationTime: z.number(),
+            }),
+          )
+          .min(1)
+          .max(10),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const data = input.photos.map(item => ({
+        ...item,
+        creationTime: new Date(item.creationTime),
+      }))
+      await ctx.db.user.update({
+        where: { id: ctx.user.id },
+        data: {
+          assets: {
+            createMany: {
+              data,
+              skipDuplicates: true,
+            },
+          },
+        },
+      })
+      return
+    }),
   getSignedUploadUrl: storageProcedure
     .input(
       z
-        .array(z.object({ name: z.string(), localId: z.string() }))
+        .array(
+          z.object({ id: z.string(), localId: z.string(), name: z.string() }),
+        )
         .min(1)
         .max(10),
     )
     .query(async ({ ctx, input }) => {
       return Promise.all(
         input.map(async item => {
-          const url = await ctx.storage.getUploadUrl(item.name)
+          const url = await ctx.storage.getUploadUrl(item.localId)
           return {
             ...item,
             url,
