@@ -67,7 +67,11 @@ export const OnboardingCodeVerificationScreen: React.FC<
       })
       await useAuth
         .getState()
-        .actions.setSignedIn({ accessToken, refreshToken })
+        .actions.setSignedIn({
+          accessToken,
+          refreshToken,
+          onboardingDone: false,
+        })
       if (!onboardingDone) {
         return props.navigation.navigate("onboarding-storage")
       }

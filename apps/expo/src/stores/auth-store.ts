@@ -14,7 +14,7 @@ interface AuthStoreActions {
   setSignedIn: (data: {
     accessToken: string
     refreshToken: string
-    onboardingDone?: boolean
+    onboardingDone: boolean
   }) => Promise<void>
   setOnline: (online: boolean) => void
   hydrate: () => void
@@ -110,7 +110,7 @@ export const useAuth = create<AuthStore>(
 
         try {
           const accessToken = await refresh(refreshToken)
-          setSignedIn({ accessToken, refreshToken })
+          setSignedIn({ accessToken, refreshToken, onboardingDone: true })
           alertsEmitter.emit("showNotification", {
             message: "Logged in",
             dismissAfterMs: 1000,

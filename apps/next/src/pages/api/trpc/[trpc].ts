@@ -20,5 +20,7 @@ export default createNextApiHandler({
       error.message =
         "Our server faced an unexpected error. We've been informed."
     }
+    // TODO: Sentry.catpureException(error)
+    error.stack = undefined // hide from frontend
   },
 })
