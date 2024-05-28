@@ -55,7 +55,7 @@ export const authRouter = router({
       if (!cached) {
         throw new TRPCError({
           code: "UNAUTHORIZED",
-          message: "Invalid code",
+          message: "Invalid or expired code",
         })
       }
 

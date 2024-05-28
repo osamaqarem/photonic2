@@ -16,7 +16,7 @@ const logger = new Logger("useAssets")
 
 export const useAssets = () => {
   const [assets, _setAssets] = React.useState<Array<Asset>>([])
-  const [ready, setReady] = React.useState(false)
+  const [loading, setLoading] = React.useState(true)
 
   const { showNotification } = useAlerts()
 
@@ -25,24 +25,24 @@ export const useAssets = () => {
     _setAssets(arg)
   }, [])
 
-  const load = React.useCallback(async () => {
-    await db.delete(asset).execute()
+  const loadFromDB = React.useCallback(async () => {
+    // await db.delete(asset).execute()
     const data = await db.select().from(asset).orderBy(desc(asset.creationTime))
     if (data.length > 0) {
       logger.log("Loading existing assets from DB")
       setAssets(data)
-      setReady(true)
+      setLoading(false)
       return
     }
 
     const inserted = await populateDB()
     setAssets(inserted)
-    setReady(true)
+    setLoading(false)
     return
   }, [setAssets])
 
   React.useEffect(() => {
-    load()
+    loadFromDB()
 
     const updateAsset = async (item: LocalMediaAsset) => {
       if (item.mediaType !== "photo") return
@@ -84,9 +84,9 @@ export const useAssets = () => {
         }
 
         // TODO: support incremental changes
-        load()
+        loadFromDB()
       } else {
-        load()
+        loadFromDB()
         showNotification({
           message: "Received non-incremental changes.",
           dismissAfterMs: 5000,
@@ -97,13 +97,9 @@ export const useAssets = () => {
     return () => {
       sub.remove()
     }
-  }, [load, showNotification])
+  }, [loadFromDB, showNotification])
 
-  if (!ready) {
-    return { assets, loading: true }
-  }
-
-  return { assets, loading: false }
+  return { assets, loading }
 }
 
 async function populateDB() {

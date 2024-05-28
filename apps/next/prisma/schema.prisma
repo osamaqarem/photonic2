@@ -53,7 +53,7 @@ model Asset {
   localId       String?
   uri           String?
 
-  deviceId      String
+  deviceId      String?
   name          String
   type          String
   mediaType     String

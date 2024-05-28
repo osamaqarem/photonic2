@@ -10,7 +10,7 @@ export const asset = sqliteTable("asset", {
     .primaryKey()
     .notNull()
     .$defaultFn(() => "ass_" + nanoid()),
-  deviceId: text("deviceId").notNull(),
+  deviceId: text("deviceId"),
   localId: text("localId"),
   name: text("name").notNull(),
   type: text("type", { enum: ["local", "remote", "localRemote"] }).notNull(),

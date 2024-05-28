@@ -125,7 +125,7 @@ export const photoRouter = router({
               id: z.string(),
               localId: z.string(),
               uri: z.string().nullable(),
-              deviceId: z.string(),
+              deviceId: z.string().nullable(),
               name: z.string(),
               type: z.union([
                 z.literal("local"),

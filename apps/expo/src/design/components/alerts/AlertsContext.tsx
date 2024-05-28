@@ -286,7 +286,6 @@ export const AlertsProvider: React.FC<React.PropsWithChildren> = props => {
     }
   }, [memoized])
 
-  // alertsEmitter.emit('showError', '')
   return (
     <alertsContext.Provider value={memoized}>
       {props.children}
