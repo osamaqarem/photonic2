@@ -74,9 +74,9 @@ export const authRouter = router({
       })
 
       return {
+        idToken: jwt.idToken.sign(user),
         accessToken: jwt.accessToken.sign(user),
         refreshToken: jwt.refreshToken.sign(user),
-        onboardingDone: Boolean(user.awsAccountId),
       }
     }),
   refresh: publicProcedure
@@ -100,7 +100,7 @@ export const authRouter = router({
       if (jwt.isExpired(refreshTokenJwt)) {
         throw new TRPCError({
           code: "UNAUTHORIZED",
-          message: ApiError.InvalidRefreshToken,
+          message: ApiError.SessionExpired,
         })
       }
 
@@ -115,6 +115,9 @@ export const authRouter = router({
         })
       }
 
-      return jwt.accessToken.sign(user)
+      return {
+        idToken: jwt.idToken.sign(user),
+        accessToken: jwt.accessToken.sign(user),
+      }
     }),
 })

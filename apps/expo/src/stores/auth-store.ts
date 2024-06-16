@@ -1,159 +1,103 @@
+import type { StateCreator, StoreApi } from "zustand"
 import { create } from "zustand"
 
-import { Logger, getErrorMsg } from "@photonic/common"
-import { ApiError } from "@photonic/next/src/trpc/api-error"
+import { Logger } from "@photonic/common"
 
-import { alertsEmitter } from "~/expo/design/components/alerts/AlertsContext"
-import { Network } from "~/expo/lib/network"
-import { SecureStorage, SecureStorageKey } from "~/expo/lib/secure-storage"
-import { ZustandLogMiddleware } from "~/expo/lib/zustand-middleware"
+import { createJSONStorage, persist } from "zustand/middleware"
+import { SecureStorage } from "~/expo/lib/secure-storage"
+
+export const createLoggingMiddleware =
+  <StoreType extends object>(logger: Logger) =>
+  (config: StateCreator<StoreType>) =>
+  (
+    set: StoreApi<StoreType>["setState"],
+    get: StoreApi<StoreType>["getState"],
+    api: StoreApi<StoreType>,
+  ) => {
+    return config(
+      args => {
+        logger.log(
+          Object.keys(args).map(v => (v ? `${v}: set` : `${v}: clear`)),
+        )
+        set(args)
+      },
+      get,
+      api,
+    )
+  }
+
+const logger = new Logger("AuthStore")
+const loggingMiddleware = createLoggingMiddleware<AuthStore>(logger)
+const middleware = (creator: StateCreator<AuthStore>) => {
+  return persist(loggingMiddleware(creator), {
+    name: "auth_store",
+    storage: createJSONStorage(() => ({
+      getItem: SecureStorage.getItem,
+      removeItem: SecureStorage.deleteItemAsync,
+      setItem: SecureStorage.setItem,
+    })),
+    partialize: (state: AuthStore) =>
+      Object.fromEntries(
+        Object.entries(state).filter(([k]) => k !== "actions"),
+      ),
+  })
+}
+
+export interface IdTokenPayload {
+  id: string
+  awsAccountId: Nullable<string>
+  email: string
+  sub: string
+}
 
 interface AuthStoreActions {
-  finishOnboarding: () => void
-  setSignedOut: () => Promise<void>
-  setSignedIn: (data: {
+  signOut: () => void
+  signIn: (data: {
+    idToken: string
     accessToken: string
     refreshToken: string
-    onboardingDone: boolean
-  }) => Promise<void>
+  }) => IdTokenPayload
   setOnline: (online: boolean) => void
-  hydrate: () => void
-  maybeRefresh: (
-    refreshFn: (refreshToken: string) => Promise<string>,
-  ) => Promise<"authorized" | "unauthorized" | "offline">
+  finishOnboarding: () => void
 }
 
 export interface AuthStore {
-  userId: Nullable<string>
+  user: Nullable<IdTokenPayload>
   accessToken: Nullable<string>
-  onboardingDone: boolean
+  refreshToken: Nullable<string>
   online: boolean
-  hydrated: boolean
+  onboardingDone: boolean
   actions: AuthStoreActions
 }
 
-const logger = new Logger("AuthStore")
-const logMiddleware = new ZustandLogMiddleware<AuthStore>(logger)
-
-export const useAuth = create<AuthStore>(
-  logMiddleware.connect((set, get) => ({
-    userId: null,
+export const useAuth = create<AuthStore, [["zustand/persist", unknown]]>(
+  middleware(set => ({
+    user: null,
     accessToken: null,
+    refreshToken: null,
+    online: true,
     onboardingDone: false,
-    online: false,
-    hydrated: false,
     actions: {
-      finishOnboarding() {
-        return set({ onboardingDone: true })
+      signIn({ accessToken, idToken, refreshToken }) {
+        const user = decodeIdToken(idToken)
+        set({ accessToken, refreshToken, user })
+        return user
       },
-
-      async setSignedIn({ accessToken, refreshToken, onboardingDone = false }) {
-        const payload = accessToken.split(".")[1]
-        if (!payload) throw new Error("Invalid access token")
-
-        const decoded = JSON.parse(atob(payload))
-        if (typeof decoded?.sub !== "string") {
-          return get().actions.setSignedOut()
-        }
-
-        await Promise.all([
-          SecureStorage.setItemAsync(
-            SecureStorageKey.RefreshToken,
-            refreshToken,
-          ),
-          SecureStorage.setItemAsync(SecureStorageKey.AccessToken, accessToken),
-        ])
-
-        return set({
-          accessToken,
-          userId: decoded.sub,
-          hydrated: true,
-          onboardingDone,
-        })
-      },
-
-      async setSignedOut() {
-        await Promise.all([
-          SecureStorage.deleteItemAsync(SecureStorageKey.RefreshToken),
-          SecureStorage.deleteItemAsync(SecureStorageKey.AccessToken),
-        ])
-        return set({ accessToken: null, hydrated: true })
+      signOut() {
+        set({ accessToken: null, refreshToken: null, user: null })
       },
       setOnline(online) {
         set({ online })
       },
-
-      async hydrate() {
-        const [refreshToken, accessToken] = await Promise.all([
-          SecureStorage.getItemAsync(SecureStorageKey.RefreshToken),
-          SecureStorage.getItemAsync(SecureStorageKey.AccessToken),
-        ])
-        const { setSignedIn, setSignedOut } = get().actions
-        if (accessToken && refreshToken) {
-          setSignedIn({ accessToken, refreshToken, onboardingDone: true })
-        } else {
-          setSignedOut()
-        }
-      },
-
-      async maybeRefresh(refresh) {
-        const { setSignedIn, setSignedOut, maybeRefresh, setOnline } =
-          get().actions
-
-        const refreshToken = await SecureStorage.getItemAsync(
-          SecureStorageKey.RefreshToken,
-        )
-        if (!refreshToken) {
-          setSignedOut()
-          return "unauthorized"
-        }
-
-        try {
-          const accessToken = await refresh(refreshToken)
-          setSignedIn({ accessToken, refreshToken, onboardingDone: true })
-          alertsEmitter.emit("showNotification", {
-            message: "Logged in",
-            dismissAfterMs: 1000,
-          })
-          return "authorized"
-        } catch (err) {
-          if (!(err instanceof Error)) {
-            setSignedOut()
-            alertsEmitter.emit("showError", getErrorMsg(err))
-            return "unauthorized"
-          }
-
-          const expired = err.message === ApiError.InvalidRefreshToken
-          const { isInternetReachable } =
-            await new Network().getNetworkStateAsync()
-          const userMaybeOffline = err.message === "Network request failed"
-          const serverDown =
-            err.message === "JSON Parse error: Unexpected token: <"
-
-          if (expired) {
-            alertsEmitter.emit(
-              "showError",
-              "Session expired. Please sign-in again.",
-            )
-            setSignedOut()
-            return "unauthorized"
-          } else if (!isInternetReachable || serverDown || userMaybeOffline) {
-            setOnline(false)
-            const remove = new Network().addEventListener(() => {
-              if (isInternetReachable) {
-                // TODO: use backoff algorithm
-                maybeRefresh(refresh)
-                remove()
-              }
-            })
-            return "offline"
-          } else {
-            setSignedOut()
-            alertsEmitter.emit("showError", getErrorMsg(err))
-            return "unauthorized"
-          }
-        }
+      finishOnboarding() {
+        set({ onboardingDone: true })
       },
     },
   })),
 )
+
+export const decodeIdToken = (jwt: string): IdTokenPayload => {
+  const payload = jwt.split(".")[1]
+  if (!payload) throw new Error("Invalid jwt")
+  return JSON.parse(atob(payload))
+}

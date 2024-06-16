@@ -1,6 +1,6 @@
 export const enum ApiError {
-  InvalidRefreshToken = "Refresh token expired",
-  InvalidAccessToken = "Invalid access token",
-  MissingStorageCreds = "Storage account not connected",
-  AwsAssumeRoleFailed = "Assuming aws role failed",
+  Unauthorized = "unauthorized",
+  SessionExpired = "refresh_token_expired",
+  MissingStorageCreds = "no_storage_account",
+  AwsAssumeRoleFailed = "aws_impersonation_failed",
 }

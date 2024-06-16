@@ -1,4 +1,4 @@
-import { getErrorMsg, assert } from "@photonic/common"
+import { assert, getErrorMsg } from "@photonic/common"
 import type { NativeStackScreenProps } from "@react-navigation/native-stack"
 import React from "react"
 import {
@@ -61,18 +61,18 @@ export const OnboardingCodeVerificationScreen: React.FC<
 
   const handleVerify = async (codeVerifier: string) => {
     try {
-      const { accessToken, refreshToken, onboardingDone } = await mutateAsync({
+      const { accessToken, refreshToken, idToken } = await mutateAsync({
         code: codeVerifier,
         email,
       })
-      await useAuth
-        .getState()
-        .actions.setSignedIn({
-          accessToken,
-          refreshToken,
-          onboardingDone: false,
-        })
-      if (!onboardingDone) {
+      // TODO: store borked
+      // TODO: trpc client shows server errors???
+      const user = useAuth.getState().actions.signIn({
+        idToken,
+        accessToken,
+        refreshToken,
+      })
+      if (!user.awsAccountId) {
         return props.navigation.navigate("onboarding-storage")
       }
       return props.navigation.navigate("onboarding-permissions")

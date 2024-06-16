@@ -21,7 +21,7 @@ export const SettingsScreen: React.FC<
   const { top: topInset } = useSafeAreaInsets()
   const safeTop = topInset + NavHeaderHeight
 
-  const signOut = useAuth(s => s.actions.setSignedOut)
+  const signOut = useAuth(s => s.actions.signOut)
 
   const { data, isLoading, error, refetch } = trpc.user.profile.useQuery()
 

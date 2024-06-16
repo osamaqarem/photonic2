@@ -1,6 +1,6 @@
-import { router } from "./trpc"
 import { authRouter } from "./auth/auth-router"
 import { photoRouter } from "./photo/photo-router"
+import { router } from "./trpc"
 import { userRouter } from "./user/user-router"
 
 export const appRouter = router({

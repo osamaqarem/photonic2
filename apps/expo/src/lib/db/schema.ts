@@ -9,7 +9,7 @@ export const asset = sqliteTable("asset", {
   id: text("id")
     .primaryKey()
     .notNull()
-    .$defaultFn(() => "ass_" + nanoid()),
+    .$defaultFn(() => "ast_" + nanoid()),
   deviceId: text("deviceId"),
   localId: text("localId"),
   name: text("name").notNull(),

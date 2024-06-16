@@ -4,17 +4,17 @@ import jsonwebtoken from "jsonwebtoken"
 
 import { config } from "~/next/config"
 
-interface Config<Payload> extends Omit<SignOptions, "subject"> {
-  subject?: (p: Payload) => string
-}
-
-class JwtManager<Payload extends JwtPayload> {
+class JwtManager<PayloadSource extends Record<string, any>, Payload> {
   static Result = {
     ok: <T extends JwtPayload>(payload: T) => [payload, null] as const,
     error: (error: Error) => [null, error] as const,
   }
 
-  constructor(private config: Config<Payload>, private secret: string) {}
+  constructor(
+    private buildPayload: (payload: PayloadSource) => Payload,
+    private buildClaims: SignOptions | ((p: PayloadSource) => SignOptions),
+    private secret: string,
+  ) {}
 
   static verify<CustomPayload>(
     token: string,
@@ -31,15 +31,13 @@ class JwtManager<Payload extends JwtPayload> {
     }
   }
 
-  sign(payload: Payload) {
-    const subject = this.config.subject?.(payload)
-
-    const { subject: _, ...rest } = this.config
-    const options: SignOptions = {
-      ...rest,
-      ...(subject ? { subject } : {}),
-    }
-    return jsonwebtoken.sign(payload, this.secret, options)
+  sign(basePayload: PayloadSource) {
+    const signingOptions =
+      typeof this.buildClaims === "function"
+        ? this.buildClaims(basePayload)
+        : this.buildClaims
+    const payload = this.buildPayload?.(basePayload) ?? basePayload
+    return jsonwebtoken.sign(payload, this.secret, signingOptions)
   }
 
   verify(token: string) {
@@ -58,23 +56,37 @@ export const jwt = {
   isExpired(jwt: JwtPayload): boolean {
     return (jwt.exp ?? 0) * 1000 <= Date.now()
   },
-  emailToken: new JwtManager<{ email: string }>(
-    {
-      expiresIn: "10 min",
-    },
-    config.EMAIL_SECRET,
-  ),
-  refreshToken: new JwtManager<User>(
+  refreshToken: new JwtManager<User, { id: string }>(
+    user => ({ id: user.id }),
     {
       expiresIn: "30 days",
     },
-    config.REFRESH_TOKEN_SECRET,
+    config.AUTH_SECRET,
   ),
-  accessToken: new JwtManager<User>(
+  accessToken: new JwtManager<User, { id: string }>(
+    user => ({ id: user.id }),
     {
-      expiresIn: "60 min",
-      subject: payload => payload.id,
+      expiresIn: config.STAGE === "development" ? 10 : "60 min",
     },
-    config.ACCESS_TOKEN_SECRET,
+    config.AUTH_SECRET,
+  ),
+  idToken: new JwtManager<
+    User,
+    {
+      id: string
+      awsAccountId: Nullable<string>
+      email: string
+    }
+  >(
+    user => ({
+      awsAccountId: user.awsAccountId,
+      email: user.email,
+      id: user.id,
+    }),
+    user => ({
+      expiresIn: "60 min",
+      subject: user.id,
+    }),
+    config.AUTH_SECRET,
   ),
 }

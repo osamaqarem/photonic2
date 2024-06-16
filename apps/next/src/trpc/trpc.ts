@@ -10,7 +10,7 @@ const isAuthedMiddleware = t.middleware(({ ctx, next }) => {
   if (!ctx.user) {
     throw new trpc.TRPCError({
       code: "UNAUTHORIZED",
-      message: ApiError.InvalidAccessToken,
+      message: ApiError.Unauthorized,
     })
   } else {
     return next({

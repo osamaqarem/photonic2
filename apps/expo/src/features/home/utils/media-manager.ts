@@ -135,9 +135,9 @@ export function exportAssetRecordMap(assets?: Array<Asset>): AssetRecordMap {
 
 export function exportAssetInsert(expoAsset: LocalMediaAsset): AssetInsert {
   const deviceId = deviceIdStorage.get()
-  const { userId } = useAuth.getState()
+  const { user } = useAuth.getState()
   assert(deviceId)
-  assert(userId)
+  assert(user?.id)
 
   return {
     localId: expoAsset.id,
@@ -149,8 +149,8 @@ export function exportAssetInsert(expoAsset: LocalMediaAsset): AssetInsert {
     uri: expoAsset.uri,
     duration: expoAsset.duration,
     creationTime: expoAsset.creationTime,
+    userId: user.id,
     deviceId,
-    userId,
   }
 }
 

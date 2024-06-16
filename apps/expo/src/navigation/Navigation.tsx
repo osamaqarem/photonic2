@@ -27,7 +27,7 @@ const navTheme = {
 const RootStackNavigator = createNativeStackNavigator<RootStackParams>()
 
 export function Navigation() {
-  const { hydrated, accessToken, onboardingDone } = useAuth()
+  const { accessToken, onboardingDone } = useAuth()
   const [isMigrating, setIsMigrating] = React.useState(true)
   const { showError } = useAlerts()
 
@@ -44,7 +44,7 @@ export function Navigation() {
     SplashScreen.hideAsync()
   }
 
-  if (!hydrated || isMigrating) return null
+  if (!useAuth.persist.hasHydrated() || isMigrating) return null
 
   return (
     // @ts-expect-error theme does not accept platform colors

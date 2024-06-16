@@ -61,7 +61,7 @@ export const SettingsScreen: React.FC<
     },
   })
 
-  const signOut = useAuth(s => s.actions.setSignedOut)
+  const signOut = useAuth(s => s.actions.signOut)
   const isAuthenticated: boolean = useAuth(
     s => Boolean(s.accessToken) && s.online,
   )
@@ -156,7 +156,7 @@ export const SettingsScreen: React.FC<
                   marginLeft: 16,
                   justifyContent: "center",
                 }}>
-                <Text variant="span">{data?.email ?? "email"}</Text>
+                {/* <Text variant="span">{data?.email ?? "email"}</Text> */}
               </View>
             </>
           ) : (

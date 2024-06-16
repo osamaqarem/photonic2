@@ -1,17 +1,17 @@
+import * as SplashScreen from "expo-splash-screen"
 import * as React from "react"
 import { LogBox, StyleSheet } from "react-native"
-import { SafeAreaProvider } from "react-native-safe-area-context"
 import { GestureHandlerRootView } from "react-native-gesture-handler"
+import { SafeAreaProvider } from "react-native-safe-area-context"
 import * as Sentry from "sentry-expo"
-import * as SplashScreen from "expo-splash-screen"
 
 import { AlertsProvider } from "~/expo/design/components/alerts/AlertsContext"
 import { config } from "~/expo/lib/config"
+import { deviceIdStorage } from "~/expo/lib/device-id"
 import { Navigation } from "~/expo/navigation/Navigation"
 import { DarkModeProvider } from "~/expo/stores/DarkModeProvider"
 import { TrpcProvider } from "~/expo/stores/TrpcProvider"
 import { useAuth } from "~/expo/stores/auth-store"
-import { deviceIdStorage } from "~/expo/lib/device-id"
 
 let didInit = false
 
@@ -64,6 +64,6 @@ function prepare() {
     enableNative: false,
   })
 
-  useAuth.getState().actions.hydrate()
+  useAuth.persist.rehydrate()
   deviceIdStorage.maybeCreate()
 }

@@ -21,6 +21,7 @@ module.exports = {
     "no-inner-declarations": 0,
     "no-extra-boolean-cast": 0,
     "no-alert": 0,
+    "no-empty": 0,
     "@typescript-eslint/no-var-requires": 0,
     "@typescript-eslint/no-shadow": 0,
     "@typescript-eslint/no-non-null-assertion": 0,

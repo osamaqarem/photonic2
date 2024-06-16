@@ -14,37 +14,35 @@ import * as React from "react"
 import { Logger } from "@photonic/common"
 import type { AppRouter } from "@photonic/next/src/trpc/_app"
 import { ApiError } from "@photonic/next/src/trpc/api-error"
+import type { inferRouterInputs, inferRouterOutputs } from "@trpc/server"
 import { config } from "~/expo/lib/config"
 import { Network } from "~/expo/lib/network"
-import type { AuthStore } from "~/expo/stores/auth-store"
 import { useAuth } from "~/expo/stores/auth-store"
-import type { inferRouterInputs, inferRouterOutputs } from "@trpc/server"
 
 export type RouterInput = inferRouterInputs<AppRouter>
 export type RouterOutput = inferRouterOutputs<AppRouter>
 
-const loggerLink: TRPCLink<AppRouter> = () => {
-  const logger = new Logger("@trpc/client")
-
-  return ({ next, op }) => {
-    return observable(observer => {
-      const req = `${op.id}:${op.path}`
-      logger.log(`-> request(${req})`)
-      const unsubscribe = next(op).subscribe({
-        next: observer.next,
-        complete() {
-          logger.log(`<- resolved(${req})`)
-          observer.complete()
-        },
-        error(err) {
-          logger.error(`<- error(${req})`, err)
-          observer.error(err)
-        },
+const createLoggerLink: (logger: Logger) => TRPCLink<AppRouter> =
+  logger => () => {
+    return ({ next, op }) => {
+      return observable(observer => {
+        const req = `${op.id}:${op.path}`
+        logger.log(`-> request(${req})`)
+        const unsubscribe = next(op).subscribe({
+          next: observer.next,
+          complete() {
+            logger.log(`<- resolved(${op.id}:${op.path})`)
+            observer.complete()
+          },
+          error(err) {
+            logger.error(`<- error(${op.id}:${op.path})`)
+            observer.error(err)
+          },
+        })
+        return unsubscribe
       })
-      return unsubscribe
-    })
+    }
   }
-}
 
 const httpLink = httpBatchLink({
   url: `${config.apiBaseUrl}/api/trpc`,
@@ -59,41 +57,56 @@ const httpLink = httpBatchLink({
   },
 })
 
+// Reference
+// https://github.com/pyncz/trpc-refresh-token-link/blob/main/src/index.ts
 const authRefreshLink: TRPCLink<AppRouter> = () => {
-  let authRefresh: Nullable<ReturnType<AuthStore["actions"]["maybeRefresh"]>> =
-    null
+  let authRefresh: Nullable<Promise<void>> = null
   return ({ next, op }) => {
     return observable(observer => {
       let next$: Nullable<Unsubscribable> = null
 
-      function makeRequest() {
+      const makeRequest = () => {
         next$?.unsubscribe()
         next$ = next(op).subscribe({
           next: observer.next,
           complete: observer.complete,
           async error(err) {
-            if (err.message !== ApiError.InvalidAccessToken) {
+            if (err.message !== ApiError.Unauthorized) {
               observer.error(err)
+              return
             } else {
-              const refresh = (refreshToken: string) =>
-                trpcClient.auth.refresh.mutate({ refreshToken })
-
-              authRefresh ??= useAuth.getState().actions.maybeRefresh(refresh)
-              const outcome = await authRefresh
-
-              if (outcome === "authorized") {
-                // retry
-                makeRequest()
-              } else {
-                authRefresh = null
+              const { refreshToken, actions } = useAuth.getState()
+              if (!refreshToken) {
                 observer.error(err)
+                return
               }
+
+              authRefresh = (async () => {
+                try {
+                  const result = await trpcClient.auth.refresh.mutate({
+                    refreshToken,
+                  })
+                  actions.signIn({ ...result, refreshToken })
+                } catch {
+                  useAuth.getState().actions.signOut()
+                } finally {
+                  authRefresh = null
+                }
+              })()
+
+              await authRefresh
+
+              // retry original request
+              makeRequest()
             }
           },
         })
       }
 
-      makeRequest()
+      const refreshPromise = authRefresh ?? Promise.resolve()
+      refreshPromise.finally(() => {
+        makeRequest()
+      })
 
       return () => {
         next$?.unsubscribe()
@@ -103,7 +116,11 @@ const authRefreshLink: TRPCLink<AppRouter> = () => {
 }
 
 const opts: CreateTRPCClientOptions<AppRouter> = {
-  links: [loggerLink, authRefreshLink, httpLink],
+  links: [
+    createLoggerLink(new Logger("@trpc/client")),
+    authRefreshLink,
+    httpLink,
+  ],
 }
 
 export const trpcClient = createTRPCProxyClient<AppRouter>(opts)

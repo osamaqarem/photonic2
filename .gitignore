@@ -70,8 +70,7 @@ web-build/
 .turbo
 build/**
 
-.env
-.env.shell
+.env*local
 
 
 .watchman-cookie-*
