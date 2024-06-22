@@ -65,8 +65,6 @@ export const OnboardingCodeVerificationScreen: React.FC<
         code: codeVerifier,
         email,
       })
-      // TODO: store borked
-      // TODO: trpc client shows server errors???
       const user = useAuth.getState().actions.signIn({
         idToken,
         accessToken,

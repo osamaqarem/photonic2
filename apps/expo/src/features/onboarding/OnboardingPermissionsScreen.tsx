@@ -26,7 +26,7 @@ export const OnboardingPermissionsScreen: React.FC<
     if (permissionResponse?.status === PermissionStatus.GRANTED) {
       finishOnboarding()
     }
-  }, [finishOnboarding])
+  }, [finishOnboarding, permissionResponse?.status])
 
   const handleSelect = () => {
     switch (permissionResponse?.status) {
