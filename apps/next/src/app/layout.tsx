@@ -1,10 +1,6 @@
-import "./globals.css"
 import type { Metadata } from "next"
 import { Inter } from "next/font/google"
-import { config } from "~/next/config"
-
-// Putting this in the build path
-console.log(`stage: ${config.STAGE}`)
+import "./globals.css"
 
 const inter = Inter({ subsets: ["latin"] })
 
