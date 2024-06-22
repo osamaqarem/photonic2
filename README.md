@@ -2,12 +2,6 @@
 
 ## Server
 
-Import secrets:
-
-```
-flyctl --app [app_name] secrets import < ./apps/next/.env
-```
-
 To import secrets from a file:
 
 ```
