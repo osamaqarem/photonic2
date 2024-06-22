@@ -49,18 +49,14 @@ model AwsBucket {
 
 model Asset {
   id            String @id @default(dbgenerated("prefix_nanoid('ast_'::text)"))
-
-  localId       String?
-  uri           String?
-
-  deviceId      String?
+  deviceId      String
   name          String
-  type          String
   mediaType     String
   width         Int
   height        Int
   duration      Int
   creationTime  DateTime
+  modificationTime DateTime
 
   user         User   @relation(fields: [userId], references: [id])
   userId       String

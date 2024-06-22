@@ -10,7 +10,7 @@ export const asset = sqliteTable("asset", {
     .primaryKey()
     .notNull()
     .$defaultFn(() => "ast_" + nanoid()),
-  deviceId: text("deviceId"),
+  deviceId: text("deviceId").notNull(),
   localId: text("localId"),
   name: text("name").notNull(),
   type: text("type", { enum: ["local", "remote", "localRemote"] }).notNull(),
@@ -19,6 +19,7 @@ export const asset = sqliteTable("asset", {
   height: integer("height").notNull(),
   duration: integer("duration").notNull(),
   creationTime: integer("creationTime").notNull(),
+  modificationTime: integer("modificationTime").notNull(),
   uri: text("string"),
   userId: text("userId").notNull(),
 })

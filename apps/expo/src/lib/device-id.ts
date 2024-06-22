@@ -1,13 +1,18 @@
 import { nanoid } from "~/expo/lib/nanoid"
 import { storage } from "~/expo/lib/storage"
 
+const key = "DeviceIdKey"
+
+const create = () => {
+  const id = "dev_" + nanoid()
+  storage.set(key, id)
+  return id
+}
+
 export const deviceIdStorage = {
-  key: "DeviceIdKey",
-  maybeCreate: () => {
-    const exists = deviceIdStorage.get()
-    if (exists) return
-    const id = "dev_" + nanoid()
-    storage.set(deviceIdStorage.key, id)
+  get: () => {
+    const id = storage.getString(key)
+    if (!id) return create()
+    return id
   },
-  get: () => storage.getString(deviceIdStorage.key),
 }

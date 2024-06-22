@@ -12,10 +12,12 @@ export const photoRouter = router({
   list: storageProcedure
     .input(
       z.object({
-        limit: z.number().min(1).max(100).optional().catch(50),
+        limit: z.number().min(1).max(500).optional().catch(50),
         cursor: z.string().optional().describe("Asset ID"),
         createdAfterMs: z.number().optional(),
         createdBeforeMs: z.number().optional(),
+        updatedAfterMs: z.number().optional(),
+        updatedBeforeMs: z.number().optional(),
       }),
     )
     .query(async ({ ctx, input }) => {
@@ -27,6 +29,10 @@ export const photoRouter = router({
             creationTime: {
               gte: optionalDate(input.createdAfterMs),
               lt: optionalDate(input.createdBeforeMs),
+            },
+            modificationTime: {
+              gte: optionalDate(input.updatedAfterMs),
+              lt: optionalDate(input.updatedBeforeMs),
             },
           },
           take: input.limit,
@@ -123,20 +129,14 @@ export const photoRouter = router({
           .array(
             z.object({
               id: z.string(),
-              localId: z.string(),
-              uri: z.string().nullable(),
-              deviceId: z.string().nullable(),
+              deviceId: z.string(),
               name: z.string(),
-              type: z.union([
-                z.literal("local"),
-                z.literal("remote"),
-                z.literal("localRemote"),
-              ]),
               mediaType: z.union([z.literal("photo"), z.literal("video")]),
               width: z.number(),
               height: z.number(),
               duration: z.number(),
               creationTime: z.number(),
+              modificationTime: z.number(),
             }),
           )
           .min(1)
@@ -147,6 +147,7 @@ export const photoRouter = router({
       const data = input.photos.map(item => ({
         ...item,
         creationTime: new Date(item.creationTime),
+        modificationTime: new Date(item.modificationTime),
       }))
       await ctx.db.user.update({
         where: { id: ctx.user.id },

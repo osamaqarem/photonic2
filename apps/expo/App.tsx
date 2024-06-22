@@ -7,7 +7,6 @@ import * as Sentry from "sentry-expo"
 
 import { AlertsProvider } from "~/expo/design/components/alerts/AlertsContext"
 import { config } from "~/expo/lib/config"
-import { deviceIdStorage } from "~/expo/lib/device-id"
 import { Navigation } from "~/expo/navigation/Navigation"
 import { DarkModeProvider } from "~/expo/stores/DarkModeProvider"
 import { TrpcProvider } from "~/expo/stores/TrpcProvider"
@@ -65,5 +64,4 @@ function prepare() {
   })
 
   useAuth.persist.rehydrate()
-  deviceIdStorage.maybeCreate()
 }

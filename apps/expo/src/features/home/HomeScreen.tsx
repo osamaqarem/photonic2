@@ -18,10 +18,10 @@ import {
   exportAssetRecordMap,
   mediaManager,
 } from "~/expo/features/home/utils/media-manager"
+import type { Asset } from "~/expo/lib/db/schema"
 import type { AppParams } from "~/expo/navigation/params"
 import { trpcClient } from "~/expo/stores/TrpcProvider"
 import type { AssetRecordMap } from "./utils/media-manager"
-import type { Asset } from "~/expo/lib/db/schema"
 
 const logger = new Logger("HomeScreen")
 
@@ -207,7 +207,6 @@ export const HomeScreen: React.FC<
         await trpcClient.photo.put.mutate({ photos: group })
         if (errors.length) logger.error(errors)
       }
-      // await paginator.refetchPageFor(data)
       setTimeout(() => {
         totalUploadProgress.value = 0
       }, 5_000)

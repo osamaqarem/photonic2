@@ -2,7 +2,7 @@ import { Logger, assert, invariant } from "@photonic/common"
 import * as FileSystem from "expo-file-system"
 import * as ExpoMedia from "expo-media-library"
 import Share from "react-native-share"
-import type { AssetInsert, Asset } from "~/expo/lib/db/schema"
+import type { Asset, AssetInsert } from "~/expo/lib/db/schema"
 import { deviceIdStorage } from "~/expo/lib/device-id"
 import { trpcClient } from "~/expo/stores/TrpcProvider"
 import { useAuth } from "~/expo/stores/auth-store"
@@ -136,7 +136,6 @@ export function exportAssetRecordMap(assets?: Array<Asset>): AssetRecordMap {
 export function exportAssetInsert(expoAsset: LocalMediaAsset): AssetInsert {
   const deviceId = deviceIdStorage.get()
   const { user } = useAuth.getState()
-  assert(deviceId)
   assert(user?.id)
 
   return {
@@ -149,6 +148,7 @@ export function exportAssetInsert(expoAsset: LocalMediaAsset): AssetInsert {
     uri: expoAsset.uri,
     duration: expoAsset.duration,
     creationTime: expoAsset.creationTime,
+    modificationTime: expoAsset.modificationTime,
     userId: user.id,
     deviceId,
   }

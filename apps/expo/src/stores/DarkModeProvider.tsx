@@ -7,17 +7,14 @@ import type { SharedValue } from "react-native-reanimated"
 import { useSharedValue } from "react-native-reanimated"
 import { create } from "zustand"
 
-import { config } from "~/expo/lib/config"
 import { storage } from "~/expo/lib/storage"
-
-const ColorSchemeKey =
-  config.stage === "storybook" ? "ColorSchemeKeyStorybook" : "ColorSchemeKey"
 
 export type ColorScheme = NonNullable<ColorSchemeName>
 const colorSchemeStorage = {
-  get: () => storage.getString(ColorSchemeKey) as Maybe<ColorScheme>,
-  save: (scheme: ColorScheme) => storage.set(ColorSchemeKey, scheme),
-  delete: () => storage.delete(ColorSchemeKey),
+  key: "ColorSchemeKey",
+  get: () => storage.getString(colorSchemeStorage.key) as Maybe<ColorScheme>,
+  save: (scheme: ColorScheme) => storage.set(colorSchemeStorage.key, scheme),
+  delete: () => storage.delete(colorSchemeStorage.key),
 }
 
 interface DarkModeStore {
