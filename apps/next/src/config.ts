@@ -17,5 +17,6 @@ const schema = z.object({
   AWS_CFN_TEMPLATE_URL: nonempty,
 })
 
-// Don't fail builds
-export const config = process.env.CI ? {} : schema.parse(process.env)
+export const config = process.env.CI
+  ? ({} as z.infer<typeof schema>)
+  : schema.parse(process.env)
