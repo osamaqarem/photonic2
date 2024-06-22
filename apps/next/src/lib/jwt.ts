@@ -66,7 +66,7 @@ export const jwt = {
   accessToken: new JwtManager<User, { id: string }>(
     user => ({ id: user.id }),
     {
-      expiresIn: config.STAGE === "development" ? 10 : "60 min",
+      expiresIn: "60 min",
     },
     config.AUTH_SECRET,
   ),
