@@ -132,22 +132,33 @@ async function populateDB() {
   return assets
 }
 
+const syncLogger = new Logger("maybeSyncRemote")
 async function maybeSyncRemote(assetMap: AssetMap) {
   const now = Date.now()
   const lastSyncTime = lastSyncTimeStorage.get() ?? now
   const diff = now - lastSyncTime
   if (diff < 60_000) {
-    logger.log("Skipping remote sync")
+    syncLogger.log(
+      `Skipping remote sync, last sync at: ${new Date(
+        lastSyncTime,
+      ).toISOString()}`,
+    )
     return
   }
+  syncLogger.log("Remote sync ongoing")
 
   const remoteItems = await paginateRemoteAssets(lastSyncTime)
   const itemsToUpdate = await filterNeedsLocalWrite(remoteItems, assetMap)
 
+  syncLogger.log("itemsToUpdate", itemsToUpdate.length)
+
   assetRepo
     .put(itemsToUpdate)
-    .then(() => lastSyncTimeStorage.save(now))
-    .catch(logger.error)
+    .then(() => {
+      syncLogger.log("Remote sync done")
+      lastSyncTimeStorage.save(now)
+    })
+    .catch(syncLogger.error)
 
   async function paginateRemoteAssets(updatedAfterMs: number) {
     logger.log("Fetching remote assets")
@@ -176,7 +187,11 @@ async function maybeSyncRemote(assetMap: AssetMap) {
       if (item) {
         if (item.modificationTime === remoteAsset.modificationTime) {
           // localRemote, up to date
-          // do nothing
+          // should do nothing, but to ensure correctness we will re-save it as a `localRemote` record
+          itemsToSave.push({
+            ...item,
+            type: "localRemote",
+          })
         } else if (item.modificationTime > remoteAsset.modificationTime) {
           // localRemote, outdated remotely
           // must update remote record

@@ -198,6 +198,9 @@ export const HomeScreen: React.FC<
         await trpcClient.photo.put.mutate({ photos: group })
         if (errors.length) logger.error(errors)
       }
+
+      // TODO: reload assets
+
       setTimeout(() => {
         totalUploadProgress.value = 0
       }, 5_000)

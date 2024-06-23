@@ -1,9 +1,9 @@
+import * as Sentry from "@sentry/react-native"
 import * as SplashScreen from "expo-splash-screen"
 import * as React from "react"
 import { LogBox, StyleSheet } from "react-native"
 import { GestureHandlerRootView } from "react-native-gesture-handler"
 import { SafeAreaProvider } from "react-native-safe-area-context"
-import * as Sentry from "sentry-expo"
 
 import { AlertsProvider } from "~/expo/design/components/alerts/AlertsContext"
 import { config } from "~/expo/lib/config"
@@ -48,8 +48,6 @@ function prepare() {
   SplashScreen.preventAutoHideAsync()
 
   LogBox.ignoreLogs([
-    // sentry-expo
-    "Constants.platform.ios.model has been deprecated",
     // expo-splash-screen
     "No native splash screen registered for given view controller",
     "`useBottomSheetDynamicSnapPoints`",
@@ -59,8 +57,7 @@ function prepare() {
     dsn: config.sentryDsn,
     environment: config.stage,
     debug: false,
-    enableInExpoDevelopment: false,
-    enableNative: false,
+    enabled: __DEV__ === false,
   })
 
   useAuth.persist.rehydrate()

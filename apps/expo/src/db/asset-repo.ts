@@ -29,8 +29,8 @@ export function getSchemaForRawRemoteAsset(
     height: rawRemoteAsset.height,
     duration: rawRemoteAsset.duration,
     uri: null,
-    creationTime: parseInt(rawRemoteAsset.creationTime, 10),
-    modificationTime: parseInt(rawRemoteAsset.modificationTime, 10),
+    creationTime: new Date(rawRemoteAsset.creationTime).getTime(),
+    modificationTime: new Date(rawRemoteAsset.modificationTime).getTime(),
     userId: rawRemoteAsset.userId,
   }
 }
@@ -89,7 +89,8 @@ export const assetRepo = {
   patch: (name: string, fields: SQLiteUpdateSetSource<typeof asset>) => {
     return db.update(asset).set(fields).where(eq(asset.name, name))
   },
-  put: (data: Array<AssetInsert>) => {
+  put: async (data: Array<AssetInsert>) => {
+    if (data.length === 0) return []
     return db
       .insert(asset)
       .values(data)

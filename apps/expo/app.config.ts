@@ -1,4 +1,4 @@
-import type { ExpoConfig, ConfigContext } from "@expo/config"
+import type { ConfigContext, ExpoConfig } from "@expo/config"
 import merge from "lodash.merge"
 
 import packageConfig from "./package.json"
@@ -38,8 +38,8 @@ const variants: Variants = {
 const stage = process.env.STAGE as "development" | "production" | "storybook"
 if (!stage) throw new Error("Missing STAGE environment variable")
 
-const expoConfig = ({ config }: ConfigContext): ExpoConfig =>
-  merge(config, variants[stage], {
+const expoConfig = ({ config }: ConfigContext): ExpoConfig => {
+  return merge(config, variants[stage], {
     version: packageConfig.version,
     ios: {
       config: {
@@ -67,19 +67,15 @@ const expoConfig = ({ config }: ConfigContext): ExpoConfig =>
       "./plugins/build/with-ios-deployment-target",
       "./plugins/build/with-ios-sdwebimage",
       "./plugins/build/with-ios-entitlements",
-      "sentry-expo",
-    ],
-    hooks: {
-      postPublish: [
+      [
+        "@sentry/react-native/expo",
         {
-          file: "sentry-expo/upload-sourcemaps",
-          config: {
-            organization: "photonic",
-            project: "expo",
-          },
+          organization: "photonic",
+          project: "expo",
         },
       ],
-    },
+    ],
   } satisfies Partial<ExpoConfig>)
+}
 
 export default expoConfig

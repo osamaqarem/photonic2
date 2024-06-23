@@ -5,7 +5,7 @@ import { migrate } from "drizzle-orm/expo-sqlite/migrator"
 import * as SplashScreen from "expo-splash-screen"
 import * as React from "react"
 
-import { db } from "~/expo/db"
+import { db, useDbStudio } from "~/expo/db"
 import migrations from "~/expo/db/migrations/migrations"
 import { asset } from "~/expo/db/schema"
 import { useAlerts } from "~/expo/design/components/alerts/useAlerts"
@@ -34,6 +34,7 @@ export function Navigation() {
   const { accessToken, onboardingDone } = useAuth()
   const [isMigrating, setIsMigrating] = React.useState(true)
   const { showError } = useAlerts()
+  useDbStudio()
 
   React.useEffect(() => {
     migrate(db, migrations)
