@@ -8,9 +8,8 @@ RUN apk add --no-cache libc6-compat
 RUN apk update
 # Set working directory
 WORKDIR /app
-RUN pnpm add --global turbo
 COPY . .
-RUN turbo prune --scope=@photonic/next --docker
+RUN npx turbo@2.0.4 prune --scope=@photonic/next --docker
 
 # Add lockfile and package.json's of isolated subworkspace
 FROM base AS installer
@@ -23,13 +22,16 @@ COPY --from=builder /app/out/json/ .
 COPY --from=builder /app/out/pnpm-lock.yaml ./pnpm-lock.yaml
 COPY --from=builder /app/out/pnpm-workspace.yaml ./pnpm-workspace.yaml
 COPY --from=builder /app/out/full/turbo.json ./turbo.json
-RUN pnpm install
+RUN corepack enable pnpm
+RUN pnpm i --frozen-lockfile
 # Build the project
 COPY --from=builder /app/out/full/ .
 COPY tsconfig.json tsconfig.json
 COPY .eslintrc.cjs .eslintrc.cjs
 COPY ./apps/next/prisma ./prisma
 RUN pnpm next db:generate
+# Disable telemetry during build.
+ENV NEXT_TELEMETRY_DISABLED 1
 RUN pnpm turbo build --filter=@photonic/next...
 
 FROM base AS runner
@@ -46,5 +48,7 @@ COPY --from=installer /app/apps/next/prisma ./prisma
 COPY --from=installer --chown=nextjs:nodejs /app/apps/next/.next/standalone ./
 COPY --from=installer --chown=nextjs:nodejs /app/apps/next/.next/static ./apps/next/.next/static
 COPY --from=installer --chown=nextjs:nodejs /app/apps/next/public ./apps/next/public
+# Disable telemetry during runtime.
+ENV NEXT_TELEMETRY_DISABLED 1
 ENV NODE_ENV=production
 CMD node apps/next/server.js
