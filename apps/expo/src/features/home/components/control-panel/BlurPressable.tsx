@@ -6,7 +6,7 @@ import { Pressable } from "react-native"
 import type { AnimatedProps } from "react-native-reanimated"
 import Animated from "react-native-reanimated"
 
-import { useDarkMode } from "~/expo/stores/DarkModeProvider"
+import { useDarkMode } from "~/expo/state/DarkModeProvider"
 
 const AnimatedExpoBlurView = Animated.createAnimatedComponent(ExpoBlurView)
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable)

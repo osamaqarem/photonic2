@@ -14,13 +14,13 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated"
 
+import type { Asset } from "~/expo/db/schema"
 import { Icon } from "~/expo/design/components/icons/Icons"
 import { palette } from "~/expo/design/palette"
 import { theme } from "~/expo/design/theme"
-import { useDragSelectContext } from "~/expo/features/home/context/DragSelectContextProvider"
 import { useAssetUri } from "~/expo/hooks/useAssetUri"
-import type { Asset } from "~/expo/lib/db/schema"
-import { useDarkMode } from "~/expo/stores/DarkModeProvider"
+import { useDarkMode } from "~/expo/state/DarkModeProvider"
+import { useDragSelectContext } from "~/expo/state/DragSelectContextProvider"
 
 const longPressTiming = 300
 const scaleTiming = 300
@@ -43,7 +43,7 @@ export const Thumbnail: React.FC<Props> & {
 
   const uri = useAssetUri(asset)
 
-  const { assetRecord, selectedItems } = useDragSelectContext()
+  const { assetMap, selectedItems } = useDragSelectContext()
 
   const sharedColorScheme = useDarkMode(s => s.sharedColorScheme)
 
@@ -86,13 +86,13 @@ export const Thumbnail: React.FC<Props> & {
   }))
 
   const uploadIndicatorStyle = useAnimatedStyle(() => {
-    const type = assetRecord.value[asset.name]?.type
+    const type = assetMap[asset.name]?.type
     const local = type === "local"
     return { opacity: local ? 1 : 0 }
   })
 
   const uploadIndicatorIconStyle = useAnimatedStyle(() => {
-    const type = assetRecord.value[asset.name]?.type
+    const type = assetMap[asset.name]?.type
     return {
       color:
         type === "local"

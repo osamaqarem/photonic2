@@ -1,0 +1,1 @@
+ALTER TABLE asset ADD `modificationTime` integer NOT NULL;

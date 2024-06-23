@@ -1,5 +1,5 @@
 import { rawThemeColors } from "~/expo/design/theme"
-import type { ColorScheme } from "~/expo/stores/DarkModeProvider"
+import type { ColorScheme } from "~/expo/state/DarkModeProvider"
 
 export const getThemeColorWorklet =
   (path: keyof typeof rawThemeColors) => (cs: ColorScheme) => {

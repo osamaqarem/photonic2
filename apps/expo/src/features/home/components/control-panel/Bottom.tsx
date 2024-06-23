@@ -11,8 +11,8 @@ import { StyleSheet, View, type ViewProps } from "react-native"
 import { Icon } from "~/expo/design/components/icons/Icons"
 import { theme } from "~/expo/design/theme"
 import { BlurView } from "~/expo/features/home/components/control-panel/BlurPressable"
-import { useDragSelectContext } from "~/expo/features/home/context/DragSelectContextProvider"
-import { useDarkMode } from "~/expo/stores/DarkModeProvider"
+import { useDarkMode } from "~/expo/state/DarkModeProvider"
+import { useDragSelectContext } from "~/expo/state/DragSelectContextProvider"
 import { Option } from "./Option"
 
 const bottomPanelHeight = 120

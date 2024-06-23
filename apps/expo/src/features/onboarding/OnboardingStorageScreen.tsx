@@ -10,8 +10,8 @@ import { Text } from "~/expo/design/components/Text"
 import { palette } from "~/expo/design/palette"
 import { theme } from "~/expo/design/theme"
 import type { AppParams } from "~/expo/navigation/params"
-import { trpc } from "~/expo/stores/TrpcProvider"
-import { useAuth } from "~/expo/stores/auth-store"
+import { trpc } from "~/expo/state/TrpcProvider"
+import { useAuth } from "~/expo/state/auth-store"
 
 export const OnboardingStorageScreen: React.FC<
   NativeStackScreenProps<AppParams, "onboarding-storage">

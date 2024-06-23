@@ -1,4 +1,3 @@
-import { SystemUI } from "@photonic/system-ui"
 import * as ExpoStatusBar from "expo-status-bar"
 import * as React from "react"
 import type { ColorSchemeName } from "react-native"
@@ -7,15 +6,8 @@ import type { SharedValue } from "react-native-reanimated"
 import { useSharedValue } from "react-native-reanimated"
 import { create } from "zustand"
 
-import { storage } from "~/expo/lib/storage"
-
-export type ColorScheme = NonNullable<ColorSchemeName>
-const colorSchemeStorage = {
-  key: "ColorSchemeKey",
-  get: () => storage.getString(colorSchemeStorage.key) as Maybe<ColorScheme>,
-  save: (scheme: ColorScheme) => storage.set(colorSchemeStorage.key, scheme),
-  delete: () => storage.delete(colorSchemeStorage.key),
-}
+import { SystemUI } from "@photonic/system-ui"
+import { colorSchemeStorage, type ColorScheme } from "~/expo/lib/storage"
 
 interface DarkModeStore {
   colorScheme: ColorScheme
@@ -105,3 +97,5 @@ export const DarkModeProvider: React.FC<React.PropsWithChildren> = ({
 
   return <>{children}</>
 }
+
+export { ColorScheme }

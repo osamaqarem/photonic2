@@ -1,4 +1,4 @@
-import type { Asset } from "~/expo/lib/db/schema"
+import type { Asset } from "~/expo/db/schema"
 
 export type OnboardingStackParams = {
   "onboarding-welcome": undefined

@@ -17,8 +17,8 @@ import { TextInput } from "~/expo/design/components/TextInput"
 import { useAlerts } from "~/expo/design/components/alerts/useAlerts"
 import { theme } from "~/expo/design/theme"
 import type { AppParams } from "~/expo/navigation/params"
-import { trpc } from "~/expo/stores/TrpcProvider"
-import { useAuth } from "~/expo/stores/auth-store"
+import { trpc } from "~/expo/state/TrpcProvider"
+import { useAuth } from "~/expo/state/auth-store"
 
 export const OnboardingCodeVerificationScreen: React.FC<
   NativeStackScreenProps<AppParams, "onboarding-code-verification">

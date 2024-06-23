@@ -24,9 +24,9 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated"
 
-import { clamp, interpolateValue } from "~/expo/features/photo/utils/math"
-import * as vec from "~/expo/features/photo/utils/vectors"
 import { useAssetUri } from "~/expo/hooks/useAssetUri"
+import { clamp, interpolateValue } from "~/expo/lib/math"
+import * as vec from "~/expo/lib/vectors"
 import type { AppParams } from "~/expo/navigation/params"
 
 // TODO: viewpager to swipe between images

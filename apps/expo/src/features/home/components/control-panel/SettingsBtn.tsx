@@ -12,13 +12,13 @@ import Animated, {
 } from "react-native-reanimated"
 import { Circle as SVGCircle } from "react-native-svg"
 
-import { BlurPressable } from "./BlurPressable"
+import { StyleSheet } from "react-native"
 import { Icon } from "~/expo/design/components/icons/Icons"
 import { Svg } from "~/expo/design/components/Svg"
-import { theme } from "~/expo/design/theme"
-import { useDarkMode } from "~/expo/stores/DarkModeProvider"
 import { palette } from "~/expo/design/palette"
-import { StyleSheet } from "react-native"
+import { theme } from "~/expo/design/theme"
+import { useDarkMode } from "~/expo/state/DarkModeProvider"
+import { BlurPressable } from "./BlurPressable"
 
 const settingsBtnSize = 42
 

@@ -12,7 +12,7 @@ import { TextInput } from "~/expo/design/components/TextInput"
 import { useAlerts } from "~/expo/design/components/alerts/useAlerts"
 import { theme } from "~/expo/design/theme"
 import type { AppParams } from "~/expo/navigation/params"
-import { trpc } from "~/expo/stores/TrpcProvider"
+import { trpc } from "~/expo/state/TrpcProvider"
 
 export const OnboardingRegistrationScreen: React.FC<
   NativeStackScreenProps<AppParams, "onboarding-registration">

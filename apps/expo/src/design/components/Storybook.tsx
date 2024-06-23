@@ -19,7 +19,7 @@ import { TextInputStory } from "~/expo/design/components/TextInput.story"
 import { IconsStory } from "~/expo/design/components/icons/icons.story"
 import { rawPalette } from "~/expo/design/palette"
 import { theme } from "~/expo/design/theme"
-import { DarkModeProvider, useDarkMode } from "~/expo/stores/DarkModeProvider"
+import { DarkModeProvider, useDarkMode } from "~/expo/state/DarkModeProvider"
 
 const components: Array<ComponentStory> = [
   TextInputStory,

@@ -1,6 +1,6 @@
 import * as React from "react"
 import { type SharedValue } from "react-native-reanimated"
-import type { AssetMap } from "~/expo/features/home/utils/media-manager"
+import type { AssetMap } from "~/expo/lib/media-manager"
 
 interface DragSelectContext {
   assetMap: AssetMap

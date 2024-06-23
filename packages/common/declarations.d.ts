@@ -1,4 +1,4 @@
-declare type Maybe<Type> = Type | null | undefined
+declare type Maybe<Type> = Type | undefined
 
 declare type Nullable<Type> = Type | null
 

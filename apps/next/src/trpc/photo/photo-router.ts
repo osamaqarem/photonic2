@@ -2,7 +2,6 @@ import type { ObjectIdentifier } from "@aws-sdk/client-s3"
 import pMap from "p-map"
 import { z } from "zod"
 
-import { type Asset } from "~/next/lib/db"
 import { router } from "../trpc"
 import { storageProcedure } from "./storage-procedure"
 
@@ -49,23 +48,8 @@ export const photoRouter = router({
         nextCursor = lastItem ? lastItem.id : undefined
       }
 
-      // set url for each item
-      let withUrl: Array<
-        Asset & { url: string; type: "remote"; creationTime: Date }
-      > = []
-      const mapper = async (item: Asset) => {
-        const url = await ctx.storage.getObjectUrl(item.name)
-        withUrl.push({
-          ...item,
-          url,
-          type: "remote",
-          creationTime: item.creationTime,
-        })
-      }
-      await pMap(items, mapper, { concurrency: 10 })
-
       return {
-        assets: withUrl,
+        assets: items,
         nextCursor,
         count,
       }
@@ -185,7 +169,6 @@ export const photoRouter = router({
   getSignedUrl: storageProcedure
     .input(z.array(z.string()).min(1).max(15))
     .query(async ({ ctx, input }): Promise<Array<string>> => {
-      // TODO: cache signed urls
       let data: Array<string> = []
       const mapper = async (name: string) => {
         const url = await ctx.storage.getObjectUrl(name)

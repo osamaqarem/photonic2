@@ -1,7 +1,7 @@
 import * as React from "react"
 
 import type { ComponentStory } from "~/expo/design/components/Storybook"
-import { useDarkMode } from "~/expo/stores/DarkModeProvider"
+import { useDarkMode } from "~/expo/state/DarkModeProvider"
 import { getIconNames, Icon } from "./Icons"
 
 let stories: Record<string, () => React.ReactElement> = {}

@@ -2,21 +2,17 @@ import { Logger } from "@photonic/common"
 import { desc, eq } from "drizzle-orm"
 import React from "react"
 import { LayoutAnimation } from "react-native"
-import { useAlerts } from "~/expo/design/components/alerts/useAlerts"
-import type { LocalMediaAsset } from "~/expo/features/home/utils/media-manager"
+import { db } from "~/expo/db"
 import {
-  getAssetMap,
-  mediaManager,
-} from "~/expo/features/home/utils/media-manager"
-import { db } from "~/expo/lib/db"
-import type { Asset, AssetInsert } from "~/expo/lib/db/schema"
-import {
-  asset,
   getSchemaForRawLocalAsset,
   getSchemaForRawRemoteAsset,
-} from "~/expo/lib/db/schema"
-import { storage } from "~/expo/lib/storage"
-import { trpcClient } from "~/expo/stores/TrpcProvider"
+} from "~/expo/db/asset"
+import { asset, type Asset, type AssetInsert } from "~/expo/db/schema"
+import { useAlerts } from "~/expo/design/components/alerts/useAlerts"
+import type { AssetMap, RawLocalAsset } from "~/expo/lib/media-manager"
+import { mediaManager } from "~/expo/lib/media-manager"
+import { lastSyncTimeStorage } from "~/expo/lib/storage"
+import { trpcClient } from "~/expo/state/TrpcProvider"
 
 const logger = new Logger("useAssets")
 
@@ -106,7 +102,7 @@ export const useAssets = () => {
       // - next time we start, only fetch remote records that were updatedAt > lastSyncTime
     })
 
-    const updateAsset = async (item: LocalMediaAsset) => {
+    const updateAsset = async (item: RawLocalAsset) => {
       if (item.mediaType !== "photo") return
       await db
         .update(asset)
@@ -198,9 +194,13 @@ async function populateDB() {
   return assets
 }
 
-const lastSyncTimeStorage = {
-  key: "LastSyncTimeKey",
-  get: (): Maybe<number> => storage.getNumber(lastSyncTimeStorage.key),
-  save: (time: number) => storage.set(lastSyncTimeStorage.key, time),
-  delete: () => storage.delete(lastSyncTimeStorage.key),
+export function getAssetMap(assets: Array<Asset>): AssetMap {
+  let record: Record<string, Asset> = {}
+  for (let i = 0; i < assets.length; i++) {
+    const item = assets[i]
+    if (item) {
+      record[item.name] = item
+    }
+  }
+  return record
 }

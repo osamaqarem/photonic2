@@ -8,16 +8,16 @@ import { useDerivedValue, useSharedValue } from "react-native-reanimated"
 import { Loading } from "~/expo/design/components/Loading"
 import { Text } from "~/expo/design/components/Text"
 
+import type { Asset } from "~/expo/db/schema"
 import { useAlerts } from "~/expo/design/components/alerts/useAlerts"
 import { AssetList } from "~/expo/features/home/components/AssetList"
 import { ControlPanel } from "~/expo/features/home/components/control-panel"
-import { DragSelectContextProvider } from "~/expo/features/home/context/DragSelectContextProvider"
-import { useAssets } from "~/expo/features/home/hooks/useAssets"
-import { Actor } from "~/expo/features/home/utils/actor"
-import { mediaManager } from "~/expo/features/home/utils/media-manager"
-import type { Asset } from "~/expo/lib/db/schema"
+import { useAssets } from "~/expo/hooks/useAssets"
+import { Actor } from "~/expo/lib/actor"
+import { mediaManager } from "~/expo/lib/media-manager"
 import type { AppParams } from "~/expo/navigation/params"
-import { trpcClient } from "~/expo/stores/TrpcProvider"
+import { DragSelectContextProvider } from "~/expo/state/DragSelectContextProvider"
+import { trpcClient } from "~/expo/state/TrpcProvider"
 
 const logger = new Logger("HomeScreen")
 

@@ -1,6 +1,6 @@
 import * as React from "react"
 import type { TextInputProps } from "react-native"
-import { StyleSheet, TextInput as RNTextInput } from "react-native"
+import { TextInput as RNTextInput, StyleSheet } from "react-native"
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -9,7 +9,7 @@ import Animated, {
 
 import { Text } from "~/expo/design/components/Text"
 import { font, rawThemeColors, theme } from "~/expo/design/theme"
-import { useDarkMode } from "~/expo/stores/DarkModeProvider"
+import { useDarkMode } from "~/expo/state/DarkModeProvider"
 
 const AnimatedTextInput = Animated.createAnimatedComponent(RNTextInput)
 

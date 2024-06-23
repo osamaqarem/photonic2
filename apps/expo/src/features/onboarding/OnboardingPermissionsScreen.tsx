@@ -1,4 +1,5 @@
 import type { NativeStackScreenProps } from "@react-navigation/native-stack"
+import { usePermissions } from "expo-media-library"
 import React from "react"
 import { ActivityIndicator, Linking, StyleSheet, View } from "react-native"
 
@@ -8,12 +9,9 @@ import { ScrollView } from "~/expo/design/components/ScrollView"
 import { Space } from "~/expo/design/components/Space"
 import { Text } from "~/expo/design/components/Text"
 import { theme } from "~/expo/design/theme"
-import {
-  PermissionStatus,
-  usePermissions,
-} from "~/expo/features/home/utils/media-manager"
+import { PermissionStatus } from "~/expo/lib/media-manager"
 import type { AppParams } from "~/expo/navigation/params"
-import { useAuth } from "~/expo/stores/auth-store"
+import { useAuth } from "~/expo/state/auth-store"
 
 export const OnboardingPermissionsScreen: React.FC<
   NativeStackScreenProps<AppParams, "onboarding-permissions">

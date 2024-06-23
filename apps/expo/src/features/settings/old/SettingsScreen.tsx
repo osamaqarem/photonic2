@@ -14,9 +14,9 @@ import { Icon } from "~/expo/design/components/icons/Icons"
 import { palette, rawPalette } from "~/expo/design/palette"
 import { OptionTable } from "~/expo/features/settings/old/components/OptionTable"
 import type { AppParams } from "~/expo/navigation/params"
-import { useDarkMode } from "~/expo/stores/DarkModeProvider"
-import { trpc } from "~/expo/stores/TrpcProvider"
-import { useAuth } from "~/expo/stores/auth-store"
+import { useDarkMode } from "~/expo/state/DarkModeProvider"
+import { trpc } from "~/expo/state/TrpcProvider"
+import { useAuth } from "~/expo/state/auth-store"
 
 // value reference
 // https://github.com/software-mansion/react-native-screens/blob/b9471bebe70d83c71740c5a308af9ea7ad377821/native-stack/README.md#measuring-headers-height-on-ios

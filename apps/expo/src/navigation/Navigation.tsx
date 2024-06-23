@@ -1,17 +1,19 @@
+import { Logger } from "@photonic/common"
 import { DefaultTheme, NavigationContainer } from "@react-navigation/native"
 import { createNativeStackNavigator } from "@react-navigation/native-stack"
 import { migrate } from "drizzle-orm/expo-sqlite/migrator"
 import * as SplashScreen from "expo-splash-screen"
 import * as React from "react"
 
+import { db } from "~/expo/db"
+import migrations from "~/expo/db/migrations/migrations"
+import { asset } from "~/expo/db/schema"
 import { useAlerts } from "~/expo/design/components/alerts/useAlerts"
 import { theme } from "~/expo/design/theme"
-import { db } from "~/expo/lib/db"
-import migrations from "~/expo/lib/db/migrations/migrations"
 import { MainStack } from "~/expo/navigation/MainStack"
 import { OnboardingStack } from "~/expo/navigation/OnboardingStack"
 import type { RootStackParams } from "~/expo/navigation/params"
-import { useAuth } from "~/expo/stores/auth-store"
+import { useAuth } from "~/expo/state/auth-store"
 
 const navTheme = {
   ...DefaultTheme,
@@ -26,6 +28,8 @@ const navTheme = {
 
 const RootStackNavigator = createNativeStackNavigator<RootStackParams>()
 
+const logger = new Logger("db_migrations")
+
 export function Navigation() {
   const { accessToken, onboardingDone } = useAuth()
   const [isMigrating, setIsMigrating] = React.useState(true)
@@ -35,8 +39,14 @@ export function Navigation() {
     migrate(db, migrations)
       .then(() => setIsMigrating(false))
       .catch(err => {
-        SplashScreen.hideAsync()
-        showError("DB migration error: " + err.message)
+        logger.log(`DB migration error: ${err.message}`)
+        db.delete(asset).execute()
+        migrate(db, migrations)
+          .then(() => setIsMigrating(false))
+          .catch(err2 => {
+            SplashScreen.hideAsync()
+            showError("DB migration error: " + err2.message)
+          })
       })
   }, [showError])
 

@@ -20,12 +20,12 @@ import Animated, {
 } from "react-native-reanimated"
 import { useSafeAreaInsets } from "react-native-safe-area-context"
 
+import type { Asset } from "~/expo/db/schema"
 import { Text } from "~/expo/design/components/Text"
 import { Thumbnail } from "~/expo/features/home/components/Thumbnail"
 import { BottomPanel } from "~/expo/features/home/components/control-panel/Bottom"
-import { useDragSelectContext } from "~/expo/features/home/context/DragSelectContextProvider"
-import type { Asset } from "~/expo/lib/db/schema"
-import { useDarkMode } from "~/expo/stores/DarkModeProvider"
+import { useDarkMode } from "~/expo/state/DarkModeProvider"
+import { useDragSelectContext } from "~/expo/state/DragSelectContextProvider"
 
 interface Props {
   onItemPress: (asset: Asset) => void
@@ -34,7 +34,7 @@ interface Props {
 
 export const AssetList: React.FC<Props> = ({ onItemPress, data }) => {
   const {
-    assetRecord,
+    assetMap,
     selectedItems,
     selectedItemsKeys,
     selectModeActive,
@@ -73,7 +73,7 @@ export const AssetList: React.FC<Props> = ({ onItemPress, data }) => {
   //#region gestures
   const longPressOnStart = (assetName: string) => {
     "worklet"
-    const asset = assetRecord.value[assetName]
+    const asset = assetMap[assetName]
     if (!asset) return
     if (selectedItems.value[asset.name]) return
     const axis = { ...asset, isLongPressAxis: true }
@@ -86,7 +86,7 @@ export const AssetList: React.FC<Props> = ({ onItemPress, data }) => {
 
   const tapOnStart = (assetName: string) => {
     "worklet"
-    const asset = assetRecord.value[assetName]
+    const asset = assetMap[assetName]
     if (!asset) return
     if (selectModeActive.value) {
       const item = selectedItems.value[assetName]
@@ -224,7 +224,7 @@ export const AssetList: React.FC<Props> = ({ onItemPress, data }) => {
 
       const getItemFromState = (index: number) => {
         const itemInState = data[index]
-        return itemInState ? assetRecord.value[itemInState.name] : undefined
+        return itemInState ? assetMap[itemInState.name] : undefined
       }
 
       const item = getItemFromState(itemIndex)
