@@ -3,13 +3,6 @@
   "private": true,
   "license": "UNLICENSED",
   "repository": "https://github.com/osamaqarem/photonic2",
-  "workspaces": [
-    "apps/*",
-    "packages/*"
-  ],
-  "dependencies": {
-    "patch-package": "^7.0.0"
-  },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^5.60.1",
     "@typescript-eslint/parser": "^5.60.1",
@@ -17,7 +10,6 @@
     "eslint-config-prettier": "^8.8.0",
     "eslint-config-turbo": "^2.0.4",
     "lerna-update-wizard": "^1.1.2",
-    "postinstall-postinstall": "^2.1.0",
     "prettier": "^2.8.8",
     "turbo": "2.0.4",
     "typescript": "^5.5.2",
@@ -25,25 +17,30 @@
     "zx": "^7.2.3"
   },
   "engines": {
-    "node": "<=18 >=16.17.0",
-    "yarn": "<2 >=1.22.19"
+    "node": "18"
   },
-  "packageManager": "yarn@1.22.19",
+  "packageManager": "pnpm@9.4.0+sha256.b6fd0bfda555e7e584ad7e56b30c68b01d5a04f9ee93989f4b93ca8473c49c74",
   "scripts": {
     "checks": "turbo ts lint",
     "ts": "turbo ts",
     "lint": "turbo lint",
     "prettier": "prettier '**/*.{js,jsx,ts,tsx}' --write --ignore-path .gitignore",
     "dev": "turbo dev",
-    "expo": "yarn workspace @photonic/expo",
-    "next": "yarn workspace @photonic/next",
-    "lambda": "yarn workspace @photonic/lambda",
+    "expo": "pnpm --filter=@photonic/expo",
+    "next": "pnpm --filter=@photonic/next",
+    "lambda": "pnpm --filter=@photonic/lambda",
     "next:docker-build": "docker build -f ./apps/next/Dockerfile -t photonic/next .",
     "next:docker-run": "docker run -p 3000:3000 --name photonic-next-container photonic/next",
-    "p": "yarn lernaupdate --lazy",
+    "p": "pnpm lernaupdate --lazy",
     "clean": "rm -rf apps/next/.next",
     "clean-nodemodules": "find . -name 'node_modules' -type d -prune -exec rm -rf '{}' +",
-    "postinstall": "patch-package && turbo db:generate",
+    "postinstall": "turbo db:generate",
     "tsc": "echo 'tsc from workspace root will give incorrect results. Run it from each app instead.' && exit 1"
+  },
+  "pnpm": {
+    "patchedDependencies": {
+      "expo-media-library@15.2.3": "patches/expo-media-library@15.2.3.patch",
+      "react-native-fast-image@8.5.12": "patches/react-native-fast-image@8.5.12.patch"
+    }
   }
 }

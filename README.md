@@ -39,12 +39,12 @@ Proxy connection URL will be in the format `postgres://user_name:password@localh
 
 #### Experimentation
 
-3. Apply the change `yarn next db:push`
-4. When finished, revert the schema change and run `yarn next db:migrate`
+3. Apply the change `pnpm next db:push`
+4. When finished, revert the schema change and run `pnpm next db:migrate`
 
 #### Permanent
 
-4. Generate and apply migration `yarn next db:migrate`
+4. Generate and apply migration `pnpm next db:migrate`
 
 > [!TIP]
 > Deployments run `prisma migrate deploy`.

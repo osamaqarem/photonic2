@@ -8,7 +8,7 @@ RUN apk add --no-cache libc6-compat
 RUN apk update
 # Set working directory
 WORKDIR /app
-RUN yarn global add turbo
+RUN pnpm add --global turbo
 COPY . .
 RUN turbo prune --scope=@photonic/next --docker
 
@@ -20,16 +20,17 @@ WORKDIR /app
 # First install the dependencies (as they change less often)
 COPY .gitignore .gitignore
 COPY --from=builder /app/out/json/ .
-COPY --from=builder /app/out/yarn.lock ./yarn.lock
+COPY --from=builder /app/out/pnpm-lock.yaml ./pnpm-lock.yaml
+COPY --from=builder /app/out/pnpm-workspace.yaml ./pnpm-workspace.yaml
 COPY --from=builder /app/out/full/turbo.json ./turbo.json
-RUN yarn install
+RUN pnpm install
 # Build the project
 COPY --from=builder /app/out/full/ .
 COPY tsconfig.json tsconfig.json
 COPY .eslintrc.cjs .eslintrc.cjs
 COPY ./apps/next/prisma ./prisma
-RUN yarn next db:generate
-RUN yarn turbo build --filter=@photonic/next...
+RUN pnpm next db:generate
+RUN pnpm turbo build --filter=@photonic/next...
 
 FROM base AS runner
 WORKDIR /app

@@ -29,11 +29,12 @@ jobs:
           aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }} --profile photonic
 
       - uses: actions/checkout@v4
-
+      - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v4
         with:
-          cache: yarn
-          cache-dependency-path: yarn.lock
+          node-version-file: package.json
+          cache-dependency-path: pnpm-lock.yaml
+          cache: pnpm
 
       - uses: hashicorp/setup-terraform@v3
         with:
@@ -41,7 +42,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          yarn install --immutable --prefer-offline
+          pnpm i --frozen-lockfile
           cd apps/lambda/terraform
           terraform init
 

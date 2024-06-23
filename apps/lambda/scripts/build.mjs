@@ -7,7 +7,7 @@ const requiredFiles = ["node_modules"]
 const output = "connectToPhotonic.zip"
 
 await $`rm -rf dist`
-await $`yarn tsc`
+await $`pnpm tsc`
 await $`cp dist/${compiledCode} ./${compiledCodeRename} && zip -r9 dist/${output} ${compiledCodeRename} ${requiredFiles}; rm ${compiledCodeRename}`
 
 echo(

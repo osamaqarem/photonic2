@@ -5,10 +5,10 @@
   "dependencies": {
     "@gorhom/bottom-sheet": "^4",
     "@klarna/platform-colors": "^0.4.0",
-    "@photonic/common": "*",
-    "@photonic/next": "*",
-    "@photonic/system-ui": "*",
-    "@photonic/worker": "*",
+    "@photonic/common": "workspace:*",
+    "@photonic/next": "workspace:*",
+    "@photonic/system-ui": "workspace:*",
+    "@photonic/worker": "workspace:*",
     "@radix-ui/colors": "^3.0.0",
     "@react-native-menu/menu": "^0.7.2",
     "@react-navigation/native": "^6.1.6",
@@ -92,15 +92,14 @@
     "dev": "expo start --dev-client",
     "android": "expo run:android",
     "ios": "expo run:ios",
-    "prebuild": "yarn compile-plugins && expo prebuild -p ios --clean --no-install && turbo platform-colors",
-    "prebuild-ios": "yarn prebuild && yarn ios",
+    "prebuild": "pnpm compile-plugins && expo prebuild -p ios --clean --no-install && turbo platform-colors",
+    "prebuild-ios": "pnpm prebuild && pnpm ios",
     "compile-plugins": "tsc ./plugins/*.ts --skipLibCheck --esModuleInterop true --outDir ./plugins/build",
-    "watch-plugins": "yarn compile-plugins --watch",
+    "watch-plugins": "pnpm compile-plugins --watch",
     "colors": "turbo platform-colors",
     "platform-colors": "npx @klarna/platform-colors",
     "start": "expo start --dev-client",
     "deploy": "gh workflow run deploy-expo.yml --ref main",
-    "db:migrate": "drizzle-kit generate:sqlite",
-    "postinstall": "cd ../.. && yarn postinstall"
+    "db:migrate": "drizzle-kit generate:sqlite"
   }
 }

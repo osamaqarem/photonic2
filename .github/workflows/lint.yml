@@ -14,24 +14,26 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-
+      - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v4
         with:
-          cache: yarn
-          cache-dependency-path: yarn.lock
+          node-version-file: package.json
+          cache-dependency-path: pnpm-lock.yaml
+          cache: pnpm
+          registry-url: https://npm.pkg.github.com
 
       - name: Install dependencies
-        run: yarn install --immutable --prefer-offline
+        run: pnpm i --frozen-lockfile
 
       - name: Staging Generate platform colors
-        run: yarn expo platform-colors
+        run: pnpm expo platform-colors
         env:
           STAGE: development
 
       - name: Generate Production platform colors
-        run: yarn expo platform-colors
+        run: pnpm expo platform-colors
         env:
           STAGE: production
 
       - name: Run checks
-        run: yarn checks
+        run: pnpm checks

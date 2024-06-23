@@ -1,0 +1,55 @@
+diff --git a/dist/index.d.ts b/dist/index.d.ts
+index 8a912578f605c8b4ef3bae59c11428fc9374b24c..5861f3d5f27dddc0b4be995909ad523aa5df7172 100644
+--- a/dist/index.d.ts
++++ b/dist/index.d.ts
+@@ -57,6 +57,7 @@ export interface FastImageProps extends AccessibilityProps, ViewProps {
+     source: Source | number;
+     resizeMode?: ResizeMode;
+     fallback?: boolean;
++    downscaleSize?: number;
+     onLoadStart?(): void;
+     onProgress?(event: OnProgressEvent): void;
+     onLoad?(event: OnLoadEvent): void;
+diff --git a/ios/FastImage/FFFastImageView.h b/ios/FastImage/FFFastImageView.h
+index fb557cf390b359304462e6940730921083378100..1bd377d74bf7437a6a76caafc3f7eda5ad9811e5 100644
+--- a/ios/FastImage/FFFastImageView.h
++++ b/ios/FastImage/FFFastImageView.h
+@@ -16,6 +16,7 @@
+ @property (nonatomic, copy) RCTDirectEventBlock onFastImageLoad;
+ @property (nonatomic, copy) RCTDirectEventBlock onFastImageLoadEnd;
+ @property (nonatomic, assign) RCTResizeMode resizeMode;
++@property (nonatomic, assign) double downscaleSize;
+ @property (nonatomic, strong) FFFastImageSource *source;
+ @property (nonatomic, strong) UIColor *imageColor;
+ 
+diff --git a/ios/FastImage/FFFastImageView.m b/ios/FastImage/FFFastImageView.m
+index 9c0f1d3c16f44b4112e2ce17bc6df30ad56e6414..7c3547886298a08449ea8c95237ee3093efc3ea7 100644
+--- a/ios/FastImage/FFFastImageView.m
++++ b/ios/FastImage/FFFastImageView.m
+@@ -154,8 +154,13 @@ - (void)reloadImage
+             }
+             return [mutableRequest copy];
+         }];
+-        SDWebImageContext *context = @{SDWebImageContextDownloadRequestModifier : requestModifier};
+         
++        // Downscaling thumbnail to maintain performance in a large list of photos
++        CGFloat scale = UIScreen.mainScreen.scale;
++        CGSize thumbnailSize = CGSizeMake(self.downscaleSize * scale, self.downscaleSize * scale);
++        
++        SDWebImageContext *context = @{SDWebImageContextDownloadRequestModifier : requestModifier,SDWebImageContextImageThumbnailPixelSize : @(thumbnailSize)};
++
+         // Set priority.
+         SDWebImageOptions options = SDWebImageRetryFailed | SDWebImageHandleCookies;
+         switch (_source.priority) {
+diff --git a/ios/FastImage/FFFastImageViewManager.m b/ios/FastImage/FFFastImageViewManager.m
+index a8059afb2108ef78b040cc18514a95d87669af99..1fed902ad6b4b0d8af1f3028e63285ade13a6ed1 100644
+--- a/ios/FastImage/FFFastImageViewManager.m
++++ b/ios/FastImage/FFFastImageViewManager.m
+@@ -14,6 +14,7 @@ - (FFFastImageView*)view {
+ 
+ RCT_EXPORT_VIEW_PROPERTY(source, FFFastImageSource)
+ RCT_EXPORT_VIEW_PROPERTY(resizeMode, RCTResizeMode)
++RCT_EXPORT_VIEW_PROPERTY(downscaleSize, double)
+ RCT_EXPORT_VIEW_PROPERTY(onFastImageLoadStart, RCTDirectEventBlock)
+ RCT_EXPORT_VIEW_PROPERTY(onFastImageProgress, RCTDirectEventBlock)
+ RCT_EXPORT_VIEW_PROPERTY(onFastImageError, RCTDirectEventBlock)

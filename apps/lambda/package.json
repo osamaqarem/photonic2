@@ -9,7 +9,6 @@
   },
   "scripts": {
     "ts": "tsc",
-    "build": "yarn zx ./scripts/build.mjs",
-    "postinstall": "cd ../.. && yarn postinstall"
+    "build": "pnpm zx ./scripts/build.mjs"
   }
 }

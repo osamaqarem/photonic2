@@ -3,10 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev & yarn db:proxy & yarn db:studio",
+    "dev": "next dev & pnpm db:proxy & pnpm db:studio",
     "build": "next build",
     "start": "next start",
-    "serve": "yarn build && yarn start",
+    "serve": "pnpm build && pnpm start",
     "lint": "next lint",
     "ts": "tsc",
     "db:generate": "prisma generate",
@@ -15,15 +15,14 @@
     "db:reset": "prisma db push",
     "db:studio": "BROWSER=none prisma studio",
     "db:format": "prisma format",
-    "db:proxy": "fly proxy 5432:5432 -a photonic-next-staging-postgres",
-    "postinstall": "cd ../.. && yarn postinstall"
+    "db:proxy": "fly proxy 5432:5432 -a photonic-next-staging-postgres"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.427.0",
     "@aws-sdk/client-sts": "^3.427.0",
     "@aws-sdk/s3-request-presigner": "^3.427.0",
     "@keyvhq/core": "^2.1.0",
-    "@photonic/common": "*",
+    "@photonic/common": "workspace:*",
     "@prisma/client": "5.15.1",
     "@trpc/client": "^10.38.4",
     "@trpc/server": "^10.38.4",

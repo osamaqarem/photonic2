@@ -6,7 +6,6 @@
   "author": "Osama Qarem",
   "scripts": {
     "ts": "tsc",
-    "lint": "eslint . --ext .ts",
-    "postinstall": "cd ../.. && yarn postinstall"
+    "lint": "eslint . --ext .ts"
   }
 }

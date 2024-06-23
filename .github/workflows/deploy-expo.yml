@@ -15,14 +15,15 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-
+      - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v4
         with:
-          cache: yarn
-          cache-dependency-path: yarn.lock
+          node-version-file: package.json
+          cache-dependency-path: pnpm-lock.yaml
+          cache: pnpm
 
       - name: Install JS dependencies
-        run: yarn install --immutable --prefer-offline --ignore-scripts
+        run: pnpm i --frozen-lockfile
 
       - uses: ruby/setup-ruby@v1
         with:
@@ -32,7 +33,7 @@ jobs:
       - name: Prebuild
         env:
           STAGE: production
-        run: yarn expo prebuild
+        run: pnpm expo prebuild
 
       - name: Pods Cache
         id: cache-pods
@@ -48,7 +49,7 @@ jobs:
         run: bundle exec pod install --project-directory=ios
 
       - name: Run JS dependencies scripts
-        run: yarn
+        run: pnpm
 
       - name: Fastlane
         working-directory: apps/expo
