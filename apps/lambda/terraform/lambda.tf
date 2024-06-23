@@ -1,3 +1,7 @@
+locals {
+  lambda_zip_path = "${path.module}/../dist/connectToPhotonic.zip"
+}
+
 data "aws_iam_policy_document" "assume_role" {
   statement {
     effect  = "Allow"
@@ -15,18 +19,14 @@ resource "aws_iam_role" "photonic_lambda_iam_role" {
   managed_policy_arns = ["arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"]
 }
 
-data "external" "build" {
-  program = ["pnpm", "build"]
-}
-
 resource "aws_lambda_function" "connect_to_photonic" {
   description   = "(${var.env}) Lambda that receives the CFN template creation event"
-  filename      = "${path.module}/../${data.external.build.result.path}"
+  filename      = local.lambda_zip_path
   function_name = "connect_to_photonic_${var.env}"
   role          = aws_iam_role.photonic_lambda_iam_role.arn
   handler       = "index.handler"
 
-  source_code_hash = filebase64sha256("${path.module}/../${data.external.build.result.path}")
+  source_code_hash = filebase64sha256(local.lambda_zip_path)
 
   environment {
     variables = {

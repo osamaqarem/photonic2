@@ -9,6 +9,8 @@
   },
   "scripts": {
     "ts": "tsc",
-    "build": "pnpm zx ./scripts/build.mjs"
+    "clean": "rm -rf dist",
+    "compress": "zip -q -r9 dist/connectToPhotonic.zip index.js node_modules; rm index.js",
+    "build": "pnpm clean && pnpm ts && cp dist/connectToPhotonic.js ./index.js && pnpm compress"
   }
 }

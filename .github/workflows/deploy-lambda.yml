@@ -46,6 +46,9 @@ jobs:
           cd apps/lambda/terraform
           terraform init
 
+      - name: Compile Lambda
+        run: pnpm lambda build
+
       - name: Deploy Staging
         if: ${{ github.ref == 'refs/heads/dev' }}
         working-directory: ./apps/lambda/terraform
