@@ -63,7 +63,13 @@ export const HomeScreen: React.FC<
     ) as Array<Asset>
     try {
       logger.log("Deleting assets")
-      await mediaManager.deleteLocalAssets(selectedList)
+      Promise.allSettled([
+        mediaManager.deleteLocalAssets(selectedList),
+        mediaManager.deleteRemoteAssets(selectedList, [
+          "remote",
+          "localRemote",
+        ]),
+      ])
       clearSelection()
     } catch (err) {
       logger.log(err)
@@ -95,6 +101,9 @@ export const HomeScreen: React.FC<
     clearSelection()
     try {
       await mediaManager.deleteRemoteAssets(selectedList, ["localRemote"])
+      // TODO: mark `localRemote` assets as `local` & delete `remote` ones, as server won't tell us about this.
+      // mediaManager.deleteRemoteAssets(selectedList, ["remote"])
+      // update `localRemote` in selectedList to be of type `local`
     } catch (err) {
       showError(getErrorMsg(err))
     }
@@ -106,16 +115,22 @@ export const HomeScreen: React.FC<
       "saveRemoteAsset: not remote asset",
     )
 
+    // TODO: this likely leads to an event with incorrect `creationTime` inserted into the DB
     const savedAsset = await mediaManager.createAssetAsync(selectedRemoteAsset)
     const creationTime = selectedRemoteAsset.creationTime
+
+    // TODO: does this then create a third `updated` event? (which would correct the entry in the DB, alleviating the issue above).
     await mediaManager.modifyAssetAsync(savedAsset, {
       creationTime,
     })
 
+    // this causes `updatedAt` to be refreshed for the remote asset, so the next remote sync
+    // will reconcile the state for this asset
     await mediaManager.renameRemoteAsset(
       selectedRemoteAsset,
       savedAsset.filename,
     )
+    syncRemote(true)
 
     return {
       ...selectedRemoteAsset,

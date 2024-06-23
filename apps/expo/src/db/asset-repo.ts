@@ -84,7 +84,8 @@ export const assetRepo = {
     return db.delete(asset).where(eq(asset.localId, id))
   },
   create: (data: Array<AssetInsert>) => {
-    return db.insert(asset).values(data)
+    if (data.length === 0) return []
+    return db.insert(asset).values(data).returning()
   },
   patch: (name: string, fields: SQLiteUpdateSetSource<typeof asset>) => {
     return db.update(asset).set(fields).where(eq(asset.name, name))

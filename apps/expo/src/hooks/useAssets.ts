@@ -8,7 +8,7 @@ import {
 } from "~/expo/db/asset-repo"
 import { type Asset, type AssetInsert } from "~/expo/db/schema"
 import { useSafeIntervalRef } from "~/expo/hooks/useSafeIntervalRef"
-import { mediaManager } from "~/expo/lib/media-manager"
+import { mediaManager, type RawLocalAsset } from "~/expo/lib/media-manager"
 import { lastSyncTimeStorage } from "~/expo/lib/storage"
 import { trpcClient } from "~/expo/state/TrpcProvider"
 
@@ -32,10 +32,7 @@ export const useAssets = () => {
       lastSyncTimeStorage.delete()
     }
     const data = await assetRepo.getAll()
-    if (data.length > 0) {
-      logger.log("Loading existing assets from DB")
-      return data
-    }
+    if (data.length > 0) return data
     return populateDB()
   }, [])
 
@@ -67,7 +64,7 @@ export const useAssets = () => {
   React.useEffect(() => {
     const sub = mediaManager.addListener(async change => {
       if (!change.hasIncrementalChanges) {
-        await fetchLocalData()
+        await refreshQuery()
         logger.warn("Received non-incremental changes.")
       } else {
         logger.log("Received incremental changes", change)
@@ -83,27 +80,41 @@ export const useAssets = () => {
 
         for (const item of change.deletedAssets ?? []) {
           if (item.mediaType !== "photo") continue
-          await assetRepo.deleteById(item.id)
+          const asset = assetMap.current[item.filename]
+          if (asset?.type === "localRemote") {
+            // asset has been deleted from device
+            // if backup delete was needed, then it has also been done.
+            // if backup delete was not needed, then the type must be changed `localRemote` to `local`
+            // FIXME: how to determine if backup delete was needed?
+          } else {
+            await assetRepo.deleteById(item.id)
+          }
         }
 
         if (change.insertedAssets) {
-          const insertedPhotos = change.insertedAssets.filter(
-            t => t.mediaType === "photo",
-          )
-          if (insertedPhotos.length !== 0) {
-            await assetRepo.create(
-              insertedPhotos.map(getSchemaForRawLocalAsset),
-            )
+          let newAssets: Array<RawLocalAsset> = []
+          for (const item of change.insertedAssets ?? []) {
+            if (item.mediaType !== "photo") continue
+            const existing = assetMap.current[item.filename]
+            if (existing?.type === "remote") {
+              // Remote asset has been downloaded to device
+              // Must promote to `localRemote`
+              // Handled in saveRemoteAssset
+            } else {
+              newAssets.push(item)
+            }
           }
+
+          await assetRepo.create(newAssets.map(getSchemaForRawLocalAsset))
         }
-        await fetchLocalData()
+        await refreshQuery()
       }
     })
 
     return () => {
       sub.remove()
     }
-  }, [fetchLocalData])
+  }, [refreshQuery])
 
   return {
     assets,
@@ -132,9 +143,9 @@ async function populateDB() {
   do {
     const data = await fetchMediaLibraryPage(cursor)
     logger.log(`page ${data.assets.length}`, `endCursor: ${cursor}`)
-    const saved = await assetRepo
-      .create(data.assets.map(getSchemaForRawLocalAsset))
-      .returning()
+    const saved = await assetRepo.create(
+      data.assets.map(getSchemaForRawLocalAsset),
+    )
     assets = assets.concat(saved)
     cursor = data.hasNextPage ? data.endCursor : null
   } while (cursor)
