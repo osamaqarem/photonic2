@@ -9,18 +9,18 @@ datasource db {
 }
 
 model User {
-  id            String @id @default(dbgenerated("prefix_nanoid('usr_'::text)"))
+  id String @id @default(dbgenerated("prefix_nanoid('usr_'::text)"))
 
-  email         String  @unique
-  assets        Asset[]
+  email  String  @unique
+  assets Asset[]
 
-  awsAccount    AwsAccount? @relation(fields: [awsAccountId], references: [id])
-  awsAccountId  String?
+  awsAccount   AwsAccount? @relation(fields: [awsAccountId], references: [id])
+  awsAccountId String?
 
-  awsBucket     AwsBucket?
+  awsBucket AwsBucket?
 
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([awsAccountId])
 }
@@ -48,18 +48,18 @@ model AwsBucket {
 }
 
 model Asset {
-  id            String @id @default(dbgenerated("prefix_nanoid('ast_'::text)"))
-  deviceId      String
-  name          String
-  mediaType     String
-  width         Int
-  height        Int
-  duration      Int
-  creationTime  DateTime
+  id               String   @id @default(dbgenerated("prefix_nanoid('ast_'::text)"))
+  deviceId         String
+  name             String
+  mediaType        String
+  width            Int
+  height           Int
+  duration         Int
+  creationTime     DateTime
   modificationTime DateTime
 
-  user         User   @relation(fields: [userId], references: [id])
-  userId       String
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
 
   @@index([userId, creationTime])
 }

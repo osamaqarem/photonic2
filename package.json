@@ -19,7 +19,7 @@
     "lerna-update-wizard": "^1.1.2",
     "postinstall-postinstall": "^2.1.0",
     "prettier": "^2.8.8",
-    "turbo": "^2.0.3",
+    "turbo": "2.0.4",
     "typescript": "^5.5.2",
     "typescript-eslint": "^0.0.1-alpha.0",
     "zx": "^7.2.3"
