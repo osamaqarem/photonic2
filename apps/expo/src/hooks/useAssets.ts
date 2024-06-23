@@ -17,7 +17,7 @@ const logger = new Logger("useAssets")
 export const useAssets = () => {
   const [{ assets, assetMap }, _setAssets] = React.useState({
     assets: [] as Array<Asset>,
-    assetMap: {} as Map<string, Asset>,
+    assetMap: {} as AssetMap,
   })
   const [loading, setLoading] = React.useState(true)
 
@@ -46,7 +46,7 @@ export const useAssets = () => {
   React.useEffect(() => {
     ;(async () => {
       const data = await fetchLocalData()
-      const map = new Map(data.map(item => [item.name, item]))
+      const map = getAssetMap(data)
 
       setAssets({ assets: data, assetMap: map })
       setLoading(false)
@@ -132,7 +132,7 @@ async function populateDB() {
   return assets
 }
 
-async function maybeSyncRemote(assetMap: Map<string, Asset>) {
+async function maybeSyncRemote(assetMap: AssetMap) {
   const now = Date.now()
   const lastSyncTime = lastSyncTimeStorage.get() ?? now
   const diff = now - lastSyncTime
@@ -168,11 +168,11 @@ async function maybeSyncRemote(assetMap: Map<string, Asset>) {
 
   async function filterNeedsLocalWrite(
     remoteAssets: Array<AssetInsert>,
-    assetMap: Map<string, Asset>,
+    assetMap: AssetMap,
   ) {
     const itemsToSave: Array<AssetInsert> = []
     for (const remoteAsset of remoteAssets) {
-      const item = assetMap.get(remoteAsset.name)
+      const item = assetMap[remoteAsset.name]
       if (item) {
         if (item.modificationTime === remoteAsset.modificationTime) {
           // localRemote, up to date
@@ -198,4 +198,18 @@ async function maybeSyncRemote(assetMap: Map<string, Asset>) {
     }
     return itemsToSave
   }
+}
+
+// Filename/asset map
+// it's used with Reaniamted so it can't be a `Map`
+export type AssetMap = Record<string, Asset>
+export function getAssetMap(assets: Array<Asset>): AssetMap {
+  let record: Record<string, Asset> = {}
+  for (let i = 0; i < assets.length; i++) {
+    const item = assets[i]
+    if (item) {
+      record[item.name] = item
+    }
+  }
+  return record
 }

@@ -73,7 +73,7 @@ export const AssetList: React.FC<Props> = ({ onItemPress, data }) => {
   //#region gestures
   const longPressOnStart = (assetName: string) => {
     "worklet"
-    const asset = assetMap.get(assetName)
+    const asset = assetMap[assetName]
     if (!asset) return
     if (selectedItems.value[asset.name]) return
     const axis = { ...asset, isLongPressAxis: true }
@@ -86,7 +86,7 @@ export const AssetList: React.FC<Props> = ({ onItemPress, data }) => {
 
   const tapOnStart = (assetName: string) => {
     "worklet"
-    const asset = assetMap.get(assetName)
+    const asset = assetMap[assetName]
     if (!asset) return
     if (selectModeActive.value) {
       const item = selectedItems.value[assetName]
@@ -224,7 +224,7 @@ export const AssetList: React.FC<Props> = ({ onItemPress, data }) => {
 
       const getItemFromState = (index: number) => {
         const itemInState = data[index]
-        return itemInState ? assetMap.get(itemInState.name) : undefined
+        return itemInState ? assetMap[itemInState.name] : undefined
       }
 
       const item = getItemFromState(itemIndex)
