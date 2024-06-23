@@ -1,10 +1,10 @@
 import * as React from "react"
 import { type SharedValue } from "react-native-reanimated"
-import type { AssetMap } from "~/expo/lib/media-manager"
+import type { Asset } from "~/expo/db/schema"
 
 interface DragSelectContext {
-  assetMap: AssetMap
-  selectedItems: SharedValue<AssetMap>
+  assetMap: Map<string, Asset>
+  selectedItems: SharedValue<Record<string, Asset>>
   selectedItemsKeys: SharedValue<Array<string>>
   selectModeActive: SharedValue<boolean>
   selectedItemsCountText: SharedValue<string>

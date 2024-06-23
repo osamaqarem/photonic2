@@ -16,6 +16,7 @@ import { Text } from "~/expo/design/components/Text"
 import { TextInput } from "~/expo/design/components/TextInput"
 import { useAlerts } from "~/expo/design/components/alerts/useAlerts"
 import { theme } from "~/expo/design/theme"
+import { useSafeIntervalRef } from "~/expo/hooks/useSafeIntervalRef"
 import type { AppParams } from "~/expo/navigation/params"
 import { trpc } from "~/expo/state/TrpcProvider"
 import { useAuth } from "~/expo/state/auth-store"
@@ -31,7 +32,7 @@ export const OnboardingCodeVerificationScreen: React.FC<
   const [cooldown, setCooldown] = React.useState<number | null>(null)
   const [showRequestCode, setShowRequestCode] = React.useState(false)
 
-  const cooldownRef = useIntervalRef()
+  const cooldownRef = useSafeIntervalRef()
 
   useTimeoutActionOnce(() => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
@@ -158,21 +159,6 @@ const styles = StyleSheet.create({
     flex: 1,
   },
 })
-
-const useIntervalRef = () => {
-  const ref = React.useRef<NodeJS.Timeout | null>(null)
-
-  React.useEffect(() => {
-    return () => {
-      if (ref.current) {
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        clearInterval(ref.current)
-      }
-    }
-  }, [])
-
-  return ref
-}
 
 const useTimeoutActionOnce = (action: () => void, ms: number) => {
   React.useEffect(() => {

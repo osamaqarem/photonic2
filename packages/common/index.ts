@@ -3,7 +3,7 @@ export const NOOP = () => {}
 export class Logger {
   private disabled = process.env.NODE_ENV === "production"
 
-  constructor(public prefix: string) {}
+  constructor(private prefix: string) {}
 
   private handleDisabled = (fn: (...args: Array<unknown>) => void) =>
     this.disabled ? NOOP : fn

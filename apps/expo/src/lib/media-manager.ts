@@ -11,9 +11,6 @@ const logger = new Logger("MediaManager")
 
 export type RawLocalAsset = ExpoMedia.Asset
 
-// asset name hashmap
-export type AssetMap = Record<string, Asset>
-
 export const mediaManager = {
   MediaType: ExpoMedia.MediaType,
   requestPermissionsAsync: ExpoMedia.requestPermissionsAsync,

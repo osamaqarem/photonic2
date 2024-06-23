@@ -58,8 +58,8 @@ export const HomeScreen: React.FC<
    * Delete assets locally and remotely
    */
   async function deleteSelectedItems() {
-    const selectedList = selectedItemsKeys.value.map(
-      name => assetMap[name],
+    const selectedList = selectedItemsKeys.value.map(name =>
+      assetMap.get(name),
     ) as Array<Asset>
     try {
       logger.log("Deleting assets")
@@ -74,8 +74,8 @@ export const HomeScreen: React.FC<
    * Delete assets locally
    */
   async function removeSelectedItemsFromDevice() {
-    const selectedList = selectedItemsKeys.value.map(
-      name => assetMap[name],
+    const selectedList = selectedItemsKeys.value.map(name =>
+      assetMap.get(name),
     ) as Array<Asset>
     clearSelection()
     try {
@@ -89,8 +89,8 @@ export const HomeScreen: React.FC<
    * Delete LocalRemoteAssets from remote filestorage and DB
    */
   async function removeSelectedItemsRemotely() {
-    const selectedList = selectedItemsKeys.value.map(
-      name => assetMap[name],
+    const selectedList = selectedItemsKeys.value.map(name =>
+      assetMap.get(name),
     ) as Array<Asset>
     clearSelection()
     try {
@@ -134,7 +134,8 @@ export const HomeScreen: React.FC<
       const asset = selectedItems.value[name]
       if (asset?.type !== "remote") continue
 
-      const remoteAsset = assetMap[asset.name] as Asset
+      const remoteAsset = assetMap.get(asset.name)
+      assert(remoteAsset)
       try {
         await saveRemoteAsset(remoteAsset)
       } catch (err) {
@@ -152,7 +153,7 @@ export const HomeScreen: React.FC<
     const firstItemName = selectedItemsKeys.value[0]
     assert(firstItemName)
 
-    const selectedAsset = assetMap[firstItemName]
+    const selectedAsset = assetMap.get(firstItemName)
     clearSelection()
     if (!selectedAsset) return
 
@@ -166,7 +167,8 @@ export const HomeScreen: React.FC<
   const goToSettings = () => props.navigation.navigate("settings")
 
   const uploadAssets = async (mode: "selected" | "all") => {
-    const collection = mode === "selected" ? selectedItems.value : assetMap
+    const collection =
+      mode === "selected" ? selectedItems.value : Object.fromEntries(assetMap)
 
     let data: Array<Omit<Asset, "localId"> & { localId: string }> = []
     for (const name in collection) {

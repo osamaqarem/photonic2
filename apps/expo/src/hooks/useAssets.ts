@@ -1,15 +1,13 @@
 import { Logger } from "@photonic/common"
-import { desc, eq } from "drizzle-orm"
 import React from "react"
 import { LayoutAnimation } from "react-native"
-import { db } from "~/expo/db"
 import {
+  assetRepo,
   getSchemaForRawLocalAsset,
   getSchemaForRawRemoteAsset,
-} from "~/expo/db/asset"
-import { asset, type Asset, type AssetInsert } from "~/expo/db/schema"
-import { useAlerts } from "~/expo/design/components/alerts/useAlerts"
-import type { AssetMap, RawLocalAsset } from "~/expo/lib/media-manager"
+} from "~/expo/db/asset-repo"
+import { type Asset, type AssetInsert } from "~/expo/db/schema"
+import { useSafeIntervalRef } from "~/expo/hooks/useSafeIntervalRef"
 import { mediaManager } from "~/expo/lib/media-manager"
 import { lastSyncTimeStorage } from "~/expo/lib/storage"
 import { trpcClient } from "~/expo/state/TrpcProvider"
@@ -17,23 +15,27 @@ import { trpcClient } from "~/expo/state/TrpcProvider"
 const logger = new Logger("useAssets")
 
 export const useAssets = () => {
-  const [assets, _setAssets] = React.useState<Array<Asset>>([])
+  const [{ assets, assetMap }, _setAssets] = React.useState({
+    assets: [] as Array<Asset>,
+    assetMap: {} as Map<string, Asset>,
+  })
   const [loading, setLoading] = React.useState(true)
 
-  const { showNotification } = useAlerts()
+  const remoteSyncInterval = useSafeIntervalRef()
 
-  const assetMap = getAssetMap(assets)
-
-  const setAssets = React.useCallback((arg: typeof assets) => {
-    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
-    _setAssets(arg)
-  }, [])
+  const setAssets = React.useCallback(
+    (args: Parameters<typeof _setAssets>[number]) => {
+      LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
+      _setAssets(args)
+    },
+    [],
+  )
 
   const fetchLocalData = React.useCallback(async (clear = false) => {
     if (clear) {
-      await db.delete(asset).execute()
+      await assetRepo.clear()
     }
-    const data = await db.select().from(asset).orderBy(desc(asset.creationTime))
+    const data = await assetRepo.getAll()
     if (data.length > 0) {
       logger.log("Loading existing assets from DB")
       return data
@@ -41,97 +43,41 @@ export const useAssets = () => {
     return populateDB()
   }, [])
 
-  const maybeRefreshRemoteData = React.useCallback(async () => {
-    const now = Date.now()
-    const lastSyncTime = lastSyncTimeStorage.get() ?? now
-    const diff = now - lastSyncTime
-    if (diff < 60_000) return
+  React.useEffect(() => {
+    ;(async () => {
+      const data = await fetchLocalData()
+      const map = new Map(data.map(item => [item.name, item]))
 
-    logger.log("Fetching remote assets")
-    let remoteAssets: Array<AssetInsert> = []
-    let nextCursor
-    do {
-      const data = await trpcClient.photo.list.query({
-        cursor: nextCursor,
-        updatedAfterMs: lastSyncTime,
-      })
-      remoteAssets = data.assets.map(getSchemaForRawRemoteAsset)
-      nextCursor = data.nextCursor
-    } while (nextCursor)
-    logger.log("Fetching remote assets done")
+      setAssets({ assets: data, assetMap: map })
+      setLoading(false)
 
-    // images that the server needs to delete from its records since it needs re-uploading (local)
-    const outDatedRemotely = []
-    // images that the device needs to delete from its records since it needs re-downloading (remote)
-    const outDatedLocally = []
-    // images that both server and device have and are up to date (localRemote)
-    const equal = []
-    // images that the device needs to save locally (remote)
-    const remoteOnly = []
-
-    for (const remoteAsset of remoteAssets) {
-      const item = assetMap[remoteAsset.name]
-      if (item) {
-        if (item.modificationTime === remoteAsset.modificationTime) {
-          // localRemote, up to date
-          equal.push(item)
-        } else if (item.modificationTime > remoteAsset.modificationTime) {
-          // localRemote, outdated locally
-          outDatedRemotely.push(item)
-        } else {
-          // localRemote, outdated remotely
-          outDatedLocally.push(item)
-        }
-      } else {
-        // remote
-        remoteOnly.push(remoteAsset)
-      }
-    }
-
-    lastSyncTimeStorage.save(now)
-  }, [assetMap])
+      maybeSyncRemote(map)
+      remoteSyncInterval.current = setInterval(() => {
+        maybeSyncRemote(map)
+      }, 60_000)
+    })()
+  }, [fetchLocalData, remoteSyncInterval, setAssets])
 
   React.useEffect(() => {
-    fetchLocalData().then(data => {
-      setAssets(data)
-      setLoading(false)
-      // Assume stored remote data is out of date. How to reconcile?
-      // - start fetching remote assets. these could be thousands of records
-      // - fetch 200 each, from newest to oldest. keep refreshing until we have all assets
-      // - save lastSyncTime to local storage
-      // - next time we start, only fetch remote records that were updatedAt > lastSyncTime
-    })
-
-    const updateAsset = async (item: RawLocalAsset) => {
-      if (item.mediaType !== "photo") return
-      await db
-        .update(asset)
-        .set({
-          type: "local",
-          modificationTime: item.modificationTime,
-          creationTime: item.creationTime,
-          duration: item.duration,
-          height: item.height,
-          width: item.width,
-          localId: item.id,
-          name: item.filename,
-          uri: item.uri,
-        })
-        .where(eq(asset.name, item.filename))
-    }
-
     const sub = mediaManager.addListener(async change => {
-      if (change.hasIncrementalChanges) {
+      if (!change.hasIncrementalChanges) {
+        await fetchLocalData()
+        logger.warn("Received non-incremental changes.")
+      } else {
         logger.log("Received incremental changes", change)
 
         for (const updated of change.updatedAssets ?? []) {
           if (updated.mediaType !== "photo") continue
-          await updateAsset(updated)
+          await assetRepo.patch(updated.filename, {
+            ...updated,
+            mediaType: "photo",
+            type: "local",
+          })
         }
 
         for (const item of change.deletedAssets ?? []) {
           if (item.mediaType !== "photo") continue
-          await db.delete(asset).where(eq(asset.localId, item.id))
+          await assetRepo.deleteById(item.id)
         }
 
         if (change.insertedAssets) {
@@ -139,26 +85,19 @@ export const useAssets = () => {
             t => t.mediaType === "photo",
           )
           if (insertedPhotos.length !== 0) {
-            await db
-              .insert(asset)
-              .values(insertedPhotos.map(getSchemaForRawLocalAsset))
+            await assetRepo.create(
+              insertedPhotos.map(getSchemaForRawLocalAsset),
+            )
           }
         }
-
-        setAssets(await fetchLocalData())
-      } else {
-        setAssets(await fetchLocalData())
-        showNotification({
-          message: "Received non-incremental changes.",
-          dismissAfterMs: 5000,
-        })
+        await fetchLocalData()
       }
     })
 
     return () => {
       sub.remove()
     }
-  }, [fetchLocalData, setAssets, showNotification])
+  }, [fetchLocalData])
 
   return { assets, assetMap, loading }
 }
@@ -182,9 +121,8 @@ async function populateDB() {
   do {
     const data = await fetchMediaLibraryPage(cursor)
     logger.log(`page ${data.assets.length}`, `endCursor: ${cursor}`)
-    const saved = await db
-      .insert(asset)
-      .values(data.assets.map(getSchemaForRawLocalAsset))
+    const saved = await assetRepo
+      .create(data.assets.map(getSchemaForRawLocalAsset))
       .returning()
     assets = assets.concat(saved)
     cursor = data.hasNextPage ? data.endCursor : null
@@ -194,13 +132,70 @@ async function populateDB() {
   return assets
 }
 
-export function getAssetMap(assets: Array<Asset>): AssetMap {
-  let record: Record<string, Asset> = {}
-  for (let i = 0; i < assets.length; i++) {
-    const item = assets[i]
-    if (item) {
-      record[item.name] = item
-    }
+async function maybeSyncRemote(assetMap: Map<string, Asset>) {
+  const now = Date.now()
+  const lastSyncTime = lastSyncTimeStorage.get() ?? now
+  const diff = now - lastSyncTime
+  if (diff < 60_000) {
+    logger.log("Skipping remote sync")
+    return
   }
-  return record
+
+  const remoteItems = await paginateRemoteAssets(lastSyncTime)
+  const itemsToUpdate = await filterNeedsLocalWrite(remoteItems, assetMap)
+
+  assetRepo
+    .put(itemsToUpdate)
+    .then(() => lastSyncTimeStorage.save(now))
+    .catch(logger.error)
+
+  async function paginateRemoteAssets(updatedAfterMs: number) {
+    logger.log("Fetching remote assets")
+    let remoteAssets: Array<AssetInsert> = []
+    let nextCursor
+    do {
+      const data = await trpcClient.photo.list.query({
+        cursor: nextCursor,
+        updatedAfterMs,
+      })
+      remoteAssets = data.assets.map(getSchemaForRawRemoteAsset)
+      nextCursor = data.nextCursor
+    } while (nextCursor)
+
+    logger.log("Fetching remote assets done")
+    return remoteAssets
+  }
+
+  async function filterNeedsLocalWrite(
+    remoteAssets: Array<AssetInsert>,
+    assetMap: Map<string, Asset>,
+  ) {
+    const itemsToSave: Array<AssetInsert> = []
+    for (const remoteAsset of remoteAssets) {
+      const item = assetMap.get(remoteAsset.name)
+      if (item) {
+        if (item.modificationTime === remoteAsset.modificationTime) {
+          // localRemote, up to date
+          // do nothing
+        } else if (item.modificationTime > remoteAsset.modificationTime) {
+          // localRemote, outdated remotely
+          // must update remote record
+          // we can ignore doing anything here, as asset must already be marked `local` in local db.
+          // TODO: checking if file re-upload is required vs only metadata update
+        } else {
+          // localRemote, outdated remotely
+          // remote only, no local record
+          itemsToSave.push({
+            ...remoteAsset,
+            id: item.id,
+            type: "remote",
+          })
+        }
+      } else {
+        // remote only, no local record
+        itemsToSave.push(remoteAsset)
+      }
+    }
+    return itemsToSave
+  }
 }
