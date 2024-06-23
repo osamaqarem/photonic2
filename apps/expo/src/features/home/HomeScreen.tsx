@@ -14,14 +14,10 @@ import { ControlPanel } from "~/expo/features/home/components/control-panel"
 import { DragSelectContextProvider } from "~/expo/features/home/context/DragSelectContextProvider"
 import { useAssets } from "~/expo/features/home/hooks/useAssets"
 import { Actor } from "~/expo/features/home/utils/actor"
-import {
-  exportAssetRecordMap,
-  mediaManager,
-} from "~/expo/features/home/utils/media-manager"
+import { mediaManager } from "~/expo/features/home/utils/media-manager"
 import type { Asset } from "~/expo/lib/db/schema"
 import type { AppParams } from "~/expo/navigation/params"
 import { trpcClient } from "~/expo/stores/TrpcProvider"
-import type { AssetRecordMap } from "./utils/media-manager"
 
 const logger = new Logger("HomeScreen")
 
@@ -30,12 +26,7 @@ export const HomeScreen: React.FC<
 > = props => {
   const { showError } = useAlerts()
 
-  const { assets, loading } = useAssets()
-
-  const assetRecord = useDerivedValue<AssetRecordMap>(
-    () => exportAssetRecordMap(assets),
-    [assets],
-  )
+  const { assets, assetMap, loading } = useAssets()
 
   const showGradientOverlay = useSharedValue(false)
 
@@ -68,7 +59,7 @@ export const HomeScreen: React.FC<
    */
   async function deleteSelectedItems() {
     const selectedList = selectedItemsKeys.value.map(
-      name => assetRecord.value[name],
+      name => assetMap[name],
     ) as Array<Asset>
     try {
       logger.log("Deleting assets")
@@ -84,7 +75,7 @@ export const HomeScreen: React.FC<
    */
   async function removeSelectedItemsFromDevice() {
     const selectedList = selectedItemsKeys.value.map(
-      name => assetRecord.value[name],
+      name => assetMap[name],
     ) as Array<Asset>
     clearSelection()
     try {
@@ -99,7 +90,7 @@ export const HomeScreen: React.FC<
    */
   async function removeSelectedItemsRemotely() {
     const selectedList = selectedItemsKeys.value.map(
-      name => assetRecord.value[name],
+      name => assetMap[name],
     ) as Array<Asset>
     clearSelection()
     try {
@@ -143,7 +134,7 @@ export const HomeScreen: React.FC<
       const asset = selectedItems.value[name]
       if (asset?.type !== "remote") continue
 
-      const remoteAsset = assetRecord.value[asset.name] as Asset
+      const remoteAsset = assetMap[asset.name] as Asset
       try {
         await saveRemoteAsset(remoteAsset)
       } catch (err) {
@@ -161,7 +152,7 @@ export const HomeScreen: React.FC<
     const firstItemName = selectedItemsKeys.value[0]
     assert(firstItemName)
 
-    const selectedAsset = assetRecord.value[firstItemName]
+    const selectedAsset = assetMap[firstItemName]
     clearSelection()
     if (!selectedAsset) return
 
@@ -175,8 +166,7 @@ export const HomeScreen: React.FC<
   const goToSettings = () => props.navigation.navigate("settings")
 
   const uploadAssets = async (mode: "selected" | "all") => {
-    const collection =
-      mode === "selected" ? selectedItems.value : assetRecord.value
+    const collection = mode === "selected" ? selectedItems.value : assetMap
 
     let data: Array<Omit<Asset, "localId"> & { localId: string }> = []
     for (const name in collection) {
@@ -228,7 +218,7 @@ export const HomeScreen: React.FC<
 
   return (
     <DragSelectContextProvider
-      assetRecord={assetRecord}
+      assetMap={assetMap}
       selectedItems={selectedItems}
       selectedItemsKeys={selectedItemsKeys}
       selectModeActive={selectModeActive}

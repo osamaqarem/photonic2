@@ -2,10 +2,8 @@ import { Logger, assert, invariant } from "@photonic/common"
 import * as FileSystem from "expo-file-system"
 import * as ExpoMedia from "expo-media-library"
 import Share from "react-native-share"
-import type { Asset, AssetInsert } from "~/expo/lib/db/schema"
-import { deviceIdStorage } from "~/expo/lib/device-id"
+import type { Asset } from "~/expo/lib/db/schema"
 import { trpcClient } from "~/expo/stores/TrpcProvider"
-import { useAuth } from "~/expo/stores/auth-store"
 
 export { PermissionStatus } from "expo-media-library"
 
@@ -120,9 +118,7 @@ class MediaManager {
 
 export const mediaManager = new MediaManager()
 
-export function exportAssetRecordMap(assets?: Array<Asset>): AssetRecordMap {
-  "worklet"
-  if (!assets) return {}
+export function getAssetMap(assets: Array<Asset>): AssetMap {
   let record: Record<string, Asset> = {}
   for (let i = 0; i < assets.length; i++) {
     const item = assets[i]
@@ -131,27 +127,6 @@ export function exportAssetRecordMap(assets?: Array<Asset>): AssetRecordMap {
     }
   }
   return record
-}
-
-export function exportAssetInsert(expoAsset: LocalMediaAsset): AssetInsert {
-  const deviceId = deviceIdStorage.get()
-  const { user } = useAuth.getState()
-  assert(user?.id)
-
-  return {
-    localId: expoAsset.id,
-    name: expoAsset.filename,
-    type: "local",
-    mediaType: expoAsset.mediaType as "photo" | "video",
-    width: expoAsset.width,
-    height: expoAsset.height,
-    uri: expoAsset.uri,
-    duration: expoAsset.duration,
-    creationTime: expoAsset.creationTime,
-    modificationTime: expoAsset.modificationTime,
-    userId: user.id,
-    deviceId,
-  }
 }
 
 export function usePermissions() {
@@ -165,4 +140,4 @@ export function usePermissions() {
 export type LocalMediaAsset = ExpoMedia.Asset
 
 // asset name hashmap
-export type AssetRecordMap = Record<string, Asset>
+export type AssetMap = Record<string, Asset>
