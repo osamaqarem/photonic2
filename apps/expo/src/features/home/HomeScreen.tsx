@@ -26,7 +26,7 @@ export const HomeScreen: React.FC<
 > = props => {
   const { showError } = useAlerts()
 
-  const { assets, assetMap, loading } = useAssets()
+  const { assets, assetMap, loading, syncRemote } = useAssets()
 
   const showGradientOverlay = useSharedValue(false)
 
@@ -199,7 +199,7 @@ export const HomeScreen: React.FC<
         if (errors.length) logger.error(errors)
       }
 
-      // TODO: reload assets
+      syncRemote(true)
 
       setTimeout(() => {
         totalUploadProgress.value = 0

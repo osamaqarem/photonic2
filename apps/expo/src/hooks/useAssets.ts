@@ -15,25 +15,21 @@ import { trpcClient } from "~/expo/state/TrpcProvider"
 const logger = new Logger("useAssets")
 
 export const useAssets = () => {
-  const [{ assets, assetMap }, _setAssets] = React.useState({
-    assets: [] as Array<Asset>,
-    assetMap: {} as AssetMap,
-  })
+  const [assets, _setAssets] = React.useState<Array<Asset>>([])
   const [loading, setLoading] = React.useState(true)
+  const assetMap = React.useRef({} as AssetMap)
 
   const remoteSyncInterval = useSafeIntervalRef()
 
-  const setAssets = React.useCallback(
-    (args: Parameters<typeof _setAssets>[number]) => {
-      LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
-      _setAssets(args)
-    },
-    [],
-  )
+  const setAssets = React.useCallback((data: Array<Asset>) => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
+    _setAssets(data)
+  }, [])
 
   const fetchLocalData = React.useCallback(async (clear = false) => {
     if (clear) {
       await assetRepo.clear()
+      lastSyncTimeStorage.delete()
     }
     const data = await assetRepo.getAll()
     if (data.length > 0) {
@@ -43,23 +39,30 @@ export const useAssets = () => {
     return populateDB()
   }, [])
 
+  const refreshQuery = React.useCallback(async () => {
+    const data = await fetchLocalData(false)
+    const updatedMap = getAssetMap(data)
+    assetMap.current = updatedMap
+    setAssets(data)
+  }, [fetchLocalData, setAssets])
+
+  const syncRemote = React.useCallback(
+    async (force = false) => {
+      await maybeSyncRemote(assetMap.current, force)
+      refreshQuery()
+    },
+    [refreshQuery],
+  )
+
   React.useEffect(() => {
     ;(async () => {
-      const data = await fetchLocalData()
-      const map = getAssetMap(data)
-      setAssets({ assets: data, assetMap: map })
+      refreshQuery()
       setLoading(false)
 
-      const syncRemote = async () => {
-        maybeSyncRemote(map)
-        const data = await fetchLocalData()
-        const updatedMap = getAssetMap(data)
-        setAssets({ assets: data, assetMap: updatedMap })
-      }
-      syncRemote()
+      await syncRemote()
       remoteSyncInterval.current = setInterval(syncRemote, 60_000)
     })()
-  }, [fetchLocalData, remoteSyncInterval, setAssets])
+  }, [fetchLocalData, refreshQuery, remoteSyncInterval, setAssets, syncRemote])
 
   React.useEffect(() => {
     const sub = mediaManager.addListener(async change => {
@@ -102,7 +105,12 @@ export const useAssets = () => {
     }
   }, [fetchLocalData])
 
-  return { assets, assetMap, loading }
+  return {
+    assets,
+    assetMap: assetMap.current,
+    loading,
+    syncRemote,
+  }
 }
 
 async function populateDB() {
@@ -136,11 +144,11 @@ async function populateDB() {
 }
 
 const syncLogger = new Logger("maybeSyncRemote")
-async function maybeSyncRemote(assetMap: AssetMap) {
+async function maybeSyncRemote(assetMap: AssetMap, force = false) {
   const now = Date.now()
   const lastSyncTime = lastSyncTimeStorage.get() ?? 0
   const diff = now - lastSyncTime
-  if (diff < 60_000) {
+  if (diff < 60_000 && !force) {
     syncLogger.log(
       `Skipping remote sync, last sync at: ${new Date(
         lastSyncTime,
@@ -148,7 +156,7 @@ async function maybeSyncRemote(assetMap: AssetMap) {
     )
     return
   }
-  syncLogger.log("Remote sync begin")
+  syncLogger.log(`Remote sync begin | Forced: ${force}`)
 
   const remoteItems = await paginateRemoteAssets(lastSyncTime)
   const itemsToUpdate = await filterNeedsLocalWrite(remoteItems, assetMap)
@@ -171,6 +179,7 @@ async function maybeSyncRemote(assetMap: AssetMap) {
       const data = await trpcClient.photo.list.query({
         cursor: nextCursor,
         updatedAfterMs,
+        limit: 500,
       })
       remoteAssets = data.assets.map(getSchemaForRawRemoteAsset)
       nextCursor = data.nextCursor

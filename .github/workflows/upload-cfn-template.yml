@@ -1,4 +1,4 @@
-name: Upload Cloudformation Template
+name: Upload CloudFormation Template
 
 on:
   push:
