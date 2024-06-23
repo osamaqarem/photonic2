@@ -47,14 +47,17 @@ export const useAssets = () => {
     ;(async () => {
       const data = await fetchLocalData()
       const map = getAssetMap(data)
-
       setAssets({ assets: data, assetMap: map })
       setLoading(false)
 
-      maybeSyncRemote(map)
-      remoteSyncInterval.current = setInterval(() => {
+      const syncRemote = async () => {
         maybeSyncRemote(map)
-      }, 60_000)
+        const data = await fetchLocalData()
+        const updatedMap = getAssetMap(data)
+        setAssets({ assets: data, assetMap: updatedMap })
+      }
+      syncRemote()
+      remoteSyncInterval.current = setInterval(syncRemote, 60_000)
     })()
   }, [fetchLocalData, remoteSyncInterval, setAssets])
 
@@ -135,7 +138,7 @@ async function populateDB() {
 const syncLogger = new Logger("maybeSyncRemote")
 async function maybeSyncRemote(assetMap: AssetMap) {
   const now = Date.now()
-  const lastSyncTime = lastSyncTimeStorage.get() ?? now
+  const lastSyncTime = lastSyncTimeStorage.get() ?? 0
   const diff = now - lastSyncTime
   if (diff < 60_000) {
     syncLogger.log(
@@ -145,17 +148,17 @@ async function maybeSyncRemote(assetMap: AssetMap) {
     )
     return
   }
-  syncLogger.log("Remote sync ongoing")
+  syncLogger.log("Remote sync begin")
 
   const remoteItems = await paginateRemoteAssets(lastSyncTime)
   const itemsToUpdate = await filterNeedsLocalWrite(remoteItems, assetMap)
-
-  syncLogger.log("itemsToUpdate", itemsToUpdate.length)
+  syncLogger.log(`remoteItems.length: ${remoteItems.length}`)
+  syncLogger.log(`itemsToUpdate.length: ${itemsToUpdate.length}`)
 
   assetRepo
     .put(itemsToUpdate)
     .then(() => {
-      syncLogger.log("Remote sync done")
+      syncLogger.log("Remote sync end")
       lastSyncTimeStorage.save(now)
     })
     .catch(syncLogger.error)
@@ -184,10 +187,14 @@ async function maybeSyncRemote(assetMap: AssetMap) {
     const itemsToSave: Array<AssetInsert> = []
     for (const remoteAsset of remoteAssets) {
       const item = assetMap[remoteAsset.name]
-      if (item) {
+      if (!item) {
+        // remote only, no local record
+        itemsToSave.push(remoteAsset)
+      } else {
+        // item exists locally, but which is newer, local or remote?
         if (item.modificationTime === remoteAsset.modificationTime) {
           // localRemote, up to date
-          // should do nothing, but to ensure correctness we will re-save it as a `localRemote` record
+          // e.g. recently uploaded
           itemsToSave.push({
             ...item,
             type: "localRemote",
@@ -198,17 +205,14 @@ async function maybeSyncRemote(assetMap: AssetMap) {
           // we can ignore doing anything here, as asset must already be marked `local` in local db.
           // TODO: checking if file re-upload is required vs only metadata update
         } else {
-          // localRemote, outdated remotely
-          // remote only, no local record
+          // localRemote, outdated locally
+          // remote only, pretend there's no local record
           itemsToSave.push({
             ...remoteAsset,
             id: item.id,
             type: "remote",
           })
         }
-      } else {
-        // remote only, no local record
-        itemsToSave.push(remoteAsset)
       }
     }
     return itemsToSave
