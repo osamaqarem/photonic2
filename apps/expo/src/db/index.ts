@@ -6,5 +6,6 @@ const expo = openDatabaseSync("db.db")
 export const db = drizzle(expo, { logger: __DEV__ })
 
 export const useDbStudio = () => {
-  return useDrizzleStudio(expo)
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  if (__DEV__) useDrizzleStudio(expo)
 }
