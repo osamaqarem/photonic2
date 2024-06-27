@@ -3,7 +3,6 @@ import { z } from "zod"
 const nonempty = z.string().trim().min(1)
 
 const schema = z.object({
-  STAGE: z.enum(["development", "staging", "production"]).catch("development"),
   MAIL_USER: nonempty,
   MAIL_PASS: nonempty,
   EMAIL_SECRET: nonempty,

@@ -3,11 +3,6 @@ import { authedProcedure, router } from "../trpc"
 
 export const userRouter = router({
   profile: authedProcedure.query(({ ctx }) => {
-    const templatePath =
-      config.STAGE === "production"
-        ? "/template_production.json"
-        : "/template_staging.json"
-
     const stackName = `photonic-access-${ctx.user.id.replaceAll("_", "-")}`
 
     const awsAccountState = Boolean(ctx.user.awsAccount)
@@ -17,7 +12,7 @@ export const userRouter = router({
     const toggleUrl =
       awsAccountState === "connected"
         ? config.AWS_CFN_URL
-        : `${config.AWS_CFN_URL}?region=eu-central-1#/stacks/quickcreate?templateURL=${config.AWS_CFN_TEMPLATE_URL}${templatePath}&stackName=${stackName}&param_PhotonicId=${ctx.user.id}`
+        : `${config.AWS_CFN_URL}?region=eu-central-1#/stacks/quickcreate?templateURL=${config.AWS_CFN_TEMPLATE_URL}&stackName=${stackName}&param_PhotonicId=${ctx.user.id}`
 
     return {
       email: ctx.user.email,
