@@ -63,6 +63,7 @@ export const useAssets = () => {
   }, [fetchLocalData, refreshQuery, remoteSyncInterval, setAssets, syncRemote])
 
   React.useEffect(() => {
+    // Does this tell us about photos that the app does not manage (permissions)?
     const sub = mediaManager.addListener(async change => {
       if (!change.hasIncrementalChanges) {
         await refreshQuery()
@@ -83,11 +84,9 @@ export const useAssets = () => {
           if (item.mediaType !== "photo") continue
           const asset = assetMap.value[item.filename]
           if (asset?.type === "localRemote") {
-            // asset has been deleted from device
-            // if backup delete was needed, then it has also been done.
-            // if backup delete was not needed, then the type must be changed `localRemote` to `local`
-            // FIXME: how to determine if backup delete was needed?
-          } else {
+          } else if (asset?.type === "remote") {
+            // impossible
+          } else if (asset?.type === "local") {
             await assetRepo.deleteById(item.id)
           }
         }
@@ -131,10 +130,7 @@ async function populateDB() {
       after,
       first: Number.MAX_SAFE_INTEGER,
       sortBy: "creationTime",
-      mediaType: [
-        mediaManager.MediaType.photo,
-        // TODO: ExpoMedia.MediaType.video
-      ],
+      mediaType: [mediaManager.MediaType.photo],
     })
   }
 
@@ -224,7 +220,6 @@ async function maybeSyncRemote(assetMap: AssetMap, force = false) {
           // localRemote, outdated remotely
           // must update remote record
           // we can ignore doing anything here, as asset must already be marked `local` in local db.
-          // TODO: checking if file re-upload is required vs only metadata update
         } else {
           // localRemote, outdated locally
           // remote only, pretend there's no local record

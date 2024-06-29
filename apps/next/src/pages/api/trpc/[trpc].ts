@@ -16,11 +16,9 @@ export default createNextApiHandler({
       path: path,
     })
     if (error.code === "INTERNAL_SERVER_ERROR") {
-      // TODO: send to bug reporting
       error.message =
-        "Our server faced an unexpected error. We've been informed."
+        "An unexpected error occured. We have been notified. Please try again later."
     }
-    // TODO: Sentry.catpureException(error)
     error.stack = undefined // hide from frontend
   },
 })

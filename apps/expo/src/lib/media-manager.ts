@@ -67,7 +67,7 @@ export const mediaManager = {
 
   deleteLocalAssets(assets: Array<Asset>) {
     const uris = assets
-      .filter(item => item.type === "local" || item.type === "localRemote")
+      .filter(item => ["local", "localRemote"].includes(item.type))
       .map(item => item.localId as string)
     logger.log("Deleting local assets", uris)
     return ExpoMedia.deleteAssetsAsync(uris)
@@ -79,8 +79,8 @@ export const mediaManager = {
   ): Promise<void> {
     if (assets.length === 0) return
     const names = assets
-      .filter(item => type.some(t => t === item.type))
-      .map(item => item.name as string)
+      .filter(item => type.includes(item.type as "remote" | "localRemote"))
+      .map(item => item.name)
 
     try {
       logger.log("Deleting backed up assets", names)

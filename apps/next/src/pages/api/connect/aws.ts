@@ -24,13 +24,6 @@ interface CustomProviderResponse {
  *    - The incoming request type is 'Delete': likely a bug in our implementation that led the user to this state.
  *      perform the request to delete the resource.
  *
- *    TODO: delete user remote assets
- *    TODO: delete user bucket objects
- *
- *    Notes:
- *    - If the user has objects in their bucket, the bucket wont be deleted, and the cfn resource will fail to be removed.
- *      we remove their AWS account from our DB anyway.
- *
  */
 export default async function handler(
   req: NextApiRequest,

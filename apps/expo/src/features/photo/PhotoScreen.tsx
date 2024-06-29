@@ -1,3 +1,4 @@
+import { Logger } from "@photonic/common"
 import type { NativeStackScreenProps } from "@react-navigation/native-stack"
 import * as React from "react"
 import { StatusBar, StyleSheet, useWindowDimensions } from "react-native"
@@ -29,22 +30,7 @@ import { clamp, interpolateValue } from "~/expo/lib/math"
 import * as vec from "~/expo/lib/vectors"
 import type { AppParams } from "~/expo/navigation/params"
 
-// TODO: viewpager to swipe between images
-// use transparent nav bar
-// zoom out after zoom in continuious gesture should zoom out to original place
-// try image transform state reset animations for goBack in SET.
-// vibration at max/min scale
-
-// Prevent the user from dismissing the modal if they zoom in then zoom out too much by accident - OK
-// scale down to go back - OK
-// pan down from base_scale to go back - OK
-// refactor into vectors - OK
-// double tap to zoom at point - ok
-// double tap to zoom out if zoomed in - OK
-// fix slow zoom - OK
-// handle focal zoom point - OK
-// handle device aspect ratio - OK
-// handle device orientation - OK
+const logger = new Logger("PhotoScreen")
 
 const BASE_SCALE = 1
 const MIN_SCALE = 0
@@ -95,7 +81,7 @@ export const PhotoScreen: React.FC<
   const backgroundColorOpacity = useSharedValue(MAX_OPACITY)
 
   function onImageLoaded(e: OnLoadEvent) {
-    console.log(e.nativeEvent)
+    logger.log(e.nativeEvent)
     setImageSize(e.nativeEvent)
   }
 
@@ -232,7 +218,6 @@ export const PhotoScreen: React.FC<
           newMax,
         )
 
-        // TODO: reverse displacement x,y
         scale.value = Math.max(
           scaleOffset.value + normalizedScale,
           MIN_IMG_SCALE,
@@ -268,8 +253,6 @@ export const PhotoScreen: React.FC<
       vec.set(translationOffset, translation)
     },
     onFinish: () => {
-      // console.log('pinch onFinish')
-
       initialScaleEvent.value = undefined
 
       const shouldDismiss = handleDismissBasedOnOpacity()
@@ -300,8 +283,6 @@ export const PhotoScreen: React.FC<
     EmptyObject
   >({
     onActive: e => {
-      // console.log('pan onActive')
-
       if (scale.value > BASE_SCALE) {
         const imgWidth = getCurrentImgViewWidth() // actual image width for when the image is taller than it is wide
         const imgHeight = getCurrentImgViewHeight()
@@ -374,8 +355,6 @@ export const PhotoScreen: React.FC<
       }
     },
     onFinish: () => {
-      // console.log('pan onFinish')
-
       const shouldDismiss = handleDismissBasedOnOpacity()
       if (shouldDismiss) {
         return
@@ -396,8 +375,6 @@ export const PhotoScreen: React.FC<
     EmptyObject
   >({
     onActive: e => {
-      // console.log('tap onActive')
-
       if (scale.value > BASE_SCALE) {
         resetScale()
         resetPanXY()
@@ -481,7 +458,7 @@ export const PhotoScreen: React.FC<
       // const debug = true
       const debug = false
       if (debug) {
-        console.log(`
+        logger.log(`
       scale: ${scale.value}
       initialScale: ${initialScale.value}
       scaleOffset: ${scaleOffset.value}
@@ -521,10 +498,10 @@ export const PhotoScreen: React.FC<
                     ref={imageRef}
                     onLoad={onImageLoaded}
                     onLoadStart={() => {
-                      console.log("onLoadStart")
+                      logger.log("onLoadStart")
                     }}
                     onLoadEnd={() => {
-                      console.log("onLoadEnd")
+                      logger.log("onLoadEnd")
                     }}
                   />
                 </Animated.View>

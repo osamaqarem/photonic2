@@ -22,10 +22,7 @@ interface CustomContentProps {
 
 export type BaseOptions = StandardLayout | CustomLayout
 
-export type ModalOptions = BaseOptions & {
-  // TODO: not implemented
-  showCloseBtn?: boolean
-}
+export type ModalOptions = BaseOptions
 
 export interface NotificationOptions {
   message: string

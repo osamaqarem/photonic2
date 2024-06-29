@@ -100,10 +100,10 @@ export const HomeScreen: React.FC<
     ) as Array<Asset>
     clearSelection()
     try {
-      await mediaManager.deleteRemoteAssets(selectedList, ["localRemote"])
-      // TODO: mark `localRemote` assets as `local` & delete `remote` ones, as server won't tell us about this.
-      // mediaManager.deleteRemoteAssets(selectedList, ["remote"])
-      // update `localRemote` in selectedList to be of type `local`
+      await mediaManager.deleteRemoteAssets(selectedList, [
+        "localRemote",
+        "remote",
+      ])
     } catch (err) {
       showError(getErrorMsg(err))
     }
@@ -116,16 +116,15 @@ export const HomeScreen: React.FC<
     )
 
     // TODO: this likely leads to an event with incorrect `creationTime` inserted into the DB
+    // does `modifyAssetAsync` then create a third `updated` event? (which would correct the entry in the DB, alleviating the issue above).
+    // `renameRemoteAsset` causes `updatedAt` to be refreshed for the remote asset, so the next remote sync will reconcile the state for this asset
     const savedAsset = await mediaManager.createAssetAsync(selectedRemoteAsset)
     const creationTime = selectedRemoteAsset.creationTime
 
-    // TODO: does this then create a third `updated` event? (which would correct the entry in the DB, alleviating the issue above).
     await mediaManager.modifyAssetAsync(savedAsset, {
       creationTime,
     })
 
-    // this causes `updatedAt` to be refreshed for the remote asset, so the next remote sync
-    // will reconcile the state for this asset
     await mediaManager.renameRemoteAsset(
       selectedRemoteAsset,
       savedAsset.filename,
@@ -159,11 +158,6 @@ export const HomeScreen: React.FC<
     }
   }
 
-  /**
-   * Share selected asset
-   * TODO: investigate sharing multiple assets e.g. to WhatsApp
-   * TODO: some photos fail to share to messenger
-   */
   async function shareSelectedItems() {
     const firstItemName = selectedItemsKeys.value[0]
     assert(firstItemName)

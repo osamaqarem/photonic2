@@ -101,7 +101,6 @@ export const photoRouter = router({
 
       return
     }),
-  // TODO: remove this endpoint, have the storage provider call the server with the data instead
   put: storageProcedure
     .input(
       z.object({

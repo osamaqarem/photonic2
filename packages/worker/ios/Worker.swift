@@ -142,7 +142,6 @@ public class Worker: Module {
             request.httpMethod = "PUT"
             request.addValue("application/octet-stream", forHTTPHeaderField: "content-type")
 
-            // TODO: Multipart upload via chunks and file streaming for files > 5 MB
             URLSession.shared.uploadTask(with: request, from: data) { [unowned self] data, res, err in
                 if err != nil {
                     let msg = err?.localizedDescription ?? "Upload task resolved with unknown error"

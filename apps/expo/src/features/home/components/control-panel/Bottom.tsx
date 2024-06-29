@@ -16,13 +16,7 @@ import { useDragSelectContext } from "~/expo/state/DragSelectContextProvider"
 import { Option } from "./Option"
 
 const bottomPanelHeight = 120
-// TODO:
-// backup:              when LocalAssets are selected
-// save:                when RemoteAssets are selected
-// share:               any
-// delete:              any
-// delete from device:  when LocalRemoteAssets are selected
-// delete backup:       when LocalRemoteAssets/RemoteAssets are selected
+
 type BottomPanelType = React.FC<
   React.PropsWithChildren<{
     deleteSelectedItems: () => void

@@ -26,12 +26,11 @@ export const OnboardingPermissionsScreen: React.FC<
     }
   }, [finishOnboarding, permissionResponse?.status])
 
-  const handleSelect = () => {
+  const handleGrantAccess = () => {
     switch (permissionResponse?.status) {
       case PermissionStatus.UNDETERMINED:
         return requestPermission()
       case PermissionStatus.DENIED:
-        // TODO: adjust in app
         return Linking.openSettings()
     }
   }
@@ -63,7 +62,7 @@ export const OnboardingPermissionsScreen: React.FC<
           variant="secondary"
           onPress={finishOnboarding}
         />
-        <Button text="Grant access" size="wide" onPress={handleSelect} />
+        <Button text="Grant access" size="wide" onPress={handleGrantAccess} />
       </ScrollView.StickyView>
     </>
   )

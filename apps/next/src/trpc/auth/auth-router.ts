@@ -15,19 +15,14 @@ export const authRouter = router({
     )
     .mutation(async ({ input, ctx }) => {
       const email = input.email.toLowerCase()
-
       // random five digits
       const code = Math.floor(Math.random() * 90_000 + 10_000).toString()
 
-      // TODO: check if code exists in db, if it does, reject for 1 minute since issue date
-      // TODO: rate limit endpoint
-
       await Promise.all([
-        // TODO: save code to db instead
         ctx.cache.loginCode.set(email, { email, code }),
         transporter.sendMail({
           to: email,
-          from: '"Login" <todo@photonic.com>',
+          from: '"Login" <email@photonic.com>',
           subject: "Log in to Photonic",
           html: `
           <main>
@@ -37,9 +32,6 @@ export const authRouter = router({
           </main>`,
         }),
       ])
-
-      // TODO: return another random code, codeVerifier.
-      return
     }),
   verifyLoginCode: publicProcedure
     .input(
