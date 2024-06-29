@@ -86,13 +86,13 @@ export const Thumbnail: React.FC<Props> & {
   }))
 
   const uploadIndicatorStyle = useAnimatedStyle(() => {
-    const type = assetMap[asset.name]?.type
+    const type = assetMap.value[asset.name]?.type
     const local = type === "local"
     return { opacity: local ? 1 : 0 }
   })
 
   const uploadIndicatorIconStyle = useAnimatedStyle(() => {
-    const type = assetMap[asset.name]?.type
+    const type = assetMap.value[asset.name]?.type
     return {
       color:
         type === "local"

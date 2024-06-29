@@ -59,7 +59,7 @@ export const HomeScreen: React.FC<
    */
   async function deleteSelectedItems() {
     const selectedList = selectedItemsKeys.value.map(
-      name => assetMap[name],
+      name => assetMap.value[name],
     ) as Array<Asset>
     try {
       logger.log("Deleting assets")
@@ -81,7 +81,7 @@ export const HomeScreen: React.FC<
    */
   async function removeSelectedItemsFromDevice() {
     const selectedList = selectedItemsKeys.value.map(
-      name => assetMap[name],
+      name => assetMap.value[name],
     ) as Array<Asset>
     clearSelection()
     try {
@@ -96,7 +96,7 @@ export const HomeScreen: React.FC<
    */
   async function removeSelectedItemsRemotely() {
     const selectedList = selectedItemsKeys.value.map(
-      name => assetMap[name],
+      name => assetMap.value[name],
     ) as Array<Asset>
     clearSelection()
     try {
@@ -149,7 +149,7 @@ export const HomeScreen: React.FC<
       const asset = selectedItems.value[name]
       if (asset?.type !== "remote") continue
 
-      const remoteAsset = assetMap[asset.name]
+      const remoteAsset = assetMap.value[asset.name]
       assert(remoteAsset)
       try {
         await saveRemoteAsset(remoteAsset)
@@ -168,7 +168,7 @@ export const HomeScreen: React.FC<
     const firstItemName = selectedItemsKeys.value[0]
     assert(firstItemName)
 
-    const selectedAsset = assetMap[firstItemName]
+    const selectedAsset = assetMap.value[firstItemName]
     clearSelection()
     if (!selectedAsset) return
 
@@ -182,7 +182,8 @@ export const HomeScreen: React.FC<
   const goToSettings = () => props.navigation.navigate("settings")
 
   const uploadAssets = async (mode: "selected" | "all") => {
-    const collection = mode === "selected" ? selectedItems.value : assetMap
+    const collection =
+      mode === "selected" ? selectedItems.value : assetMap.value
 
     let data: Array<Omit<Asset, "localId"> & { localId: string }> = []
     for (const name in collection) {

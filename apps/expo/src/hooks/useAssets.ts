@@ -1,6 +1,7 @@
 import { Logger } from "@photonic/common"
 import React from "react"
 import { LayoutAnimation } from "react-native"
+import { useSharedValue } from "react-native-reanimated"
 import {
   assetRepo,
   getSchemaForRawLocalAsset,
@@ -17,7 +18,7 @@ const logger = new Logger("useAssets")
 export const useAssets = () => {
   const [assets, _setAssets] = React.useState<Array<Asset>>([])
   const [loading, setLoading] = React.useState(true)
-  const assetMap = React.useRef({} as AssetMap)
+  const assetMap = useSharedValue<AssetMap>({})
 
   const remoteSyncInterval = useSafeIntervalRef()
 
@@ -39,16 +40,16 @@ export const useAssets = () => {
   const refreshQuery = React.useCallback(async () => {
     const data = await fetchLocalData(false)
     const updatedMap = getAssetMap(data)
-    assetMap.current = updatedMap
+    assetMap.value = updatedMap
     setAssets(data)
-  }, [fetchLocalData, setAssets])
+  }, [assetMap, fetchLocalData, setAssets])
 
   const syncRemote = React.useCallback(
     async (force = false) => {
-      await maybeSyncRemote(assetMap.current, force)
+      await maybeSyncRemote(assetMap.value, force)
       refreshQuery()
     },
-    [refreshQuery],
+    [assetMap, refreshQuery],
   )
 
   React.useEffect(() => {
@@ -80,7 +81,7 @@ export const useAssets = () => {
 
         for (const item of change.deletedAssets ?? []) {
           if (item.mediaType !== "photo") continue
-          const asset = assetMap.current[item.filename]
+          const asset = assetMap.value[item.filename]
           if (asset?.type === "localRemote") {
             // asset has been deleted from device
             // if backup delete was needed, then it has also been done.
@@ -95,7 +96,7 @@ export const useAssets = () => {
           let newAssets: Array<RawLocalAsset> = []
           for (const item of change.insertedAssets ?? []) {
             if (item.mediaType !== "photo") continue
-            const existing = assetMap.current[item.filename]
+            const existing = assetMap.value[item.filename]
             if (existing?.type === "remote") {
               // Remote asset has been downloaded to device
               // Must promote to `localRemote`
@@ -114,11 +115,11 @@ export const useAssets = () => {
     return () => {
       sub.remove()
     }
-  }, [refreshQuery])
+  }, [assetMap.value, refreshQuery])
 
   return {
     assets,
-    assetMap: assetMap.current,
+    assetMap,
     loading,
     syncRemote,
   }
