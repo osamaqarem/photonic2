@@ -96,10 +96,9 @@
     "prebuild-ios": "pnpm prebuild && pnpm ios",
     "compile-plugins": "tsc ./plugins/*.ts --skipLibCheck --esModuleInterop true --outDir ./plugins/build",
     "watch-plugins": "pnpm compile-plugins --watch",
-    "colors": "turbo platform-colors",
     "platform-colors": "platform-colors",
     "start": "expo start --dev-client",
-    "deploy": "gh workflow run deploy-expo.yml --ref main",
+    "testflight": "gh workflow run deploy-expo.yml --ref main",
     "db:migrate": "drizzle-kit generate:sqlite"
   }
 }
