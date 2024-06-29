@@ -46,9 +46,7 @@ jobs:
         working-directory: apps/expo
         env:
           STAGE: "production"
-        run: |
-          bundle exec pod install --project-directory=ios
-          pnpm i --frozen-lockfile
+        run: bundle exec pod install --project-directory=ios
 
       - name: Fastlane
         working-directory: apps/expo
