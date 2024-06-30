@@ -3,9 +3,7 @@ import { z } from "zod"
 
 const env = z
   .object({
-    STAGE: z
-      .enum(["development", "storybook", "production"])
-      .catch("development"),
+    STAGE: z.enum(["development", "storybook", "production"]),
   })
   .parse(RNConfig)
 
