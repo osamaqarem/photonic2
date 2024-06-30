@@ -1,8 +1,17 @@
 export const NOOP = () => {}
 
+declare const globalThis: {
+  __DEV__: boolean
+}
+
 export class Logger {
   // Only disable for React Native release builds
-  private disabled = typeof __DEV__ === "boolean" ? !__DEV__ : false
+  private disabled = (() => {
+    if ("__DEV__" in globalThis) {
+      return !globalThis.__DEV__
+    }
+    return false
+  })()
 
   constructor(private prefix: string) {}
 
