@@ -1,4 +1,3 @@
-import { getErrorMsg } from "@photonic/common"
 import type { NativeStackScreenProps } from "@react-navigation/native-stack"
 import React, { useState } from "react"
 import { StyleSheet } from "react-native"
@@ -9,8 +8,8 @@ import { ScrollView } from "~/expo/design/components/ScrollView"
 import { Space } from "~/expo/design/components/Space"
 import { Text } from "~/expo/design/components/Text"
 import { TextInput } from "~/expo/design/components/TextInput"
-import { useAlerts } from "~/expo/design/components/alerts/useAlerts"
 import { theme } from "~/expo/design/theme"
+import { handleError } from "~/expo/lib/error"
 import type { AppParams } from "~/expo/navigation/params"
 import { trpc } from "~/expo/state/TrpcProvider"
 
@@ -18,8 +17,6 @@ export const OnboardingRegistrationScreen: React.FC<
   NativeStackScreenProps<AppParams, "onboarding-registration">
 > = props => {
   const { isLoading, mutateAsync } = trpc.auth.issueLoginCode.useMutation()
-
-  const { showError } = useAlerts()
 
   const [{ email, error }, setForm] = useState({
     email: "",
@@ -38,8 +35,12 @@ export const OnboardingRegistrationScreen: React.FC<
     try {
       await mutateAsync({ email })
       props.navigation.navigate("onboarding-code-verification", { email })
-    } catch (err) {
-      showError(getErrorMsg(err))
+    } catch (error) {
+      handleError({
+        error,
+        message: "Failed to send verification code.",
+        transactionName: "issueLoginCode",
+      })
     }
   }
 

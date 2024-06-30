@@ -1,5 +1,5 @@
+import { nanoid } from "@photonic/common/nanoid"
 import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core"
-import { nanoid } from "~/expo/lib/nanoid"
 
 /**
  * Note on importing packages for use with `defaultFn`:

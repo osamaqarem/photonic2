@@ -1,4 +1,3 @@
-import { getErrorMsg } from "@photonic/common"
 import type { NativeStackScreenProps } from "@react-navigation/native-stack"
 import { useQueryClient } from "@tanstack/react-query"
 import * as Application from "expo-application"
@@ -95,7 +94,7 @@ export const SettingsScreen: React.FC<
 
     if (url) {
       await WebBrowser.openAuthSessionAsync(url).catch(err => {
-        showError(getErrorMsg(err))
+        showError(err)
       })
     }
   }

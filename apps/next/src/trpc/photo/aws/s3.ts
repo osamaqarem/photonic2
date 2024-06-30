@@ -131,7 +131,7 @@ export class S3 {
       })
       return getSignedUrl(this.client, putObject, { expiresIn: 3600 })
     } catch (err) {
-      throw new Error("getPresignedUrl", { cause: err })
+      throw new Error("getUploadUrl", { cause: err })
     }
   }
 
@@ -144,7 +144,7 @@ export class S3 {
       })
       return getSignedUrl(this.client, getObject, { expiresIn: 3600 })
     } catch (err) {
-      throw new Error("getPresignedUrl", { cause: err })
+      throw new Error("getObjectUrl", { cause: err })
     }
   }
 }

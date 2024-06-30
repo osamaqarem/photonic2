@@ -81,14 +81,9 @@ export const mediaManager = {
     const names = assets
       .filter(item => type.includes(item.type as "remote" | "localRemote"))
       .map(item => item.name)
-
-    try {
-      logger.log("Deleting backed up assets", names)
-      await trpcClient.photo.delete.mutate({ names })
-      logger.log("Done deleting backed up assets")
-    } catch (err) {
-      throw new Error("deleteAssets: " + err, { cause: err })
-    }
+    logger.log("Deleting backed up assets", names)
+    await trpcClient.photo.delete.mutate({ names })
+    logger.log("Done deleting backed up assets")
   },
 
   renameRemoteAsset(remoteAsset: Asset, renameTo: string): Promise<void> {

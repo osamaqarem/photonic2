@@ -1,27 +1,42 @@
 export const NOOP = () => {}
 
 export class Logger {
-  private disabled = process.env.NODE_ENV === "production"
+  // Only disable for React Native release builds
+  private disabled = typeof __DEV__ === "boolean" ? !__DEV__ : false
 
   constructor(private prefix: string) {}
 
-  private handleDisabled = (fn: (...args: Array<unknown>) => void) =>
-    this.disabled ? NOOP : fn
+  private handleDisabled = (fn: (...args: Array<unknown>) => void) => {
+    return this.disabled ? NOOP : fn
+  }
 
-  private format = (p: Array<unknown>) => {
-    return p.map(p => JSON.stringify(p, null, 2))
+  private print = ({
+    level,
+    args,
+  }: {
+    level: string
+    args: Array<unknown>
+  }) => {
+    console.log(
+      JSON.stringify({
+        level,
+        context: this.prefix,
+        timestamp: new Date().toISOString(),
+        log: args,
+      }),
+    )
   }
 
   log = this.handleDisabled((...args: Array<unknown>) => {
-    console.log(`📬 ${this.prefix}:`, ...this.format(args))
+    this.print({ level: "info 🌥️", args })
   })
 
   warn = this.handleDisabled((...args: Array<unknown>) => {
-    console.log(`🍌 ${this.prefix}:`, ...this.format(args))
+    this.print({ level: "warn ❕", args })
   })
 
   error = this.handleDisabled((...args: Array<unknown>) => {
-    console.log(`🥊 ${this.prefix}:`, ...this.format(args))
+    this.print({ level: "error ⛔️", args })
   })
 }
 
@@ -31,7 +46,7 @@ export function getErrorMsg(err: unknown): string {
   } else if (typeof err === "string") {
     return err
   } else {
-    return "Something went wrong"
+    return "An unexpected error occured."
   }
 }
 

@@ -1,19 +1,20 @@
-import { Logger, assert, getErrorMsg, invariant } from "@photonic/common"
 import { Worker } from "@photonic/worker"
 import type { NativeStackScreenProps } from "@react-navigation/native-stack"
 import chunk from "lodash.chunk"
 import React from "react"
 import { StyleSheet, View } from "react-native"
 import { useDerivedValue, useSharedValue } from "react-native-reanimated"
-import { Loading } from "~/expo/design/components/Loading"
-import { Text } from "~/expo/design/components/Text"
 
+import { Logger, assert, invariant } from "@photonic/common"
 import type { Asset } from "~/expo/db/schema"
 import { useAlerts } from "~/expo/design/components/alerts/useAlerts"
+import { Loading } from "~/expo/design/components/Loading"
+import { Text } from "~/expo/design/components/Text"
 import { AssetList } from "~/expo/features/home/components/AssetList"
 import { ControlPanel } from "~/expo/features/home/components/control-panel"
 import { useAssets } from "~/expo/hooks/useAssets"
 import { Actor } from "~/expo/lib/actor"
+import { handleError } from "~/expo/lib/error"
 import { mediaManager } from "~/expo/lib/media-manager"
 import type { AppParams } from "~/expo/navigation/params"
 import { DragSelectContextProvider } from "~/expo/state/DragSelectContextProvider"
@@ -71,8 +72,13 @@ export const HomeScreen: React.FC<
         ]),
       ])
       clearSelection()
-    } catch (err) {
-      logger.log(err)
+    } catch (error) {
+      handleError({
+        error,
+        message:
+          "An error occured while deleting photos. This must be an issue on our side.",
+        transactionName: "deleteSelectedItems",
+      })
     }
   }
 
@@ -86,8 +92,13 @@ export const HomeScreen: React.FC<
     clearSelection()
     try {
       await mediaManager.deleteLocalAssets(selectedList)
-    } catch (err) {
-      logger.log(err)
+    } catch (error) {
+      handleError({
+        error,
+        message:
+          "An error occured while deleting selected items from your device. This must be an issue on our side.",
+        transactionName: "removeSelectedItemsFromDevice",
+      })
     }
   }
 
@@ -104,8 +115,13 @@ export const HomeScreen: React.FC<
         "localRemote",
         "remote",
       ])
-    } catch (err) {
-      showError(getErrorMsg(err))
+    } catch (error) {
+      handleError({
+        error,
+        message:
+          "An error occured while deleting. This must be an issue on our side.",
+        transactionName: "removeSelectedItemsRemotely",
+      })
     }
   }
 
@@ -152,8 +168,13 @@ export const HomeScreen: React.FC<
       assert(remoteAsset)
       try {
         await saveRemoteAsset(remoteAsset)
-      } catch (err) {
-        showError(getErrorMsg(err))
+      } catch (error) {
+        handleError({
+          error,
+          message:
+            "An error occured while downloading photos to your device. This must be an issue on our side.",
+          transactionName: "saveSelectedItemsToDevice",
+        })
       }
     }
   }
@@ -168,8 +189,13 @@ export const HomeScreen: React.FC<
 
     try {
       await mediaManager.share(selectedAsset)
-    } catch (err) {
-      logger.log(err)
+    } catch (error) {
+      handleError({
+        error,
+        message:
+          "An error occured while sharing photos. This must be an issue on our side.",
+        transactionName: "shareSelectedItems",
+      })
     }
   }
 
@@ -214,8 +240,13 @@ export const HomeScreen: React.FC<
       setTimeout(() => {
         totalUploadProgress.value = 0
       }, 5_000)
-    } catch (err) {
-      showError(getErrorMsg(err))
+    } catch (error) {
+      handleError({
+        error,
+        message:
+          "An error occured while uploading photos. This must be an issue on our side.",
+        transactionName: "uploadAssets",
+      })
     }
   }
 

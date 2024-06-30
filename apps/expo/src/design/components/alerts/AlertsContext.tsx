@@ -217,15 +217,13 @@ export const AlertsProvider: React.FC<React.PropsWithChildren> = props => {
     (message: string) => {
       const { promise, resolve } = getPromiseAndResolver<void>()
 
-      const text = message || "Something went wrong"
-
       const content = () => (
         <AlertView
           btn={{ confirmBtnTitle: "OK" }}
           handleDismiss={dismiss}
           type="Standard"
           title={"Error"}
-          message={text}
+          message={message}
         />
       )
 

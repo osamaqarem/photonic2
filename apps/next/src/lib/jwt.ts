@@ -27,7 +27,7 @@ class JwtManager<PayloadSource extends Record<string, any>, Payload> {
       }
       throw new Error("result is not a JwtPayload")
     } catch (err) {
-      throw new Error("verify", { cause: err })
+      throw new Error("JwtManager.verify", { cause: err })
     }
   }
 

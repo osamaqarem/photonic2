@@ -10,7 +10,7 @@ export const authRouter = router({
   issueLoginCode: publicProcedure
     .input(
       z.object({
-        email: z.string().min(1),
+        email: z.string().email("Invalid email address."),
       }),
     )
     .mutation(async ({ input, ctx }) => {

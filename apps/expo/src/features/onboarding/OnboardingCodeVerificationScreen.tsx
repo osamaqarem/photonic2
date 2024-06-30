@@ -1,4 +1,4 @@
-import { assert, getErrorMsg } from "@photonic/common"
+import { assert } from "@photonic/common"
 import type { NativeStackScreenProps } from "@react-navigation/native-stack"
 import React from "react"
 import {
@@ -17,6 +17,7 @@ import { TextInput } from "~/expo/design/components/TextInput"
 import { useAlerts } from "~/expo/design/components/alerts/useAlerts"
 import { theme } from "~/expo/design/theme"
 import { useSafeIntervalRef } from "~/expo/hooks/useSafeIntervalRef"
+import { handleError } from "~/expo/lib/error"
 import type { AppParams } from "~/expo/navigation/params"
 import { trpc } from "~/expo/state/TrpcProvider"
 import { useAuth } from "~/expo/state/auth-store"
@@ -75,8 +76,12 @@ export const OnboardingCodeVerificationScreen: React.FC<
         return props.navigation.navigate("onboarding-storage")
       }
       return props.navigation.navigate("onboarding-permissions")
-    } catch (err) {
-      showError(getErrorMsg(err))
+    } catch (error) {
+      handleError({
+        error,
+        transactionName: "verifyLoginCode",
+        message: "An error occured while uploading photos.",
+      })
     }
   }
 

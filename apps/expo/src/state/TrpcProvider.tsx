@@ -35,7 +35,7 @@ const createLoggerLink: (logger: Logger) => TRPCLink<AppRouter> =
             observer.complete()
           },
           error(err) {
-            logger.error(`<- error(${op.id}:${op.path})`)
+            logger.error(`<- error(${op.id}:${op.path})`, err)
             observer.error(err)
           },
         })

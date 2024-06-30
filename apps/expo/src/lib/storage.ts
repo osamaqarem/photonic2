@@ -1,6 +1,6 @@
+import { nanoid } from "@photonic/common/nanoid"
 import type { ColorSchemeName } from "react-native"
 import { MMKV } from "react-native-mmkv"
-import { nanoid } from "~/expo/lib/nanoid"
 
 const storage = new MMKV()
 

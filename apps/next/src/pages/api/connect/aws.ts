@@ -1,4 +1,4 @@
-import { Logger } from "@photonic/common"
+import { getErrorMsg, Logger } from "@photonic/common"
 import type { NextApiRequest, NextApiResponse } from "next"
 import { z } from "zod"
 import { db } from "~/next/lib/db"
@@ -52,9 +52,7 @@ export default async function handler(
       where: { id: event.ResourceProperties.ExternalId },
     })
   } catch (err) {
-    /**
-     * Sad Path
-     */
+    // unhappy path
     if (event.RequestType === "Create") {
       // Failed to find user, refuse to create stack.
       logger.error(
@@ -64,7 +62,10 @@ export default async function handler(
 
       body.Status = "FAILED"
       body.Reason = "User not found"
-      await fetch(event.ResponseURL, getOptions(body)).catch(logger.error)
+      await fetch(event.ResponseURL, getOptions(body)).catch(err => {
+        // Sentry.captureException(err)
+        logger.error("Create stack error (no user)", getErrorMsg(err))
+      })
     } else {
       // Delete stack ('update' should also be fine), although user not found.
       logger.error(
@@ -72,15 +73,16 @@ export default async function handler(
         `Failed to find user, deleting cfn resource. ExternalId: ${event.ResourceProperties.ExternalId}`,
       )
 
-      await fetch(event.ResponseURL, getOptions(body)).catch(logger.error)
+      await fetch(event.ResponseURL, getOptions(body)).catch(err => {
+        // Sentry.captureException(err)
+        logger.error("Delete stack error. ", getErrorMsg(err))
+      })
     }
     res.status(200).end()
     return
   }
 
-  /**
-   * Happy Path
-   */
+  // happy path
   try {
     await fetch(event.ResponseURL, getOptions(body))
     logger.log(`completed operation: ${event.RequestType} for user: ${user.id}`)
@@ -149,7 +151,7 @@ export default async function handler(
     }
   } catch (err) {
     const msg = `Something went wrong during ${event.RequestType} request for AwsAccount connection for user: ${user.id}`
-    logger.error(msg, err)
+    logger.error(msg, getErrorMsg(err))
 
     body.Status = "FAILED"
     body.Reason = msg
