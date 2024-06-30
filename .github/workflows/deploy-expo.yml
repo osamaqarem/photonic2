@@ -30,9 +30,10 @@ jobs:
           bundler-cache: true
           working-directory: apps/expo
 
+      - name: Set .env STAGE
+        run: echo -e "\nSTAGE=production" >> apps/expo/.env
+
       - name: Prebuild
-        env:
-          STAGE: production
         run: pnpm expo prebuild
 
       - name: Pods Cache
@@ -44,14 +45,11 @@ jobs:
 
       - name: Install Pods
         working-directory: apps/expo
-        env:
-          STAGE: "production"
         run: bundle exec pod install --project-directory=ios
 
       - name: Fastlane
         working-directory: apps/expo
         env:
-          STAGE: "production"
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.FASTLANE_GITHUB_TOKEN }}
           MATCH_GIT_URL: ${{ secrets.MATCH_GIT_URL }}
