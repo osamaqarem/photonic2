@@ -24,6 +24,7 @@
     "@keyvhq/core": "^2.1.0",
     "@photonic/common": "workspace:*",
     "@prisma/client": "5.15.1",
+    "@sentry/nextjs": "^8",
     "@trpc/client": "^10.38.4",
     "@trpc/server": "^10.38.4",
     "@types/node": "20.6.3",
