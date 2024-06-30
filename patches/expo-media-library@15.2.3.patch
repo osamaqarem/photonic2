@@ -5,7 +5,7 @@ index fdc6da106fbfb86d83dba52002df7abb38b0dc89..807f9337c6c70b0c0ec3202db4f2cc5a
 @@ -240,6 +240,33 @@ - (id)requesterClass:(BOOL)writeOnly
    return reject(@"E_UNSUPPORTED_ASSET", @"This file type is not supported yet.", nil);
  }
-
+ 
 +EX_EXPORT_METHOD_AS(modifyAssetAsync,
 +                    modifyAssetAsync:(NSString *)assetId
 +                    options:(NSDictionary *)options
@@ -23,6 +23,7 @@ index fdc6da106fbfb86d83dba52002df7abb38b0dc89..807f9337c6c70b0c0ec3202db4f2cc5a
 +            NSDate *creationDate = [NSDate dateWithTimeIntervalSince1970:([creationDateUnixMillis doubleValue] / 1000)];
 +            [changeRequest setCreationDate:creationDate];
 +        }
++        // TODO: setting other properties
 +    } completionHandler:^(BOOL success, NSError *error) {
 +      if (success) {
 +        resolve(@(success));
@@ -42,7 +43,7 @@ index 05d48229117c6b99753a3740ceb3ad623cdf5bdd..a73d1d0930d2207207d160dbc31dff0b
 @@ -18,10 +18,5 @@ Pod::Spec.new do |s|
    s.dependency 'ExpoModulesCore'
    s.dependency 'React-Core'
-
+ 
 -  if !$ExpoUseSources&.include?(package['name']) && ENV['EXPO_USE_SOURCE'].to_i == 0 && File.exist?("#{s.name}.xcframework") && Gem::Version.new(Pod::VERSION) >= Gem::Version.new('1.10.0')
 -    s.source_files = "#{s.name}/**/*.h"
 -    s.vendored_frameworks = "#{s.name}.xcframework"
@@ -71,7 +72,7 @@ index 3c4c4f9300422bc309ae8a24449dbedaa16ff3a8..6ce47c384b029834e74b34722b92c5dd
 @@ -157,6 +157,14 @@ export type MediaLibraryAssetInfoQueryOptions = {
    shouldDownloadFromNetwork?: boolean;
  };
-
+ 
 +// @needsAudit
 +export type MediaLibraryAssetModificationOptions = Pick<
 +  AssetInfo,
@@ -85,14 +86,14 @@ index 3c4c4f9300422bc309ae8a24449dbedaa16ff3a8..6ce47c384b029834e74b34722b92c5dd
    /**
 @@ -335,13 +343,13 @@ function getId(ref: any): string | undefined {
  }
-
+ 
  function checkAssetIds(assetIds: any): void {
 -  if (assetIds.some((id) => !id || typeof id !== 'string')) {
 +  if (assetIds.some((id: any) => !id || typeof id !== 'string')) {
      throw new Error('Asset ID must be a string!');
    }
  }
-
+ 
  function checkAlbumIds(albumIds: any): void {
 -  if (albumIds.some((id) => !id || typeof id !== 'string')) {
 +  if (albumIds.some((id: any) => !id || typeof id !== 'string')) {
@@ -102,7 +103,7 @@ index 3c4c4f9300422bc309ae8a24449dbedaa16ff3a8..6ce47c384b029834e74b34722b92c5dd
 @@ -512,6 +520,27 @@ export async function saveToLibraryAsync(localUri: string): Promise<void> {
    return await MediaLibrary.saveToLibraryAsync(localUri);
  }
-
+ 
 +// @needsAudit
 +/**
 + * Modify asset information such as creation timestamp, location, etc.
