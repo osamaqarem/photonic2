@@ -6,7 +6,7 @@ settings:
 
 patchedDependencies:
   expo-media-library@15.2.3:
-    hash: sbg6tpc5ejdqopkaiqepyuorgm
+    hash: r4uesjrthpb3kjtdqp7ifhp42i
     path: patches/expo-media-library@15.2.3.patch
   react-native-fast-image@8.5.12:
     hash: 2by4x57eylyqvwkdzgqwnzf4si
@@ -144,7 +144,7 @@ importers:
         version: 6.3.1(expo@51.0.14(@babel/core@7.24.0)(@babel/preset-env@7.22.20(@babel/core@7.24.0)))
       expo-media-library:
         specifier: 15.2.3
-        version: 15.2.3(patch_hash=sbg6tpc5ejdqopkaiqepyuorgm)(expo@51.0.14(@babel/core@7.24.0)(@babel/preset-env@7.22.20(@babel/core@7.24.0)))
+        version: 15.2.3(patch_hash=r4uesjrthpb3kjtdqp7ifhp42i)(expo@51.0.14(@babel/core@7.24.0)(@babel/preset-env@7.22.20(@babel/core@7.24.0)))
       expo-modules-core:
         specifier: ^1.12.15
         version: 1.12.15
@@ -12923,7 +12923,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  expo-media-library@15.2.3(patch_hash=sbg6tpc5ejdqopkaiqepyuorgm)(expo@51.0.14(@babel/core@7.24.0)(@babel/preset-env@7.22.20(@babel/core@7.24.0))):
+  expo-media-library@15.2.3(patch_hash=r4uesjrthpb3kjtdqp7ifhp42i)(expo@51.0.14(@babel/core@7.24.0)(@babel/preset-env@7.22.20(@babel/core@7.24.0))):
     dependencies:
       expo: 51.0.14(@babel/core@7.24.0)(@babel/preset-env@7.22.20(@babel/core@7.24.0))
 
