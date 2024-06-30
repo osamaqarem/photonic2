@@ -5,8 +5,6 @@ const nonempty = z.string().trim().min(1)
 const schema = z.object({
   MAIL_USER: nonempty,
   MAIL_PASS: nonempty,
-  EMAIL_SECRET: nonempty,
-  CODE_SECRET: nonempty,
   AUTH_SECRET: nonempty,
   DATABASE_URL: nonempty,
   PHOTONIC_AWS_SECRET_KEY: nonempty,
