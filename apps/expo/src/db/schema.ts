@@ -11,8 +11,8 @@ export const asset = sqliteTable("asset", {
     .notNull()
     .$defaultFn(() => "ast_" + nanoid()),
   deviceId: text("deviceId").notNull(),
-  localId: text("localId"),
-  name: text("name").notNull(),
+  localId: text("localId").unique(),
+  name: text("name").unique().notNull(),
   type: text("type", { enum: ["local", "remote", "localRemote"] }).notNull(),
   mediaType: text("text", { enum: ["photo", "video"] }).notNull(),
   width: integer("width").notNull(),
@@ -20,7 +20,7 @@ export const asset = sqliteTable("asset", {
   duration: integer("duration").notNull(),
   creationTime: integer("creationTime").notNull(),
   modificationTime: integer("modificationTime").notNull(),
-  uri: text("string"),
+  uri: text("string").unique(),
   userId: text("userId").notNull(),
 })
 
