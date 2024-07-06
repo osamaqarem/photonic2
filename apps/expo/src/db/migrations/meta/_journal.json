@@ -15,6 +15,13 @@
       "when": 1719116134685,
       "tag": "0001_low_baron_strucker",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1720071022802,
+      "tag": "0002_friendly_talos",
+      "breakpoints": true
     }
   ]
 }
