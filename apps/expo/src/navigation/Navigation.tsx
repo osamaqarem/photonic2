@@ -39,14 +39,14 @@ export function Navigation() {
   React.useEffect(() => {
     migrate(db, migrations)
       .then(() => setIsMigrating(false))
-      .catch(err => {
+      .catch(async err => {
         logger.log(`DB migration error: ${err.message}`)
-        db.delete(asset).execute()
+        await db.delete(asset).execute()
         migrate(db, migrations)
           .then(() => setIsMigrating(false))
           .catch(err2 => {
             SplashScreen.hideAsync()
-            showError("DB migration error: " + err2.message)
+            showError("DB migration error (after clearing DB): " + err2.message)
           })
       })
   }, [showError])
