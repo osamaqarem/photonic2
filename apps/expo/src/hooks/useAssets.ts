@@ -9,7 +9,7 @@ import {
 } from "~/expo/db/asset-repo"
 import { type Asset, type AssetInsert } from "~/expo/db/schema"
 import { useSafeIntervalRef } from "~/expo/hooks/useSafeIntervalRef"
-import { mediaManager, type RawLocalAsset } from "~/expo/lib/media-manager"
+import { mediaManager } from "~/expo/lib/media-manager"
 import { lastSyncTimeStorage } from "~/expo/lib/storage"
 import { trpcClient } from "~/expo/state/TrpcProvider"
 
@@ -27,34 +27,42 @@ export const useAssets = () => {
     _setAssets(data)
   }, [])
 
-  const fetchLocalData = React.useCallback(async (clear = false) => {
-    if (clear) {
-      await assetRepo.clear()
-      lastSyncTimeStorage.delete()
-    }
-    const data = await assetRepo.getAll()
-    if (data.length > 0) return data
-    return populateDB()
-  }, [])
+  const fetchLocalData = React.useCallback(
+    async (mode: "reset" | "reload" | "normal" = "normal") => {
+      if (mode === "reset") {
+        await assetRepo.clear()
+        lastSyncTimeStorage.delete()
+        return populateDB()
+      } else if (mode === "normal") {
+        const data = await assetRepo.all()
+        return data
+      }
+      return populateDB()
+    },
+    [],
+  )
 
-  const refreshQuery = React.useCallback(async () => {
-    const data = await fetchLocalData(false)
-    const updatedMap = getAssetMap(data)
-    assetMap.value = updatedMap
-    setAssets(data)
-  }, [assetMap, fetchLocalData, setAssets])
+  const refreshQuery = React.useCallback(
+    async (mode: Parameters<typeof fetchLocalData>[number] = "normal") => {
+      const data = await fetchLocalData(mode)
+      const updatedMap = getAssetMap(data)
+      assetMap.value = updatedMap
+      setAssets(data)
+    },
+    [assetMap, fetchLocalData, setAssets],
+  )
 
   const syncRemote = React.useCallback(
     async (force = false) => {
       await maybeSyncRemote(assetMap.value, force)
-      refreshQuery()
+      await refreshQuery("normal")
     },
     [assetMap, refreshQuery],
   )
 
   React.useEffect(() => {
     ;(async () => {
-      refreshQuery()
+      await refreshQuery("reload")
       setLoading(false)
 
       await syncRemote()
@@ -62,65 +70,12 @@ export const useAssets = () => {
     })()
   }, [fetchLocalData, refreshQuery, remoteSyncInterval, setAssets, syncRemote])
 
-  React.useEffect(() => {
-    // Does this tell us about photos that the app does not manage (permissions)?
-    const sub = mediaManager.addListener(async change => {
-      if (!change.hasIncrementalChanges) {
-        await refreshQuery()
-        logger.warn("Received non-incremental changes.")
-      } else {
-        logger.log("Received incremental changes", change)
-
-        for (const updated of change.updatedAssets ?? []) {
-          if (updated.mediaType !== "photo") continue
-          await assetRepo.patch(updated.filename, {
-            ...updated,
-            mediaType: "photo",
-            type: "local",
-          })
-        }
-
-        for (const item of change.deletedAssets ?? []) {
-          if (item.mediaType !== "photo") continue
-          const asset = assetMap.value[item.filename]
-          if (asset?.type === "localRemote") {
-          } else if (asset?.type === "remote") {
-            // impossible
-          } else if (asset?.type === "local") {
-            await assetRepo.deleteById(item.id)
-          }
-        }
-
-        if (change.insertedAssets) {
-          let newAssets: Array<RawLocalAsset> = []
-          for (const item of change.insertedAssets ?? []) {
-            if (item.mediaType !== "photo") continue
-            const existing = assetMap.value[item.filename]
-            if (existing?.type === "remote") {
-              // Remote asset has been downloaded to device
-              // Must promote to `localRemote`
-              // Handled in saveRemoteAssset
-            } else {
-              newAssets.push(item)
-            }
-          }
-
-          await assetRepo.create(newAssets.map(getSchemaForRawLocalAsset))
-        }
-        await refreshQuery()
-      }
-    })
-
-    return () => {
-      sub.remove()
-    }
-  }, [assetMap.value, refreshQuery])
-
   return {
     assets,
     assetMap,
     loading,
     syncRemote,
+    refetchAssets: refreshQuery,
   }
 }
 
@@ -140,8 +95,9 @@ async function populateDB() {
   do {
     const data = await fetchMediaLibraryPage(cursor)
     logger.log(`page ${data.assets.length}`, `endCursor: ${cursor}`)
-    const saved = await assetRepo.create(
+    const saved = await assetRepo.put(
       data.assets.map(getSchemaForRawLocalAsset),
+      ["type", "uri"],
     )
     assets = assets.concat(saved)
     cursor = data.hasNextPage ? data.endCursor : null
