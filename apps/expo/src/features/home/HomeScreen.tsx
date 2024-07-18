@@ -6,8 +6,8 @@ import { StyleSheet, View } from "react-native"
 import { useDerivedValue, useSharedValue } from "react-native-reanimated"
 
 import { Logger, assert, invariant } from "@photonic/common"
+import { assetRepo } from "~/expo/db/asset-repo"
 import type { Asset } from "~/expo/db/schema"
-import { useAlerts } from "~/expo/design/components/alerts/useAlerts"
 import { Loading } from "~/expo/design/components/Loading"
 import { Text } from "~/expo/design/components/Text"
 import { AssetList } from "~/expo/features/home/components/AssetList"
@@ -25,9 +25,7 @@ const logger = new Logger("HomeScreen")
 export const HomeScreen: React.FC<
   NativeStackScreenProps<AppParams, "home">
 > = props => {
-  const { showError } = useAlerts()
-
-  const { assets, assetMap, loading, syncRemote } = useAssets()
+  const { assets, assetMap, loading, syncRemote, refetchAssets } = useAssets()
 
   const showGradientOverlay = useSharedValue(false)
 
@@ -64,14 +62,16 @@ export const HomeScreen: React.FC<
     ) as Array<Asset>
     try {
       logger.log("Deleting assets")
-      Promise.allSettled([
+      await Promise.all([
         mediaManager.deleteLocalAssets(selectedList),
         mediaManager.deleteRemoteAssets(selectedList, [
           "remote",
           "localRemote",
         ]),
+        assetRepo.deleteMany(selectedList),
       ])
       clearSelection()
+      await refetchAssets()
     } catch (error) {
       handleError({
         error,
@@ -91,7 +91,11 @@ export const HomeScreen: React.FC<
     ) as Array<Asset>
     clearSelection()
     try {
-      await mediaManager.deleteLocalAssets(selectedList)
+      await Promise.all([
+        mediaManager.deleteLocalAssets(selectedList),
+        assetRepo.deleteMany(selectedList),
+      ])
+      await refetchAssets()
     } catch (error) {
       handleError({
         error,
@@ -111,10 +115,14 @@ export const HomeScreen: React.FC<
     ) as Array<Asset>
     clearSelection()
     try {
-      await mediaManager.deleteRemoteAssets(selectedList, [
-        "localRemote",
-        "remote",
+      await Promise.all([
+        mediaManager.deleteRemoteAssets(selectedList, [
+          "localRemote",
+          "remote",
+        ]),
+        assetRepo.deleteMany(selectedList),
       ])
+      await refetchAssets()
     } catch (error) {
       handleError({
         error,
@@ -131,8 +139,6 @@ export const HomeScreen: React.FC<
       "saveRemoteAsset: not remote asset",
     )
 
-    // TODO: this likely leads to an event with incorrect `creationTime` inserted into the DB
-    // does `modifyAssetAsync` then create a third `updated` event? (which would correct the entry in the DB, alleviating the issue above).
     // `renameRemoteAsset` causes `updatedAt` to be refreshed for the remote asset, so the next remote sync will reconcile the state for this asset
     const savedAsset = await mediaManager.createAssetAsync(selectedRemoteAsset)
     const creationTime = selectedRemoteAsset.creationTime
@@ -145,7 +151,7 @@ export const HomeScreen: React.FC<
       selectedRemoteAsset,
       savedAsset.filename,
     )
-    syncRemote(true)
+    await syncRemote(true)
 
     return {
       ...selectedRemoteAsset,
@@ -168,6 +174,7 @@ export const HomeScreen: React.FC<
       assert(remoteAsset)
       try {
         await saveRemoteAsset(remoteAsset)
+        await assetRepo.put([remoteAsset])
       } catch (error) {
         handleError({
           error,
@@ -235,7 +242,7 @@ export const HomeScreen: React.FC<
         if (errors.length) logger.error(errors)
       }
 
-      syncRemote(true)
+      await syncRemote(true)
 
       setTimeout(() => {
         totalUploadProgress.value = 0

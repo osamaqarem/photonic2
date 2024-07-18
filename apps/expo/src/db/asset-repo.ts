@@ -1,11 +1,8 @@
 import { assert } from "@photonic/common"
-import { desc, eq, getTableColumns, sql, type SQL } from "drizzle-orm"
-import type {
-  SQLiteTable,
-  SQLiteUpdateSetSource,
-} from "drizzle-orm/sqlite-core"
+import { desc, getTableColumns, inArray, sql, type SQL } from "drizzle-orm"
+import type { SQLiteTable } from "drizzle-orm/sqlite-core"
 import { db } from "~/expo/db"
-import type { AssetInsert } from "~/expo/db/schema"
+import type { Asset, AssetInsert } from "~/expo/db/schema"
 import { asset } from "~/expo/db/schema"
 import type { RawLocalAsset } from "~/expo/lib/media-manager"
 import { deviceIdStorage } from "~/expo/lib/storage"
@@ -77,40 +74,37 @@ export const assetRepo = {
   clear: () => {
     return db.delete(asset).execute()
   },
-  getAll: () => {
+  all: () => {
     return db.select().from(asset).orderBy(desc(asset.creationTime))
   },
-  deleteById: (id: string) => {
-    return db.delete(asset).where(eq(asset.localId, id))
+  deleteMany: (assets: Array<Asset>) => {
+    return db.delete(asset).where(
+      inArray(
+        asset.localId,
+        assets.map(a => a.id),
+      ),
+    )
   },
   create: (data: Array<AssetInsert>) => {
     if (data.length === 0) return []
     return db.insert(asset).values(data).returning()
   },
-  patch: (name: string, fields: SQLiteUpdateSetSource<typeof asset>) => {
-    return db.update(asset).set(fields).where(eq(asset.name, name))
-  },
-  put: async (data: Array<AssetInsert>) => {
+  put: async (
+    data: Array<AssetInsert>,
+    onConflictDontUpdateFields: Array<keyof AssetInsert> = [],
+  ) => {
+    const updateFields = (
+      Object.keys(getTableColumns(asset)) as typeof onConflictDontUpdateFields
+    ).filter(col => !onConflictDontUpdateFields.includes(col))
+
     if (data.length === 0) return []
     return db
       .insert(asset)
       .values(data)
       .onConflictDoUpdate({
         target: asset.id,
-        set: buildConflictUpdateColumns(asset, [
-          "creationTime",
-          "deviceId",
-          "duration",
-          "height",
-          "localId",
-          "mediaType",
-          "modificationTime",
-          "name",
-          "type",
-          "uri",
-          "width",
-          "userId",
-        ]),
+        set: buildConflictUpdateColumns(asset, updateFields),
       })
+      .returning()
   },
 }
