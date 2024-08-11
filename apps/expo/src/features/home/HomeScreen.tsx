@@ -68,7 +68,7 @@ export const HomeScreen: React.FC<
           "remote",
           "localRemote",
         ]),
-        assetRepo.deleteMany(selectedList),
+        assetRepo.delete(selectedList),
       ])
       clearSelection()
       await refetchAssets()
@@ -93,7 +93,7 @@ export const HomeScreen: React.FC<
     try {
       await Promise.all([
         mediaManager.deleteLocalAssets(selectedList),
-        assetRepo.deleteMany(selectedList),
+        assetRepo.delete(selectedList),
       ])
       await refetchAssets()
     } catch (error) {
@@ -120,7 +120,7 @@ export const HomeScreen: React.FC<
           "localRemote",
           "remote",
         ]),
-        assetRepo.deleteMany(selectedList),
+        assetRepo.delete(selectedList),
       ])
       await refetchAssets()
     } catch (error) {
@@ -174,7 +174,7 @@ export const HomeScreen: React.FC<
       assert(remoteAsset)
       try {
         await saveRemoteAsset(remoteAsset)
-        await assetRepo.put([remoteAsset])
+        await assetRepo.update([remoteAsset])
       } catch (error) {
         handleError({
           error,

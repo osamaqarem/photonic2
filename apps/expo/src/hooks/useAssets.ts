@@ -30,11 +30,11 @@ export const useAssets = () => {
   const fetchLocalData = React.useCallback(
     async (mode: "reset" | "reload" | "normal" = "normal") => {
       if (mode === "reset") {
-        await assetRepo.clear()
+        await assetRepo.drop()
         lastSyncTimeStorage.delete()
         return populateDB()
       } else if (mode === "normal") {
-        const data = await assetRepo.all()
+        const data = await assetRepo.list()
         return data
       }
       return populateDB()
@@ -95,7 +95,7 @@ async function populateDB() {
   do {
     const data = await fetchMediaLibraryPage(cursor)
     logger.log(`page ${data.assets.length}`, `endCursor: ${cursor}`)
-    const saved = await assetRepo.put(
+    const saved = await assetRepo.update(
       data.assets.map(getSchemaForRawLocalAsset),
       ["type", "uri"],
     )
@@ -128,7 +128,7 @@ async function maybeSyncRemote(assetMap: AssetMap, force = false) {
   syncLogger.log(`itemsToUpdate.length: ${itemsToUpdate.length}`)
 
   assetRepo
-    .put(itemsToUpdate)
+    .update(itemsToUpdate)
     .then(() => {
       syncLogger.log("Remote sync end")
       lastSyncTimeStorage.save(now)

@@ -1,6 +1,6 @@
 import { assert } from "@photonic/common"
 import { desc, getTableColumns, inArray, sql, type SQL } from "drizzle-orm"
-import type { SQLiteTable } from "drizzle-orm/sqlite-core"
+import { type SQLiteTable } from "drizzle-orm/sqlite-core"
 import { db } from "~/expo/db"
 import type { Asset, AssetInsert } from "~/expo/db/schema"
 import { asset } from "~/expo/db/schema"
@@ -71,13 +71,13 @@ const buildConflictUpdateColumns = <
 }
 
 export const assetRepo = {
-  clear: () => {
+  drop: () => {
     return db.delete(asset).execute()
   },
-  all: () => {
+  list: () => {
     return db.select().from(asset).orderBy(desc(asset.creationTime))
   },
-  deleteMany: (assets: Array<Asset>) => {
+  delete: (assets: Array<Asset>) => {
     return db.delete(asset).where(
       inArray(
         asset.localId,
@@ -89,21 +89,35 @@ export const assetRepo = {
     if (data.length === 0) return []
     return db.insert(asset).values(data).returning()
   },
-  put: async (
+  update: async (
     data: Array<AssetInsert>,
-    onConflictDontUpdateFields: Array<keyof AssetInsert> = [],
+    onConflictSkipUpdatingFields: Array<keyof AssetInsert> = [],
   ) => {
-    const updateFields = (
-      Object.keys(getTableColumns(asset)) as typeof onConflictDontUpdateFields
-    ).filter(col => !onConflictDontUpdateFields.includes(col))
-
     if (data.length === 0) return []
+
+    const fieldsToUpdate = (
+      Object.keys(getTableColumns(asset)) as typeof onConflictSkipUpdatingFields
+    ).filter(col => !onConflictSkipUpdatingFields.includes(col))
+    const setFields = buildConflictUpdateColumns(asset, fieldsToUpdate)
+
     return db
       .insert(asset)
       .values(data)
       .onConflictDoUpdate({
         target: asset.id,
-        set: buildConflictUpdateColumns(asset, updateFields),
+        set: setFields,
+      })
+      .onConflictDoUpdate({
+        target: asset.localId,
+        set: setFields,
+      })
+      .onConflictDoUpdate({
+        target: asset.name,
+        set: setFields,
+      })
+      .onConflictDoUpdate({
+        target: asset.uri,
+        set: setFields,
       })
       .returning()
   },
