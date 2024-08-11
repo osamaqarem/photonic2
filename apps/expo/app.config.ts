@@ -51,6 +51,10 @@ const expoConfig = ({ config }: ConfigContext): ExpoConfig => {
           stage === "development" ? "-staging" : ""
         }.fly.dev`,
       ],
+      entitlements: {
+        ["aps-environment"]:
+          stage === "production" ? "production" : "development",
+      },
     },
     slug: "photonic",
     platforms: ["ios"],
