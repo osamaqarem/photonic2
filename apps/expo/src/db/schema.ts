@@ -14,13 +14,13 @@ export const asset = sqliteTable("asset", {
   localId: text("localId").unique(),
   name: text("name").unique().notNull(),
   type: text("type", { enum: ["local", "remote", "localRemote"] }).notNull(),
-  mediaType: text("text", { enum: ["photo", "video"] }).notNull(),
+  mediaType: text("mediaType", { enum: ["photo", "video"] }).notNull(),
   width: integer("width").notNull(),
   height: integer("height").notNull(),
   duration: integer("duration").notNull(),
   creationTime: integer("creationTime").notNull(),
   modificationTime: integer("modificationTime").notNull(),
-  uri: text("string").unique(),
+  uri: text("uri").unique(),
   userId: text("userId").notNull(),
 })
 
