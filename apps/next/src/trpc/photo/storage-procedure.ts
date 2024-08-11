@@ -41,11 +41,16 @@ const storageMiddleware = middleware(async ({ ctx, next }) => {
       }
     }
 
-    const bucket = await db.awsBucket.findFirstOrThrow({
+    const bucket = await db.awsBucket.findFirst({
       where: { userId: ctx.user.id },
     })
-    let credentials = await getRoleCreds(bucket)
+    if (!bucket)
+      throw new TRPCError({
+        code: "FORBIDDEN",
+        message: ApiError.MissingStorageCreds,
+      })
 
+    let credentials = await getRoleCreds(bucket)
     const s3 = new S3({
       dev: false,
       bucket: bucket.name,

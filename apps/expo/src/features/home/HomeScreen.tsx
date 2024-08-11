@@ -75,8 +75,7 @@ export const HomeScreen: React.FC<
     } catch (error) {
       handleError({
         error,
-        message:
-          "An error occured while deleting photos. This must be an issue on our side.",
+        message: "An error occured while deleting photos.",
         transactionName: "deleteSelectedItems",
       })
     }
@@ -100,7 +99,7 @@ export const HomeScreen: React.FC<
       handleError({
         error,
         message:
-          "An error occured while deleting selected items from your device. This must be an issue on our side.",
+          "An error occured while deleting selected items from your device.",
         transactionName: "removeSelectedItemsFromDevice",
       })
     }
@@ -126,8 +125,7 @@ export const HomeScreen: React.FC<
     } catch (error) {
       handleError({
         error,
-        message:
-          "An error occured while deleting. This must be an issue on our side.",
+        message: "An error occured while deleting.",
         transactionName: "removeSelectedItemsRemotely",
       })
     }
@@ -178,8 +176,7 @@ export const HomeScreen: React.FC<
       } catch (error) {
         handleError({
           error,
-          message:
-            "An error occured while downloading photos to your device. This must be an issue on our side.",
+          message: "An error occured while downloading photos to your device.",
           transactionName: "saveSelectedItemsToDevice",
         })
       }
@@ -199,8 +196,7 @@ export const HomeScreen: React.FC<
     } catch (error) {
       handleError({
         error,
-        message:
-          "An error occured while sharing photos. This must be an issue on our side.",
+        message: "An error occured while sharing photos.",
         transactionName: "shareSelectedItems",
       })
     }
@@ -250,8 +246,7 @@ export const HomeScreen: React.FC<
     } catch (error) {
       handleError({
         error,
-        message:
-          "An error occured while uploading photos. This must be an issue on our side.",
+        message: "An error occured while uploading photos.",
         transactionName: "uploadAssets",
       })
     }

@@ -84,7 +84,12 @@ export const useAuth = create<AuthStore, [["zustand/persist", unknown]]>(
         return user
       },
       signOut() {
-        set({ accessToken: null, refreshToken: null, user: null })
+        set({
+          accessToken: null,
+          refreshToken: null,
+          user: null,
+          onboardingDone: false,
+        })
       },
       setOnline(online) {
         set({ online })

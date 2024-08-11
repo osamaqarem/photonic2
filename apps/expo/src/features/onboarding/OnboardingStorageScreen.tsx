@@ -1,4 +1,5 @@
 import type { NativeStackScreenProps } from "@react-navigation/native-stack"
+import React from "react"
 import { Linking, StyleSheet, View } from "react-native"
 import { AppState } from "~/expo/design/components/AppState"
 
@@ -19,6 +20,12 @@ export const OnboardingStorageScreen: React.FC<
   const finishOnboarding = useAuth(s => s.actions.finishOnboarding)
 
   const { data, isLoading, error, refetch } = trpc.user.profile.useQuery()
+
+  React.useEffect(() => {
+    if (data?.aws.status === "connected") {
+      finishOnboarding()
+    }
+  }, [data?.aws.status])
 
   const handleAWSAuth = async (url: string) => {
     // show AWS in app browser

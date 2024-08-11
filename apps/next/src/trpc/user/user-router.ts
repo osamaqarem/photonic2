@@ -2,10 +2,14 @@ import { config } from "~/next/config"
 import { authedProcedure, router } from "../trpc"
 
 export const userRouter = router({
-  profile: authedProcedure.query(({ ctx }) => {
+  profile: authedProcedure.query(async ({ ctx }) => {
     const stackName = `photonic-access-${ctx.user.id.replaceAll("_", "-")}`
 
-    const awsAccountState = Boolean(ctx.user.awsAccount)
+    const bucket = await ctx.db.awsBucket.findFirst({
+      where: { userId: ctx.user.id },
+    })
+
+    const awsAccountState = bucket
       ? ("connected" as const)
       : ("unavailable" as const)
 

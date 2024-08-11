@@ -27,24 +27,17 @@ export const useAssets = () => {
     _setAssets(data)
   }, [])
 
-  const fetchLocalData = React.useCallback(
-    async (mode: "reset" | "reload" | "normal" = "normal") => {
-      if (mode === "reset") {
-        await assetRepo.drop()
-        lastSyncTimeStorage.delete()
-        return populateDB()
-      } else if (mode === "normal") {
-        const data = await assetRepo.list()
-        return data
-      }
-      return populateDB()
-    },
-    [],
-  )
+  const fetchLocalData = React.useCallback(async (reset = false) => {
+    if (reset) {
+      await assetRepo.drop()
+      lastSyncTimeStorage.delete()
+    }
+    return populateDB()
+  }, [])
 
   const refreshQuery = React.useCallback(
-    async (mode: Parameters<typeof fetchLocalData>[number] = "normal") => {
-      const data = await fetchLocalData(mode)
+    async (fetchLocalDataMode = false) => {
+      const data = await fetchLocalData(fetchLocalDataMode)
       const updatedMap = getAssetMap(data)
       assetMap.value = updatedMap
       setAssets(data)
@@ -55,14 +48,14 @@ export const useAssets = () => {
   const syncRemote = React.useCallback(
     async (force = false) => {
       await maybeSyncRemote(assetMap.value, force)
-      await refreshQuery("normal")
+      await refreshQuery()
     },
     [assetMap, refreshQuery],
   )
 
   React.useEffect(() => {
     ;(async () => {
-      await refreshQuery("reload")
+      await refreshQuery()
       setLoading(false)
 
       await syncRemote()
