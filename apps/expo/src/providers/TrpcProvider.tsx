@@ -17,7 +17,7 @@ import { ApiError } from "@photonic/next/src/trpc/api-error"
 import type { inferRouterInputs, inferRouterOutputs } from "@trpc/server"
 import { config } from "~/expo/lib/config"
 import { Network } from "~/expo/lib/network"
-import { useAuth } from "~/expo/state/auth-store"
+import { useAuth } from "~/expo/stores/auth-store"
 
 export type RouterInput = inferRouterInputs<AppRouter>
 export type RouterOutput = inferRouterOutputs<AppRouter>

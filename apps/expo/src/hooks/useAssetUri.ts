@@ -1,7 +1,7 @@
 import { assert } from "@photonic/common"
 import React from "react"
 import type { Asset } from "~/expo/db/schema"
-import { trpcClient } from "~/expo/state/TrpcProvider"
+import { trpcClient } from "~/expo/providers/TrpcProvider"
 
 const getUri = (asset: Asset) =>
   asset.type !== "remote" ? (asset.uri as string) : undefined

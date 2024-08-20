@@ -11,7 +11,7 @@ import { colorSchemeStorage, type ColorScheme } from "~/expo/lib/storage"
 
 interface DarkModeStore {
   colorScheme: ColorScheme
-  sharedColorScheme: Pick<SharedValue<ColorScheme>, "value">
+  sharedColorScheme: { value: ColorScheme } // SharedValue<ColorScheme>
   source: "system" | "user"
   actions: {
     setMode: (cs: ColorScheme) => void

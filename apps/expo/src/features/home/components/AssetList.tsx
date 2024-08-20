@@ -24,8 +24,8 @@ import type { Asset } from "~/expo/db/schema"
 import { Text } from "~/expo/design/components/Text"
 import { Thumbnail } from "~/expo/features/home/components/Thumbnail"
 import { BottomPanel } from "~/expo/features/home/components/control-panel/Bottom"
-import { useDarkMode } from "~/expo/state/DarkModeProvider"
-import { useDragSelectContext } from "~/expo/state/DragSelectContextProvider"
+import { useDarkMode } from "~/expo/providers/DarkModeProvider"
+import { useDragSelectContext } from "~/expo/providers/DragSelectContextProvider"
 
 interface Props {
   onItemPress: (asset: Asset) => void

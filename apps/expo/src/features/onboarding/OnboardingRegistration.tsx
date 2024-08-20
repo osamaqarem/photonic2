@@ -11,7 +11,7 @@ import { TextInput } from "~/expo/design/components/TextInput"
 import { theme } from "~/expo/design/theme"
 import { handleError } from "~/expo/lib/error"
 import type { AppParams } from "~/expo/navigation/params"
-import { trpc } from "~/expo/state/TrpcProvider"
+import { trpc } from "~/expo/providers/TrpcProvider"
 
 export const OnboardingRegistrationScreen: React.FC<
   NativeStackScreenProps<AppParams, "onboarding-registration">

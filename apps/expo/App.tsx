@@ -8,9 +8,9 @@ import { SafeAreaProvider } from "react-native-safe-area-context"
 import { AlertsProvider } from "~/expo/design/components/alerts/AlertsContext"
 import { config } from "~/expo/lib/config"
 import { Navigation } from "~/expo/navigation/Navigation"
-import { DarkModeProvider } from "~/expo/state/DarkModeProvider"
-import { TrpcProvider } from "~/expo/state/TrpcProvider"
-import { useAuth } from "~/expo/state/auth-store"
+import { DarkModeProvider } from "~/expo/providers/DarkModeProvider"
+import { TrpcProvider } from "~/expo/providers/TrpcProvider"
+import { useAuth } from "~/expo/stores/auth-store"
 
 let didInit = false
 

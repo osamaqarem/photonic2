@@ -9,7 +9,7 @@ import Animated, {
 
 import { Text } from "~/expo/design/components/Text"
 import { font, rawThemeColors, theme } from "~/expo/design/theme"
-import { useDarkMode } from "~/expo/state/DarkModeProvider"
+import { useDarkMode } from "~/expo/providers/DarkModeProvider"
 
 const AnimatedTextInput = Animated.createAnimatedComponent(RNTextInput)
 

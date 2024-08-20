@@ -15,10 +15,10 @@ import { ControlPanel } from "~/expo/features/home/components/control-panel"
 import { useAssets } from "~/expo/hooks/useAssets"
 import { Actor } from "~/expo/lib/actor"
 import { handleError } from "~/expo/lib/error"
-import { mediaManager } from "~/expo/lib/media-manager"
+import { mediaService } from "~/expo/services/media-service"
 import type { AppParams } from "~/expo/navigation/params"
-import { DragSelectContextProvider } from "~/expo/state/DragSelectContextProvider"
-import { trpcClient } from "~/expo/state/TrpcProvider"
+import { DragSelectContextProvider } from "~/expo/providers/DragSelectContextProvider"
+import { trpcClient } from "~/expo/providers/TrpcProvider"
 
 const logger = new Logger("HomeScreen")
 
@@ -63,8 +63,8 @@ export const HomeScreen: React.FC<
     try {
       logger.log("Deleting assets")
       await Promise.all([
-        mediaManager.deleteLocalAssets(selectedList),
-        mediaManager.deleteRemoteAssets(selectedList, [
+        mediaService.deleteLocalAssets(selectedList),
+        mediaService.deleteRemoteAssets(selectedList, [
           "remote",
           "localRemote",
         ]),
@@ -76,7 +76,7 @@ export const HomeScreen: React.FC<
       handleError({
         error,
         message: "An error occured while deleting photos.",
-        transactionName: "deleteSelectedItems",
+        transactionName: deleteSelectedItems.name,
       })
     }
   }
@@ -91,7 +91,7 @@ export const HomeScreen: React.FC<
     clearSelection()
     try {
       await Promise.all([
-        mediaManager.deleteLocalAssets(selectedList),
+        mediaService.deleteLocalAssets(selectedList),
         assetRepo.delete(selectedList),
       ])
       await refetchAssets()
@@ -100,7 +100,7 @@ export const HomeScreen: React.FC<
         error,
         message:
           "An error occured while deleting selected items from your device.",
-        transactionName: "removeSelectedItemsFromDevice",
+        transactionName: removeSelectedItemsFromDevice.name,
       })
     }
   }
@@ -115,7 +115,7 @@ export const HomeScreen: React.FC<
     clearSelection()
     try {
       await Promise.all([
-        mediaManager.deleteRemoteAssets(selectedList, [
+        mediaService.deleteRemoteAssets(selectedList, [
           "localRemote",
           "remote",
         ]),
@@ -126,7 +126,7 @@ export const HomeScreen: React.FC<
       handleError({
         error,
         message: "An error occured while deleting.",
-        transactionName: "removeSelectedItemsRemotely",
+        transactionName: removeSelectedItemsRemotely.name,
       })
     }
   }
@@ -138,14 +138,14 @@ export const HomeScreen: React.FC<
     )
 
     // `renameRemoteAsset` causes `updatedAt` to be refreshed for the remote asset, so the next remote sync will reconcile the state for this asset
-    const savedAsset = await mediaManager.createAssetAsync(selectedRemoteAsset)
+    const savedAsset = await mediaService.createAssetAsync(selectedRemoteAsset)
     const creationTime = selectedRemoteAsset.creationTime
 
-    await mediaManager.modifyAssetAsync(savedAsset, {
+    await mediaService.modifyAssetAsync(savedAsset, {
       creationTime,
     })
 
-    await mediaManager.renameRemoteAsset(
+    await mediaService.renameRemoteAsset(
       selectedRemoteAsset,
       savedAsset.filename,
     )
@@ -177,7 +177,7 @@ export const HomeScreen: React.FC<
         handleError({
           error,
           message: "An error occured while downloading photos to your device.",
-          transactionName: "saveSelectedItemsToDevice",
+          transactionName: saveSelectedItemsToDevice.name,
         })
       }
     }
@@ -192,12 +192,12 @@ export const HomeScreen: React.FC<
     if (!selectedAsset) return
 
     try {
-      await mediaManager.share(selectedAsset)
+      await mediaService.share(selectedAsset)
     } catch (error) {
       handleError({
         error,
         message: "An error occured while sharing photos.",
-        transactionName: "shareSelectedItems",
+        transactionName: shareSelectedItems.name,
       })
     }
   }
@@ -247,7 +247,7 @@ export const HomeScreen: React.FC<
       handleError({
         error,
         message: "An error occured while uploading photos.",
-        transactionName: "uploadAssets",
+        transactionName: uploadAssets.name,
       })
     }
   }

@@ -9,9 +9,9 @@ import {
 } from "~/expo/db/asset-repo"
 import { type Asset, type AssetInsert } from "~/expo/db/schema"
 import { useSafeIntervalRef } from "~/expo/hooks/useSafeIntervalRef"
-import { mediaManager } from "~/expo/lib/media-manager"
+import { mediaService } from "~/expo/services/media-service"
 import { lastSyncTimeStorage } from "~/expo/lib/storage"
-import { trpcClient } from "~/expo/state/TrpcProvider"
+import { trpcClient } from "~/expo/providers/TrpcProvider"
 
 const logger = new Logger("useAssets")
 
@@ -74,11 +74,11 @@ export const useAssets = () => {
 
 async function populateDB() {
   const fetchMediaLibraryPage = (after?: string) => {
-    return mediaManager.getAssetsAsync({
+    return mediaService.getAssetsAsync({
       after,
       first: Number.MAX_SAFE_INTEGER,
       sortBy: "creationTime",
-      mediaType: [mediaManager.MediaType.photo],
+      mediaType: [mediaService.MediaType.photo],
     })
   }
 
@@ -187,7 +187,7 @@ async function maybeSyncRemote(assetMap: AssetMap, force = false) {
 // Filename/asset map
 // it's used with Reaniamted so it can't be a `Map`
 export type AssetMap = Record<string, Asset>
-export function getAssetMap(assets: Array<Asset>): AssetMap {
+function getAssetMap(assets: Array<Asset>): AssetMap {
   let record: Record<string, Asset> = {}
   for (let i = 0; i < assets.length; i++) {
     const item = assets[i]

@@ -4,10 +4,10 @@ import { type SQLiteTable } from "drizzle-orm/sqlite-core"
 import { db } from "~/expo/db"
 import type { Asset, AssetInsert } from "~/expo/db/schema"
 import { asset } from "~/expo/db/schema"
-import type { RawLocalAsset } from "~/expo/lib/media-manager"
+import type { RawLocalAsset } from "~/expo/services/media-service"
 import { deviceIdStorage } from "~/expo/lib/storage"
-import { useAuth } from "~/expo/state/auth-store"
-import type { trpcClient } from "~/expo/state/TrpcProvider"
+import { useAuth } from "~/expo/stores/auth-store"
+import type { trpcClient } from "~/expo/providers/TrpcProvider"
 
 type RawRemoteAsset = Awaited<
   ReturnType<typeof trpcClient.photo.list.query>

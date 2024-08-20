@@ -19,8 +19,8 @@ import { theme } from "~/expo/design/theme"
 import { useSafeIntervalRef } from "~/expo/hooks/useSafeIntervalRef"
 import { handleError } from "~/expo/lib/error"
 import type { AppParams } from "~/expo/navigation/params"
-import { trpc } from "~/expo/state/TrpcProvider"
-import { useAuth } from "~/expo/state/auth-store"
+import { trpc } from "~/expo/providers/TrpcProvider"
+import { useAuth } from "~/expo/stores/auth-store"
 
 export const OnboardingCodeVerificationScreen: React.FC<
   NativeStackScreenProps<AppParams, "onboarding-code-verification">

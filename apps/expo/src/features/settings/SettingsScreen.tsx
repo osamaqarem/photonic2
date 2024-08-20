@@ -8,8 +8,8 @@ import { Button } from "~/expo/design/components/Button"
 import { ScrollView } from "~/expo/design/components/ScrollView"
 import { theme } from "~/expo/design/theme"
 import type { AppParams } from "~/expo/navigation/params"
-import { trpc } from "~/expo/state/TrpcProvider"
-import { useAuth } from "~/expo/state/auth-store"
+import { trpc } from "~/expo/providers/TrpcProvider"
+import { useAuth } from "~/expo/stores/auth-store"
 
 // Reference
 // https://github.com/software-mansion/react-native-screens/blob/b9471bebe70d83c71740c5a308af9ea7ad377821/native-stack/README.md#measuring-headers-height-on-ios

@@ -1,5 +1,4 @@
 import { nanoid } from "@photonic/common/nanoid"
-import type { ColorSchemeName } from "react-native"
 import { MMKV } from "react-native-mmkv"
 
 const storage = new MMKV()
@@ -19,7 +18,7 @@ export const deviceIdStorage = {
   },
 }
 
-export type ColorScheme = NonNullable<ColorSchemeName>
+export type ColorScheme = "light" | "dark"
 export const colorSchemeStorage = {
   key: "ColorSchemeKey",
   get: () => storage.getString(colorSchemeStorage.key) as Maybe<ColorScheme>,

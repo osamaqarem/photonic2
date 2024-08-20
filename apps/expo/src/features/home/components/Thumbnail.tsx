@@ -19,8 +19,8 @@ import { Icon } from "~/expo/design/components/icons/Icons"
 import { palette } from "~/expo/design/palette"
 import { theme } from "~/expo/design/theme"
 import { useAssetUri } from "~/expo/hooks/useAssetUri"
-import { useDarkMode } from "~/expo/state/DarkModeProvider"
-import { useDragSelectContext } from "~/expo/state/DragSelectContextProvider"
+import { useDarkMode } from "~/expo/providers/DarkModeProvider"
+import { useDragSelectContext } from "~/expo/providers/DragSelectContextProvider"
 
 const longPressTiming = 300
 const scaleTiming = 300

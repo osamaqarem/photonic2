@@ -13,7 +13,7 @@ import { theme } from "~/expo/design/theme"
 import { MainStack } from "~/expo/navigation/MainStack"
 import { OnboardingStack } from "~/expo/navigation/OnboardingStack"
 import type { RootStackParams } from "~/expo/navigation/params"
-import { useAuth } from "~/expo/state/auth-store"
+import { useAuth } from "~/expo/stores/auth-store"
 
 const navTheme = {
   ...DefaultTheme,

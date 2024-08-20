@@ -9,9 +9,11 @@ import { ScrollView } from "~/expo/design/components/ScrollView"
 import { Space } from "~/expo/design/components/Space"
 import { Text } from "~/expo/design/components/Text"
 import { theme } from "~/expo/design/theme"
-import { PermissionStatus } from "~/expo/lib/media-manager"
+import { mediaService } from "~/expo/services/media-service"
 import type { AppParams } from "~/expo/navigation/params"
-import { useAuth } from "~/expo/state/auth-store"
+import { useAuth } from "~/expo/stores/auth-store"
+
+const { PermissionStatus } = mediaService
 
 export const OnboardingPermissionsScreen: React.FC<
   NativeStackScreenProps<AppParams, "onboarding-permissions">

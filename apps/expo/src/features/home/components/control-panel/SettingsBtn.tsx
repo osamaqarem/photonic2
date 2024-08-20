@@ -17,7 +17,7 @@ import { Icon } from "~/expo/design/components/icons/Icons"
 import { Svg } from "~/expo/design/components/Svg"
 import { palette } from "~/expo/design/palette"
 import { theme } from "~/expo/design/theme"
-import { useDarkMode } from "~/expo/state/DarkModeProvider"
+import { useDarkMode } from "~/expo/providers/DarkModeProvider"
 import { BlurPressable } from "./BlurPressable"
 
 const settingsBtnSize = 42

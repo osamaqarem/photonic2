@@ -15,7 +15,7 @@ import Animated, {
 import { font, theme } from "~/expo/design/theme"
 import type { ComponentVariantMap } from "~/expo/design/variant"
 import { getThemeColorWorklet } from "~/expo/design/variant"
-import { useDarkMode } from "~/expo/state/DarkModeProvider"
+import { useDarkMode } from "~/expo/providers/DarkModeProvider"
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable)
 
