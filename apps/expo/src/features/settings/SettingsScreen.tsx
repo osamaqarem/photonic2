@@ -46,10 +46,7 @@ export const SettingsScreen: React.FC<
             <View style={[styles.safe, { top: safeTop }]}>
               {
                 <Button
-                  style={{
-                    alignSelf: "center",
-                    marginTop: 50,
-                  }}
+                  style={styles.button}
                   text={
                     safeData.aws.status === "unavailable"
                       ? "Connect AWS Account"
@@ -81,5 +78,9 @@ const styles = StyleSheet.create({
   scroll: {
     paddingHorizontal: 0,
     flexGrow: 1,
+  },
+  button: {
+    alignSelf: "center",
+    marginTop: 50,
   },
 })

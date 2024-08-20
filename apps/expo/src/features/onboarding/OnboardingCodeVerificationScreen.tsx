@@ -14,7 +14,6 @@ import { ScrollView } from "~/expo/design/components/ScrollView"
 import { Space } from "~/expo/design/components/Space"
 import { Text } from "~/expo/design/components/Text"
 import { TextInput } from "~/expo/design/components/TextInput"
-import { useAlerts } from "~/expo/design/components/alerts/useAlerts"
 import { theme } from "~/expo/design/theme"
 import { useSafeIntervalRef } from "~/expo/hooks/useSafeIntervalRef"
 import { handleError } from "~/expo/lib/error"
@@ -26,8 +25,6 @@ export const OnboardingCodeVerificationScreen: React.FC<
   NativeStackScreenProps<AppParams, "onboarding-code-verification">
 > = props => {
   const { email } = props.route.params
-
-  const { showError } = useAlerts()
 
   const [code, setCode] = React.useState("")
   const [cooldown, setCooldown] = React.useState<number | null>(null)

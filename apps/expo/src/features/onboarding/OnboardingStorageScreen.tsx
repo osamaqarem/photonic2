@@ -25,7 +25,7 @@ export const OnboardingStorageScreen: React.FC<
     if (data?.aws.status === "connected") {
       finishOnboarding()
     }
-  }, [data?.aws.status])
+  }, [data?.aws.status, finishOnboarding])
 
   const handleAWSAuth = async (url: string) => {
     // show AWS in app browser

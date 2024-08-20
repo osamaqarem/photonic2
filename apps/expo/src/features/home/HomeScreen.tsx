@@ -5,8 +5,7 @@ import React from "react"
 import { StyleSheet, View } from "react-native"
 import { useDerivedValue, useSharedValue } from "react-native-reanimated"
 
-import { Logger, assert, invariant } from "@photonic/common"
-import { assetRepo } from "~/expo/db/asset-repo"
+import { Logger, assert } from "@photonic/common"
 import type { Asset } from "~/expo/db/schema"
 import { Loading } from "~/expo/design/components/Loading"
 import { Text } from "~/expo/design/components/Text"
@@ -14,32 +13,35 @@ import { AssetList } from "~/expo/features/home/components/AssetList"
 import { ControlPanel } from "~/expo/features/home/components/control-panel"
 import { useAssets } from "~/expo/hooks/useAssets"
 import { Actor } from "~/expo/lib/actor"
+import { getAssetMap } from "~/expo/lib/asset-map"
 import { handleError } from "~/expo/lib/error"
-import { mediaService } from "~/expo/services/media-service"
 import type { AppParams } from "~/expo/navigation/params"
 import { DragSelectContextProvider } from "~/expo/providers/DragSelectContextProvider"
 import { trpcClient } from "~/expo/providers/TrpcProvider"
+import { mediaService } from "~/expo/services/media-service"
 
 const logger = new Logger("HomeScreen")
 
 export const HomeScreen: React.FC<
   NativeStackScreenProps<AppParams, "home">
 > = props => {
-  const { assets, assetMap, loading, syncRemote, refetchAssets } = useAssets()
+  const { assets, loading, syncRemote, refetchAssets } = useAssets()
+
+  const assetMap = useDerivedValue(() => getAssetMap(assets))
 
   const showGradientOverlay = useSharedValue(false)
 
   const totalUploadProgress = useSharedValue(0)
 
   const selectedItems = useSharedValue<Record<string, Asset>>({})
-  const selectedItemsKeys = useDerivedValue(() =>
-    Object.keys(selectedItems.value),
-  )
+
+  const getSelectedAssets = (): Array<Asset> => Object.values(selectedItems)
+
   const selectModeActive = useDerivedValue(
-    () => selectedItemsKeys.value.length > 0,
+    () => Object.keys(selectedItems.value).length > 0,
   )
   const selectedItemsCountText = useDerivedValue(() =>
-    selectedItemsKeys.value.length.toString(),
+    Object.keys(selectedItems.value).length.toString(),
   )
 
   const openPhoto = (asset: Asset) => {
@@ -57,19 +59,9 @@ export const HomeScreen: React.FC<
    * Delete assets locally and remotely
    */
   async function deleteSelectedItems() {
-    const selectedList = selectedItemsKeys.value.map(
-      name => assetMap.value[name],
-    ) as Array<Asset>
+    const selectedList = Object.values(selectedItems.value)
     try {
-      logger.log("Deleting assets")
-      await Promise.all([
-        mediaService.deleteLocalAssets(selectedList),
-        mediaService.deleteRemoteAssets(selectedList, [
-          "remote",
-          "localRemote",
-        ]),
-        assetRepo.delete(selectedList),
-      ])
+      await mediaService.deleteAssets(selectedList)
       clearSelection()
       await refetchAssets()
     } catch (error) {
@@ -85,15 +77,9 @@ export const HomeScreen: React.FC<
    * Delete assets locally
    */
   async function removeSelectedItemsFromDevice() {
-    const selectedList = selectedItemsKeys.value.map(
-      name => assetMap.value[name],
-    ) as Array<Asset>
     clearSelection()
     try {
-      await Promise.all([
-        mediaService.deleteLocalAssets(selectedList),
-        assetRepo.delete(selectedList),
-      ])
+      await mediaService.deleteAssets(getSelectedAssets())
       await refetchAssets()
     } catch (error) {
       handleError({
@@ -109,17 +95,11 @@ export const HomeScreen: React.FC<
    * Delete LocalRemoteAssets from remote filestorage and DB
    */
   async function removeSelectedItemsRemotely() {
-    const selectedList = selectedItemsKeys.value.map(
-      name => assetMap.value[name],
-    ) as Array<Asset>
     clearSelection()
     try {
-      await Promise.all([
-        mediaService.deleteRemoteAssets(selectedList, [
-          "localRemote",
-          "remote",
-        ]),
-        assetRepo.delete(selectedList),
+      await mediaService.deleteAssets(getSelectedAssets(), [
+        "localRemote",
+        "remote",
       ])
       await refetchAssets()
     } catch (error) {
@@ -131,48 +111,15 @@ export const HomeScreen: React.FC<
     }
   }
 
-  async function saveRemoteAsset(selectedRemoteAsset: Asset): Promise<Asset> {
-    invariant(
-      selectedRemoteAsset.type === "remote",
-      "saveRemoteAsset: not remote asset",
-    )
-
-    // `renameRemoteAsset` causes `updatedAt` to be refreshed for the remote asset, so the next remote sync will reconcile the state for this asset
-    const savedAsset = await mediaService.createAssetAsync(selectedRemoteAsset)
-    const creationTime = selectedRemoteAsset.creationTime
-
-    await mediaService.modifyAssetAsync(savedAsset, {
-      creationTime,
-    })
-
-    await mediaService.renameRemoteAsset(
-      selectedRemoteAsset,
-      savedAsset.filename,
-    )
-    await syncRemote(true)
-
-    return {
-      ...selectedRemoteAsset,
-      name: savedAsset.filename,
-      type: "localRemote",
-      uri: savedAsset.uri,
-      localId: savedAsset.id,
-    }
-  }
-
   /**
    * Download selected assets to device
    */
   async function saveSelectedItemsToDevice() {
-    for (const name in selectedItems.value) {
-      const asset = selectedItems.value[name]
-      if (asset?.type !== "remote") continue
-
-      const remoteAsset = assetMap.value[asset.name]
-      assert(remoteAsset)
+    for (const selectedItem of Object.values(selectedItems.value)) {
+      if (selectedItem?.type !== "remote") continue
       try {
-        await saveRemoteAsset(remoteAsset)
-        await assetRepo.update([remoteAsset])
+        await mediaService.saveRemoteAsset(selectedItem)
+        syncRemote()
       } catch (error) {
         handleError({
           error,
@@ -184,13 +131,9 @@ export const HomeScreen: React.FC<
   }
 
   async function shareSelectedItems() {
-    const firstItemName = selectedItemsKeys.value[0]
-    assert(firstItemName)
-
-    const selectedAsset = assetMap.value[firstItemName]
+    const selectedAsset = selectedItems.value[0]
+    assert(selectedAsset)
     clearSelection()
-    if (!selectedAsset) return
-
     try {
       await mediaService.share(selectedAsset)
     } catch (error) {
@@ -206,11 +149,10 @@ export const HomeScreen: React.FC<
 
   const uploadAssets = async (mode: "selected" | "all") => {
     const collection =
-      mode === "selected" ? selectedItems.value : assetMap.value
+      mode === "selected" ? Object.values(selectedItems.value) : assets
 
     let data: Array<Omit<Asset, "localId"> & { localId: string }> = []
-    for (const name in collection) {
-      const item = collection[name]
+    for (const item of collection) {
       if (item?.type === "local") {
         assert(item.localId)
         data.push(item as (typeof data)[number])
@@ -267,7 +209,6 @@ export const HomeScreen: React.FC<
     <DragSelectContextProvider
       assetMap={assetMap}
       selectedItems={selectedItems}
-      selectedItemsKeys={selectedItemsKeys}
       selectModeActive={selectModeActive}
       selectedItemsCountText={selectedItemsCountText}
       showGradientOverlay={showGradientOverlay}>

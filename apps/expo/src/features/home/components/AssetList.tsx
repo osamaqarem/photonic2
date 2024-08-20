@@ -14,6 +14,7 @@ import Animated, {
   useAnimatedRef,
   useAnimatedScrollHandler,
   useAnimatedStyle,
+  useDerivedValue,
   useFrameCallback,
   useSharedValue,
   withTiming,
@@ -33,13 +34,12 @@ interface Props {
 }
 
 export const AssetList: React.FC<Props> = ({ onItemPress, data }) => {
-  const {
-    assetMap,
-    selectedItems,
-    selectedItemsKeys,
-    selectModeActive,
-    showGradientOverlay,
-  } = useDragSelectContext()
+  const { assetMap, selectedItems, showGradientOverlay } =
+    useDragSelectContext()
+
+  const selectModeActive = useDerivedValue(
+    () => Object.keys(selectedItems.value).length > 0,
+  )
 
   const sharedColorScheme = useDarkMode(s => s.sharedColorScheme)
 
@@ -102,7 +102,7 @@ export const AssetList: React.FC<Props> = ({ onItemPress, data }) => {
   }
 
   useAnimatedReaction(
-    () => selectedItemsKeys.value.length,
+    () => Object.keys(selectedItems.value).length,
     (next, prev) => {
       const prevVal = prev ?? 0
       if (next !== prevVal) {

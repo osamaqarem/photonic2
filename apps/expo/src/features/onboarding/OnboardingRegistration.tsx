@@ -35,9 +35,9 @@ export const OnboardingRegistrationScreen: React.FC<
     try {
       await mutateAsync({ email })
       props.navigation.navigate("onboarding-code-verification", { email })
-    } catch (error) {
+    } catch (err) {
       handleError({
-        error,
+        error: err,
         message: "Failed to send verification code.",
         transactionName: "issueLoginCode",
       })
