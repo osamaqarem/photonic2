@@ -1,5 +1,9 @@
 # Photonic
 
+<div align="center">
+  <video src="https://github.com/user-attachments/assets/10b31ec8-8568-4a66-85df-256d53e870af" />
+</div>
+
 ## Server
 
 To import secrets from a file:
@@ -144,3 +148,4 @@ terraform output
   - Several parameters are hardcoded e.g. AWS user ARN, Lambda name
   - The template URL has to be set as a secret for the Next app.
   - Should update S3 access policy to match bucket name
+- Private Linear board: https://linear.app/photonic/team/PHO/all
